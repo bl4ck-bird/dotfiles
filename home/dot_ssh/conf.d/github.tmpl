@@ -1,0 +1,10 @@
+Host github.com
+  HostName github.com
+  User git
+  {{- if not .is_ephemeral }}
+  IdentityFile ~/.ssh/Github
+  {{- end }}
+  {{- if eq .chezmoi.os "darwin" }}
+  AddKeysToAgent yes
+  UseKeychain yes
+  {{- end }}

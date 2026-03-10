@@ -1,0 +1,19 @@
+#!/bin/bash
+
+set -eufo pipefail
+
+source "{{ .chezmoi.sourceDir }}/.scripts/utils.sh"
+
+print_color_box_center "$COLOR_YELLOW" 40 "AI - Opencode"
+
+if command -v opencode >/dev/null 2>&1; then
+    echo_color $COLOR_BLUE "AI - Opencode: Already installed. Skipping..."
+else
+    homebrew_check
+    echo_color $COLOR_BLUE "AI - Opencode: Installing..."
+    brew tap anomalyco/tap
+    brew install anomalyco/tap/opencode
+fi
+
+echo_color $COLOR_GREEN "AI - Opencode: Done."
+echo ""

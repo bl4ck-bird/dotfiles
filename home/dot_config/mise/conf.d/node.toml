@@ -1,0 +1,15 @@
+[tools.node]
+version = "lts"
+postinstall = '''
+corepack enable pnpm
+
+npm completion > "$ZCOMP_HOME/_npm"
+pnpm completion zsh > "$ZCOMP_HOME/_pnpm"
+'''
+
+[env]
+NPM_CONFIG_USERCONFIG = "{{env.XDG_CONFIG_HOME}}/npm/npmrc"
+NPM_CONFIG_CACHE = "{{env.XDG_CACHE_HOME}}/npm"
+NODE_REPL_HISTORY = "{{env.XDG_DATA_HOME}}/node_repl_history"
+PNPM_HOME = "{{env.XDG_DATA_HOME}}/pnpm"
+_.path = ["{{env.XDG_DATA_HOME}}/pnpm"]

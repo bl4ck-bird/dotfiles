@@ -1,0 +1,41 @@
+{{ if not .is_ephemeral }}
+{{- $fontDir := "" -}}
+{{- if eq .chezmoi.os "darwin" -}}
+    {{- $fontDir = "Library/Fonts" -}}
+{{- else if eq .chezmoi.os "linux" -}}
+    {{- $fontDir = ".local/share/fonts" -}}
+{{- end -}}
+
+{{- /* Hack Nerd Font */}}
+["{{ $fontDir }}/HackNerdFont"]
+    type = "archive"
+    url = {{ gitHubLatestReleaseAssetURL "ryanoasis/nerd-fonts" "Hack.tar.xz" | quote }}
+    exact = true
+    stripComponents = 0
+    include = ["*.ttf"]
+    refreshPeriod = "168h"
+
+{{- /* D2Coding Nerd Font */}}
+["{{ $fontDir }}/D2CodingNerdFont"]
+    type = "archive"
+    url = {{ gitHubLatestReleaseAssetURL "ryanoasis/nerd-fonts" "D2Coding.tar.xz" | quote }}
+    exact = true
+    stripComponents = 0
+    include = ["*.ttf"]
+    refreshPeriod = "168h"
+
+{{- /* 네이버 나눔 글꼴 전체 */}}
+["{{ $fontDir }}/NaverNanumAll"]
+    type = "archive"
+    url = "https://hangeul.naver.com/hangeul_static/webfont/zips/nanum-all_new.zip"
+    exact = true
+    stripComponents = 0
+    exclude = [
+        "__MACOSX",
+        "__MACOSX/**",
+        "**/__MACOSX",
+        "**/__MACOSX/**",
+        "**/.DS_Store"
+    ]
+    refreshPeriod = "168h"
+{{- end -}}

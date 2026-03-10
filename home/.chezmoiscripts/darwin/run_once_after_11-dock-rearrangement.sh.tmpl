@@ -1,0 +1,77 @@
+#!/bin/bash
+
+set -eufo pipefail
+
+source "{{ .chezmoi.sourceDir }}/.scripts/utils.sh"
+
+print_color_box_center "$COLOR_YELLOW" 40 "Dock rearrangement"
+
+echo_color "$COLOR_BLUE" "Dock rearrangement: Cleaning up Dock and rearranging icons..."
+
+add_to_dock() {
+    local label=$1
+    local bundle_id=$2
+    local url=$3
+
+    echo "➕ Adding $label ($bundle_id) to Dock..."
+    defaults write com.apple.dock persistent-apps -array-add "
+    <dict>
+        <key>tile-data</key>
+        <dict>
+            <key>bundle-identifier</key>
+            <string>$bundle_id</string>
+            <key>file-data</key>
+            <dict>
+                <key>_CFURLString</key>
+                <string>$url</string>
+                <key>_CFURLStringType</key>
+                <integer>15</integer>
+            </dict>
+            <key>file-label</key>
+            <string>$label</string>
+            <key>file-type</key>
+            <integer>41</integer>
+        </dict>
+        <key>tile-type</key>
+        <string>file-tile</string>
+    </dict>"
+}
+
+# Finder 빼고 전체 제거
+defaults write com.apple.dock persistent-apps -array '()'
+
+add_to_dock "iPhone 미러링" "com.apple.ScreenContinuity" "file:///System/Applications/iPhone%20Mirroring.app/"
+add_to_dock "Safari" "com.apple.Safari" "file:///System/Volumes/Preboot/Cryptexes/App/System/Applications/Safari.app/"
+add_to_dock "Microsoft Edge" "com.microsoft.edgemac" "file:///Applications/Microsoft%20Edge.app/"
+add_to_dock "FaceTime" "com.apple.FaceTime" "file:///System/Applications/FaceTime.app/"
+add_to_dock "메시지" "com.apple.MobileSMS" "file:///System/Applications/Messages.app/"
+add_to_dock "음악" "com.apple.Music" "file:///System/Applications/Music.app/"
+add_to_dock "TV" "com.apple.TV" "file:///System/Applications/TV.app/"
+add_to_dock "Mail" "com.apple.mail" "file:///System/Applications/Mail.app/"
+
+# --- 중단: 생산성 및 개인 유틸리티 ---
+{{- if .is_personal }}
+add_to_dock "Windows App" "com.microsoft.rdc.macos" "file:///Applications/Windows%20App.app/"
+add_to_dock "Transmission" "org.m0k.transmission" "file:///Applications/Transmission.app/"
+add_to_dock "Transmit" "com.panic.Transmit" "file:///Applications/Transmit.app/"
+add_to_dock "카카오톡" "869223134" "file:///Applications/KakaoTalk.app/"
+{{- end }}
+
+add_to_dock "Discord" "com.hnc.Discord" "file:///Applications/Discord.app/"
+add_to_dock "Slack" "com.tinyspeck.slackmacgap" "file:///Applications/Slack.app/"
+
+# --- 하단: 개발 및 코어 도구 ---
+add_to_dock "Ghostty" "com.mitchellh.ghostty" "file:///Applications/Ghostty.app/"
+
+{{- if .is_personal }}
+add_to_dock "OrbStack" "dev.orbstack.orbstack" "file:///Applications/OrbStack.app/"
+{{- end }}
+
+add_to_dock "Obsidian" "md.obsidian" "file:///Applications/Obsidian.app/"
+add_to_dock "Visual Studio Code" "com.microsoft.VSCode" "file:///Applications/Visual%20Studio%20Code.app/"
+
+defaults read com.apple.dock > /dev/null
+killall Dock > /dev/null 2>&1 || true
+
+echo_color "$COLOR_GREEN" "Dock rearrangement: Done."
+echo ""

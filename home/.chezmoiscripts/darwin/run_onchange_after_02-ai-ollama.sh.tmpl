@@ -1,0 +1,18 @@
+#!/bin/bash
+
+set -eufo pipefail
+
+source "{{ .chezmoi.sourceDir }}/.scripts/utils.sh"
+
+print_color_box_center "$COLOR_YELLOW" 40 "AI - ollama"
+
+if command -v ollama >/dev/null 2>&1; then
+    echo_color $COLOR_BLUE "AI - ollama: Already installed. Skipping..."
+else
+    homebrew_check
+    echo_color $COLOR_BLUE "AI - ollama: Installing..."
+    brew install ollama
+fi
+
+echo_color $COLOR_GREEN "AI - ollama: Done."
+echo ""

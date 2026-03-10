@@ -1,0 +1,11 @@
+Include conf.d/*
+
+Host *
+    ServerAliveInterval 60
+    ServerAliveCountMax 3
+    HashKnownHosts no
+
+{{- if eq .chezmoi.os "darwin" }}
+    AddKeysToAgent yes
+    UseKeychain yes
+{{- end -}}

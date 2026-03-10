@@ -1,0 +1,71 @@
+#!/bin/bash
+
+set -eufo pipefail
+
+source "{{ .chezmoi.sourceDir }}/.scripts/utils.sh"
+
+print_color_box_center "$COLOR_YELLOW" 40 "IINA.app Settings"
+
+echo_color "$COLOR_BLUE" "IINA.app Settings: Starting..."
+
+# 일반
+## 동작
+### 항상 새로운 윈도우로 파일 열기: 🔴
+defaults write com.colliderli.iina alwaysOpenInNewWindow -bool false
+### 모든 윈도우를 닫으면 앱을 종료: 🟢
+defaults write com.colliderli.iina quitWhenNoOpenedWindow -bool false
+### 최근에 재생했던 위치로 복원: 🔴
+defaults write com.colliderli.iina resumeLastPosition -bool false
+### 자동 업데이트: 🔴
+defaults write com.colliderli.iina SUEnableAutomaticChecks -bool false
+defaults write com.colliderli.iina SUAutomaticallyUpdate -bool false
+defaults write com.colliderli.iina SUSendProfileInfo -bool false
+## 재생기록: 🔴
+defaults write com.colliderli.iina recordPlaybackHistory -bool false
+defaults write com.colliderli.iina recordRecentFiles -bool false
+defaults write com.colliderli.iina trackAllFilesInRecentOpenMenu -bool false
+
+# 화면
+## 윈도우
+### 재생할 때 모든 윈도우 위에 두기: 🟢
+defaults write com.colliderli.iina alwaysFloatOnTop -bool true
+## 재생 제어기 (OSC)
+### 화면에서의 위치: 🟢 하단
+defaults write com.colliderli.iina oscPosition -int 2
+
+# 비디오/오디오
+## 오디오
+### 초기 음량: 🟢 80
+defaults write com.colliderli.iina enableInitialVolume -bool true
+defaults write com.colliderli.iina initialVolume -int 80
+### 최대 음량: 🟢 120
+defaults write com.colliderli.iina maxVolume -int 120
+
+# 자막
+## 자동 자막열기: 🟢 파일 이름을 포함한 자막
+defaults write com.colliderli.iina subAutoLoadIINA -int 1
+## 기타
+### 선호 언어: 🟢 ko, kor
+defaults write com.colliderli.iina subLang -string "ko,kor"
+
+# 단축키
+defaults write com.colliderli.iina currentInputConfigName -string "BB"
+defaults write com.colliderli.iina inputConfigs -dict-add "BB" "$HOME/.config/iina/input_conf/BB.conf"
+
+# 기본 앱 연결
+{{- $UTIs := list
+  "public.mpeg-4"
+  "com.apple.quicktime-movie"
+  "public.avi"
+  "org.webmproject.webm"
+  "com.microsoft.windows-media-wmv"
+}}
+{{- range $UTIs }}
+duti -s com.colliderli.iina {{ . }} all
+{{- end }}
+
+defaults read com.colliderli.iina > /dev/null
+killall IINA > /dev/null 2>&1 || true
+
+echo_color "$COLOR_GREEN" "IINA.app Settings: Done."
+echo ""

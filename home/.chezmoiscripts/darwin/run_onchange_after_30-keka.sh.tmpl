@@ -1,0 +1,38 @@
+#!/bin/bash
+
+set -eufo pipefail
+
+source "{{ .chezmoi.sourceDir }}/.scripts/utils.sh"
+
+print_color_box_center "$COLOR_YELLOW" 40 "Keka.app Settings"
+
+echo_color "$COLOR_BLUE" "Keka.app Settings: Starting..."
+
+# 압축 해제
+## 다음 위치로 압축 해제: 📌 원본 파일과 동일한 위치
+defaults write com.aone.keka DefaultExtractLocationController -int 2
+## Mac 리소스 포크 (예: .DS_Store) 포함 안함: 🟢
+defaults write com.aone.keka ExtractionExcludeMacForks -bool true
+## 압축 해제 완료 후 내용물을 Fidner에서 보기: 🔴
+defaults write com.aone.keka FinderAfterExtraction -bool false
+## 잘못된 암호 헤더 구조 추출 제거: 🟢
+defaults write com.aone.keka RemoveBadPasswordExtraction -bool true
+
+{{- $UTIs := list
+  "public.tar-archive"
+  "org.gnu.gnu-zip-archive"
+  "public.bzip2-archive"
+  "org.tukaani.xz-archive"
+  "com.rarlab.rar-archive"
+  "public.zip-archive"
+  "org.7-zip.7-zip-archive"
+}}
+{{- range $UTIs }}
+duti -s com.aone.keka {{ . }} all
+{{- end }}
+
+defaults read com.aone.keka > /dev/null
+killall "Keka" > /dev/null 2>&1 || true
+
+echo_color "$COLOR_GREEN" "Keka.app Settings: Done."
+echo ""

@@ -1,0 +1,12 @@
+[tools.uv]
+version = "latest"
+postinstall = '''
+corepack enable pnpm
+
+uv generate-shell-completion zsh > "$ZCOMP_HOME/_uv"
+'''
+
+[env]
+UV_TOOL_DIR = "{{env.XDG_DATA_HOME}}/uv/tools"
+UV_CACHE_DIR = "{{env.XDG_CACHE_HOME}}/uv"
+_.path = ["{{env.XDG_DATA_HOME}}/uv/tools/bin"]

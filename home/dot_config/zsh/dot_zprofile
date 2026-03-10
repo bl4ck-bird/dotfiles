@@ -1,0 +1,9 @@
+# ~/.config/zsh/.zprofile
+local current_dir="${${(%):-%x}:h}"
+
+# zprofile.d (PATH, Homebrew 등)만 로드
+if [ -d "$current_dir/zprofile.d" ]; then
+  for profile_file in "$current_dir/zprofile.d/"*.zsh(Nn); do
+    source "$profile_file"
+  done
+fi

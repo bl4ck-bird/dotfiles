@@ -1,0 +1,28 @@
+{{- if eq .chezmoi.os "linux" -}}
+{{- $rust_arch := .chezmoi.arch -}}
+{{- if eq .chezmoi.arch "arm64" -}}
+{{-   $rust_arch = "aarch64" -}}
+{{- else if eq .chezmoi.arch "amd64" -}}
+{{-   $rust_arch = "x86_64" -}}
+{{- end -}}
+
+{{/* Jaq */}}
+[".local/bin/jaq"]
+    type = "file"
+    url = {{ gitHubLatestReleaseAssetURL "01mf02/jaq" (printf "jaq-%s-unknown-linux-*" $rust_arch) | quote }}
+    executable = true
+
+{{/* Sheldon */}}
+[".local/bin/sheldon"]
+    type = "archive-file"
+    url = {{ gitHubLatestReleaseAssetURL "rossmacarthur/sheldon" (printf "sheldon-*-%s-unknown-linux-musl.tar.gz" $rust_arch) | quote }}
+    executable = true
+    path = "sheldon"
+
+{{/* Starship */}}
+[".local/bin/starship"]
+    type = "archive-file"
+    url = {{ gitHubLatestReleaseAssetURL "starship/starship" (printf "starship-%s-unknown-linux-musl.tar.gz" $rust_arch) | quote }}
+    executable = true
+    path = "starship"
+{{- end -}}

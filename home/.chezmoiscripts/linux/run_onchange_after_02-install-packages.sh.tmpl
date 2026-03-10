@@ -1,0 +1,61 @@
+{{ if eq .osid "linux-debian" "linux-ubuntu" "linux-linuxmint" "linux-alpine" -}}
+#!/bin/bash
+
+set -eufo pipefail
+
+source "{{ .chezmoi.sourceDir }}/.scripts/utils.sh"
+
+print_color_box_center "$COLOR_YELLOW" 40 "Install Packages"
+
+{{ $packages := list
+    "zsh"
+    "curl"
+    "git"
+    "sed"
+    "tar"
+    "zoxide"
+    "bat"
+    "eza"
+    "gh"
+    "gawk"
+    "yq"
+    "ripgrep"
+    "fzf"
+    "tmux"
+    "neovim"
+-}}
+
+{{- if eq .osid "linux-alpine" -}}
+    {{- $packages = concat $packages ( list "fd-find" "github-cli" ) -}}
+{{- else -}}
+    {{- $packages = concat $packages ( list "fd" "gh" ) -}}
+ {{- end -}}
+
+SUDO_CMD=""
+if [ "$(id -u)" -ne 0 ]; then
+    if command -v sudo >/dev/null 2>&1; then
+        SUDO_CMD="sudo"
+    else
+        echo_color $COLOR_RED "Root privileges are required for package installation, but 'sudo' command is not found."
+        exit 1
+    fi
+fi
+
+# TODO: check diff
+
+if command -v apk >/dev/null 2>&1; then
+    echo_color $COLOR_BLUE "Install Packages: Installing packages..."
+
+    $SUDO_CMD apk add --no-cache {{ $packages | join " " }}
+elif command -v apt-get >/dev/null 2>&1; then
+    echo_color $COLOR_BLUE "Install Packages: Installing packages..."
+
+    $SUDO_CMD apt-get update
+    $SUDO_CMD apt-get install -y --no-install-recommends {{ $packages | join " " }}
+    $SUDO_CMD apt-get clean
+    $SUDO_CMD rm -rf /var/lib/apt/lists/*
+fi
+
+echo_color $COLOR_GREEN "Install Packages: Done."
+echo ""
+{{- end -}}

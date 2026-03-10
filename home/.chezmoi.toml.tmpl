@@ -1,0 +1,37 @@
+{{- $name := "BL4CKBIRD" -}}
+{{- $email := "bl4ckbird@bl4ckbird.com" -}}
+
+{{/* boolean feature tags */}}
+{{- $is_ephemeral := false -}}{{/* true if this machine is ephemeral, e.g. a cloud or VM instance */}}
+{{- $is_personal := false -}}{{/* true if this machine is a personal machine */}}
+{{- $has_logitech := false -}}{{/* true if this machine should install logitech options+ */}}
+
+{{- $osid := .chezmoi.os -}}
+{{- if (and (eq .chezmoi.os "linux") (hasKey .chezmoi.osRelease "id")) -}}
+{{-   $osid = printf "%s-%s" .chezmoi.os .chezmoi.osRelease.id -}}
+{{- end -}}
+
+{{- if or (env "CODESPACES") (env "REMOTE_CONTAINERS") (env "CI") (eq .chezmoi.username "root" "ubuntu" "vagrant" "vscode") -}}
+    {{- $is_ephemeral = true -}}
+{{- end -}}
+
+{{- if not $is_ephemeral -}}
+    {{- $env := promptChoiceOnce . "env" "📦 Choose the environment for this machine" (list "personal" "work") -}}
+    {{- if eq $env "work" -}}
+        {{- $has_logitech = promptBoolOnce . "has_logitech" "⌨️ Install Logi Options+ for Logitech devices?" true -}}
+    {{- else -}}
+        {{- $is_personal = true -}}
+        {{- $has_logitech = true -}}
+    {{- end -}}
+
+    {{- $name = promptStringOnce . "name" "👤 Enter your full name" -}}
+    {{- $email = promptStringOnce . "email" "📧 Enter your email address" -}}
+{{- end -}}
+
+[data]
+    name = {{ $name | quote }}
+    email = {{ $email | quote }}
+    osid = "{{ $osid }}"
+    is_ephemeral = {{ $is_ephemeral }}
+    is_personal = {{ $is_personal }}
+    has_logitech = {{ $has_logitech }}

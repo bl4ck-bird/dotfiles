@@ -1,0 +1,29 @@
+#!/bin/bash
+
+set -eufo pipefail
+
+source "{{ .chezmoi.sourceDir }}/.scripts/utils.sh"
+
+print_color_box_center "$COLOR_YELLOW" 40 "VS Code.app Settings"
+
+echo_color "$COLOR_BLUE" "VS Code.app Settings: Starting..."
+
+{{- $UTIs := list
+    "public.plain-text"
+    "public.unix-executable"
+     "net.daringfireball.markdown"
+     "public.comma-separated-values-text"
+     "public.tab-separated-values-text"
+     "public.yaml"
+     ".toml"
+     ".conf"
+     ".log"
+    ".json"
+    ".jsonc"
+-}}
+{{- range $UTIs }}
+duti -s com.microsoft.VSCode {{ . }} all
+{{- end }}
+
+echo_color "$COLOR_GREEN" "VS Code.app Settings: Done."
+echo ""

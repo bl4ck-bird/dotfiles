@@ -1,0 +1,25 @@
+#!/bin/bash
+
+set -eufo pipefail
+
+source "{{ .chezmoi.sourceDir }}/.scripts/utils.sh"
+
+print_color_box_center "$COLOR_YELLOW" 40 "Amphetamine.app Settings"
+
+echo_color "$COLOR_BLUE" "Amphetamine.app Settings: Starting..."
+
+# 일반
+## 빠른 세션 시작: 📌 왼쪽 클릭(오른쪽 클릭은 메뉴 표시)
+defaults write com.if.Amphetamine "Status Item Click" -int 2
+
+# 모양
+### 메뉴바 이미지: 📌 카페인
+defaults write com.if.Amphetamine "Icon Style" -int 5
+#### 세션이 중지되었을 시 불투명도를 낮추기: 🟢
+defaults write com.if.Amphetamine "Lower Icon Opacity" -bool true
+
+defaults read com.if.Amphetamine > /dev/null
+killall Amphetamine > /dev/null 2>&1 || true
+
+echo_color "$COLOR_GREEN" "Amphetamine.app Settings: Done."
+echo ""

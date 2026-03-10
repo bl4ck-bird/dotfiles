@@ -1,0 +1,20 @@
+# Editable file
+
+{{- if not .is_ephemeral }}
+[user]
+    signingkey = ~/.ssh/Github.pub
+[commit]
+    gpgsign = true
+[gpg]
+    format = ssh
+{{- end }}
+
+[credential "https://github.com"]
+    helper =
+    helper = !gh auth git-credential
+[credential "https://gist.github.com"]
+    helper =
+    helper = !gh auth git-credential
+
+[url "git@github.com:"]
+    insteadOf = https://github.com/
