@@ -1,0 +1,128 @@
+#!/bin/bash
+
+set -eufo pipefail
+
+source "{{ .chezmoi.sourceDir }}/.scripts/utils.sh"
+
+print_color_box_center "$COLOR_YELLOW" 40 "Install Brew Packages"
+
+homebrew_shellenv
+
+{{- $taps := list -}}
+{{- $brews := list -}}
+{{- $casks := list -}}
+{{- $mas   := dict -}}
+
+{{- /* Common */ -}}
+
+{{- /* GNU Tools */ -}}
+{{- $brews = concat $brews ( list
+    "coreutils"
+    "gnu-tar"
+    "gnu-sed"
+    "gawk"
+    "make"
+) -}}
+
+{{- /* CLI Tools */ -}}
+{{- $brews = concat $brews ( list
+    "duti"
+    "mas"
+    "zoxide"
+    "eza"
+    "bat"
+    "fd"
+    "jaq"
+    "yq"
+    "ripgrep"
+    "xh"
+    "fzf"
+    "tmux"
+    "sheldon"
+    "starship"
+    "neovim"
+) -}}
+
+{{- /* Apps */ -}}
+{{- $casks = concat $casks ( list
+    "keka"
+    "iina"
+    "microsoft-edge"
+    "1password"
+    "istat-menus"
+    "moom"
+    "ghostty"
+    "obsidian"
+    "slack"
+) -}}
+
+{{- /* Development CLI & Apps */ -}}
+{{- $brews = concat $brews ( list
+     "mise"
+) -}}
+{{- $casks = concat $casks ( list
+    "visual-studio-code"
+    "orbstack"
+) -}}
+{{- /* Mac App Store */ -}}
+{{- $mas = merge (default dict $mas) (dict
+    "Amphetamine" "937984704"
+    "1Password for Safari" "1569813296"
+    "Tampermonkey Classic" "1482490089"
+    "Wappalyzer" "1520333300"
+    "유니콘" "1231935892"
+) -}}
+
+{{- /* Personal */ -}}
+{{- if .is_personal -}}
+    {{- /* Apps */ -}}
+    {{- $casks = concat $casks ( list
+        "1password-cli"
+        "transmission"
+        "discord"
+        "transmit"
+        "yacreader"
+    ) -}}
+    {{- /* Mac App Store */ -}}
+    {{- $mas = merge (default dict $mas) (dict
+    "카카오톡" "869223134"
+    "Windows App" "1295203466"
+    ) -}}
+{{- end -}}
+
+{{- /* Logitech Options+ */ -}}
+{{- if .has_logitech -}}
+    {{- $casks = concat $casks ( list
+        "logi-options+"
+    ) -}}
+{{- end -}}
+
+{{/* Install */}}
+CURRENT_HASH="{{ (print $brews $casks $mas)| sha256sum }}"
+HASH_STORE="$HOME/.cache/chezmoi/brew-bundle.hash"
+mkdir -p "$(dirname "$HASH_STORE")"
+
+if [ ! -f "$HASH_STORE" ] || [ "$(cat "$HASH_STORE")" != "$CURRENT_HASH" ]; then
+    echo_color $COLOR_BLUE "Install Brew Packages: Installing packages..."
+
+    brew bundle --file=- <<EOF
+{{ range $taps -}}
+    tap "{{ . }}"
+{{ end -}}
+{{ range $brews -}}
+    brew "{{ . }}"
+{{ end -}}
+{{ range $casks -}}
+    cask "{{ . }}"
+{{ end -}}
+EOF
+
+    mas install {{ range (keys $mas | sortAlpha) }}{{ get $mas . }} {{ end }}
+
+    echo "$CURRENT_HASH" > "$HASH_STORE"
+else
+    echo_color $COLOR_BLUE "Install Brew Packages: Packages already installed. Skipping..."
+fi
+
+echo_color $COLOR_GREEN "Install Brew Packages: Done."
+echo ""

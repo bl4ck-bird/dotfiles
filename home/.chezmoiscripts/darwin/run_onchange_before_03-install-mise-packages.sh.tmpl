@@ -1,0 +1,22 @@
+#!/bin/zsh
+
+set -eufo pipefail
+
+source "{{ .chezmoi.sourceDir }}/.scripts/utils.sh"
+
+print_color_box_center "$COLOR_YELLOW" 40 "Install Mise Packages"
+
+homebrew_shellenv
+source "$HOME/.zshenv"
+source "$ZDOTDIR/.zprofile"
+
+if command -v mise >/dev/null 2>&1; then
+    echo_color $COLOR_BLUE "Install Mise Packages: Installing..."
+    mise install -y
+else
+    echo_color $COLOR_RED "Install Mise Packages: mise not found."
+    exit 1
+fi
+
+echo_color $COLOR_GREEN "Install Mise Packages: Done."
+echo ""

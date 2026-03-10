@@ -1,0 +1,57 @@
+#!/bin/bash
+
+set -eufo pipefail
+
+source "{{ .chezmoi.sourceDir }}/.scripts/utils.sh"
+
+print_color_box_center "$COLOR_YELLOW" 40 "Transmission.app Settings"
+
+echo_color "$COLOR_BLUE" "Transmission.app Settings: Starting..."
+
+# General
+## Auto Size
+defaults write org.m0k.transmission AutoSize -bool false
+## Check for update
+### Automatically check daily: 🔴
+defaults write org.m0k.transmission SUEnableAutomaticChecks -bool false
+
+# Transfers
+## Adding
+### Keep iucomplete files in: 🔴
+defaults write org.m0k.transmission UseIncompleteDownloadFolder -bool false
+### Start transfers when added: 🔴
+defaults write org.m0k.transmission AutoStartDownload -bool false
+### Trash original torrent files: 🟢
+defaults write org.m0k.transmission DeleteOriginalTorrent -bool true
+### Append .part to incompleete files
+defaults write org.m0k.transmission RenamePartialFiles -bool true
+## Add window
+### Display a window when opening a torrent file: 🔴
+defaults write org.m0k.transmission DownloadAsk -bool false
+
+## Management
+### Queues ✏️
+defaults write org.m0k.transmission Queue -bool true
+defaults write org.m0k.transmission QueueDownloadNumber -int 3
+defaults write org.m0k.transmission QueueSeed -bool true
+defaults write org.m0k.transmission QueueSeedNumber -int 1
+defaults write org.m0k.transmission RandomPort -bool true
+
+# Bandwidth
+## Global bandwidth limits
+### Upload rate: 🟢 100 KB/s
+defaults write org.m0k.transmission CheckUpload -bool true
+defaults write org.m0k.transmission UploadLimit -int 100
+# Network
+## Randomize port on launch: 🟢
+defaults write org.m0k.transmission RandomPort -bool true
+
+# 기본 앱 연결
+duti -s org.m0k.transmission org.bittorrent.torrent all
+duti -s org.m0k.transmission magnet
+
+defaults read org.m0k.transmission > /dev/null
+killall Transmission > /dev/null 2>&1 || true
+
+echo_color "$COLOR_GREEN" "Transmission.app Settings: Done."
+echo ""

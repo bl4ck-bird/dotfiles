@@ -1,0 +1,28 @@
+{{ if ne .chezmoi.os "darwin" }}
+.chezmoiscripts/darwin/**
+.config/zsh/*/*-gnu-tools.zsh
+.config/zsh/*/*-homebrew.zsh
+.config/zsh/iina/
+{{ end }}
+
+{{ if ne .chezmoi.os "linux" }}
+.chezmoiscripts/linux/**
+{{ end }}
+
+{{ if .is_ephemeral }}
+.config/ghostty/
+.config/mise/
+.config/npm/
+.config/bun/
+.config/uv/
+.ssh/Github*
+{{ end }}
+
+{{ if not .is_personal }}
+.chezmoiscripts/*/*-transmission.sh
+.config/zsh/*/*-orbstack.zsh
+.ssh/conf.d/orbstack.conf
+.config/mise/conf.d/ai-*
+.config/opencode/
+.agents/
+{{ end }}

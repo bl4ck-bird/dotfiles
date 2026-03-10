@@ -1,0 +1,58 @@
+bindkey -e
+
+# navigate words using Ctrl + arrow keys
+# >>> CRTL + right arrow | CRTL + left arrow
+bindkey "^[[1;5C" forward-word
+bindkey "^[[1;5D" backward-word
+
+# jump to the start and end of the command line
+# >>> Home | End
+bindkey "^[[H" beginning-of-line
+bindkey "^[[F" end-of-line
+
+# delete characters using the "delete" key
+bindkey "^[[3~" delete-char
+
+# command line editor 위젯 초기화 (OS 공통)
+autoload -Uz edit-command-line
+zle -N edit-command-line
+
+{{ if eq .chezmoi.os "darwin" -}}
+# macOS overwrite
+## >>> OPT + right arrow | OPT + left arrow
+bindkey "^[^[[C" forward-word
+bindkey "^[^[[D" backward-word
+
+## delete word backwards
+## >>> OPT + Backspace (macOS)
+bindkey "^[^?" backward-kill-word
+
+## edit the current command line in $EDITOR (Neovim)
+## >>> OPT + E
+bindkey '^[e' edit-command-line
+{{- end }}
+
+# Zsh 기본 내장 키 바인딩 (emacs 모드 표준)
+# -------------------------------------------------------------------
+# - CTRL + A : 커서를 라인 맨 앞으로 이동 (Home과 동일)
+# - CTRL + E : 커서를 라인 맨 뒤로 이동 (End와 동일)
+# - CTRL + U : 커서 위치부터 라인 맨 앞까지 잘라내기(삭제)
+# - CTRL + K : 커서 위치부터 라인 맨 뒤까지 잘라내기(삭제)
+# - CTRL + W : 커서 기준 왼쪽 한 단어 삭제
+# - CTRL + Y : CTRL+U/K/W 로 잘라낸 텍스트 붙여넣기 (Yank)
+# - CTRL + L : 화면 클리어 (clear 명령어와 동일, 프롬프트는 유지)
+# - CTRL + D : 커서 위치의 문자 삭제 (입력값이 없을 경우 쉘 종료)
+# - CTRL + C : 현재 작성 중이거나 실행 중인 프로세스 강제 인터럽트
+
+# FZF (Command-line Fuzzy Finder) 패키지 바인딩
+# -------------------------------------------------------------------
+# (brew install fzf 후 기본 주입되는 단축키)
+# - CTRL + R : 명령어 히스토리 퍼지 검색 (Enter로 즉시 실행 또는 프롬프트로 복사)
+# - CTRL + T : 하위 디렉토리의 파일/폴더 검색 후 현재 커서 위치에 경로 붙여넣기
+# - OPT + C  : 하위 디렉토리 검색 후 선택한 디렉토리로 즉시 이동 (cd)
+
+# Zsh 플러그인 생태계 바인딩
+# -------------------------------------------------------------------
+# - TAB         : [fzf-tab] 기본 자동 완성을 가로채어 FZF 인터페이스로 선택 위젯 호출
+# - Right Arrow : [zsh-autosuggestions] 흐린 회색으로 표시된 추천 명령어 전체 수락
+# - Up / Down   : [zsh-history-substring-search] 현재 입력된 문자열을 포함하는 과거 명령어 검색

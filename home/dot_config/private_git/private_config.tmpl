@@ -1,0 +1,45 @@
+[user]
+    name = {{ .name | quote }}
+    email = {{ .email | quote }}
+[alias]
+    a = add
+    ap = add -p
+    b = branch
+    bm = branch --merged
+    bnm = branch --no-merged
+    ci = commit
+    ca = commit --amend
+    cane = commit --amend --no-edit
+    cf = commit --fixup
+    cm = commit --message
+    co = checkout
+    cob = checkout -b
+    com = checkout main
+    cp = cherry-pick
+    df = diff
+    dc = diff --cached
+    dom = diff origin/main
+    ra = rebase --abort
+    rc = rebase --continue
+    ri = rebase --interactive
+    riom = rebase --interactive origin/master
+    s = status -sb
+[core]
+    excludesfile = ~/.config/git/ignore
+    precomposeunicode = true
+    autocrlf = input
+[init]
+    defaultBranch = main
+[pull]
+    rebase = true
+[push]
+    default = current
+    autoSetupRemote = true
+[diff]
+    colorMoved = default
+[merge]
+    conflictstyle = diff3
+[fetch]
+    prune = true
+[include]
+    path = ~/.config/git/conf.d/local

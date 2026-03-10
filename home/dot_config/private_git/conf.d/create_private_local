@@ -1,0 +1,8 @@
+# [include]
+#     path = ~/.config/git/conf.d/github
+#
+# [includeIf "gitdir:~/workspace/company/**"]
+#     path = ~/.config/git/conf.d/company
+
+[include]
+    path = ~/.config/git/conf.d/github

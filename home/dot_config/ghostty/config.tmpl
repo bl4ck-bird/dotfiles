@@ -1,0 +1,59 @@
+# 새 탭/창 실행 시 기존 작업 경로 상속 및 기본 작업 경로 HOME 설정
+window-inherit-working-directory = true
+working-directory = home
+
+# 폰트 및 텍스트 렌더링
+font-family = "D2CodingLigature Nerd Font"
+font-size = 20
+font-feature = -calt, -liga, -dlig
+
+# 테마 및 UI
+theme = "Catppuccin Macchiato"
+background-opacity = 0.95
+background-blur-radius = 20
+unfocused-split-opacity = 0.5
+window-padding-x = 12
+window-padding-y = 12
+window-width = 120
+window-height = 40
+
+{{- if eq .chezmoi.os "darwin" }}
+# macOS 네이티브 창 최적화
+macos-titlebar-style = tabs
+macos-option-as-alt = true
+window-theme = system
+window-step-resize = false
+mouse-hide-while-typing = true
+font-thicken = true
+{{- end }}
+
+# 클립보드 및 스크롤 동작
+clipboard-paste-protection = false
+copy-on-select = false
+scrollback-limit = 100000000
+
+{{- if eq .chezmoi.os "darwin" }}
+# ==========================================
+# tmux Seamless Integration (Key Translation)
+# ==========================================
+# \x01 = Ctrl+a (Current tmux Prefix)
+# \x1b = ESC (방향키 제어를 위한 이스케이프 시퀀스)
+
+# 패널 분할 (Mac 네이티브 스타일)
+keybind = cmd+d=text:\x01%
+keybind = cmd+shift+d=text:\x01"
+
+# 패널 닫기
+keybind = cmd+w=text:\x01d
+
+# 3. 새 창(Window/Tab) 열기 및 이동
+keybind = cmd+t=text:\x01c
+keybind = cmd+shift+]=text:\x01n
+keybind = cmd+shift+[=text:\x01p
+
+# 패널 간 이동 (Cmd + 방향키로 직관적인 이동)
+keybind = cmd+alt+left=text:\x01\x1b[D
+keybind = cmd+alt+right=text:\x01\x1b[C
+keybind = cmd+alt+up=text:\x01\x1b[A
+keybind = cmd+alt+down=text:\x01\x1b[B
+{{- end }}

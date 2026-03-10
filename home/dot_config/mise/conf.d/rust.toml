@@ -1,0 +1,11 @@
+[tools.rust]
+version = "latest"
+postinstall = '''
+rustup completions zsh > "$ZCOMP_HOME/_rustup"
+rustup completions zsh cargo > "$ZCOMP_HOME/_cargo"
+'''
+
+[env]
+RUSTUP_HOME = "{{env.XDG_DATA_HOME}}/rustup"
+CARGO_HOME = "{{env.XDG_DATA_HOME}}/cargo"
+_.path = ["{{env.XDG_DATA_HOME}}/cargo/bin"]

@@ -1,0 +1,359 @@
+#!/bin/bash
+
+set -eufo pipefail
+
+source "{{ .chezmoi.sourceDir }}/.scripts/utils.sh"
+
+print_color_box_center "$COLOR_YELLOW" 40 "macOS Settings"
+
+# 권한 확인
+sudo -v
+
+echo_color "$COLOR_BLUE" "macOS Settings: Starting..."
+
+##################################################################################################
+# Energy saving                                                                                  #
+# macOS UI: open "x-apple.systempreferences:com.apple.Battery-Settings.extension"                #
+##################################################################################################
+# 전원 어댑터 연결 시 (-c: Charger)
+# 시스템 잠자기 안 함, 디스크 잠자기 안 함, 디스플레이는 10분 후 끄기(화면 보호)
+sudo pmset -c sleep 0
+sudo pmset -c disksleep 0
+sudo pmset -c displaysleep 10
+sudo pmset -c proximitywake 0 # 주변 기기에 의한 불필요한 깨어남 방지
+
+# 배터리 사용 시 (-b: Battery)
+# 전력 보존을 위해 표준 잠자기 설정 유지 (시스템 15분, 디스크 10분, 디스플레이 5분)
+sudo pmset -b sleep 15
+sudo pmset -b disksleep 10
+sudo pmset -b displaysleep 5
+
+##################################################################################################
+# Date & Time                                                                                    #
+# macOS UI: open "x-apple.systempreferences:com.apple.Date-Time-Settings.extension"              #
+##################################################################################################
+## 24시간제: 🟢
+defaults write NSGlobalDomain AppleICUForce24HourTime -bool true
+
+##################################################################################################
+# Desktop & Dock                                                                                 #
+# macOS UI: open "x-apple.systempreferences:com.apple.Desktop-Settings.extension"                #
+##################################################################################################
+# Dock
+## 크기: 📌
+defaults write com.apple.dock tilesize -int 48
+## 확대: 📌
+defaults write com.apple.dock magnification -int 0
+## 화면에서의 Dock 위치: 📌 오른쪽 (Available values: left, right, bottom)
+defaults write com.apple.dock orientation -string "right"
+## 최소화된 윈도우 애니메이션: 📌 요술램프 지니 효과 (Available values: genie, scale)
+defaults write com.apple.dock mineffect -string "genie"
+## 자동으로 Dock 가리기와 보기: 🟢 (숨은 설정: 딜레이 0, 속도 fast)
+defaults write com.apple.dock autohide -bool true
+defaults write com.apple.dock autohide-delay -float 0
+defaults write com.apple.dock autohide-time-modifier -float 0.2
+## 응용프로그램 열 때 아이콘 움직이기: 🟢
+defaults write com.apple.dock launchanim -bool true
+## 열려 있는 응용 프로그램에 대한 표시 보기: 🟢
+defaults write com.apple.dock show-process-indicators -bool true
+## Dock에서 제안된 앱 및 최근 앱 보기: 🔴
+defaults write com.apple.dock show-recents -bool false
+
+# Desktop & Stage Manager
+## 항목 보기 => 데스크탑에서: 🟢
+defaults write com.apple.WindowManager StandardHideDesktopIcons -bool false
+## 항목 보기 => 스테이지 매니저에서: 🔴
+defaults write com.apple.WindowManager HideDesktop -bool true
+## 배경화면을 클릭하여 데스크탑 보기: 📌 스테이지 매니저에서만
+defaults write com.apple.WindowManager EnableStandardClickToShowDesktop -bool false
+## 스테이지 매니저에서 최근 사용한 앱 보기: 🔴
+defaults write com.apple.WindowManager AutoHide -bool true
+
+# Widgeds
+## 위젯 보기 => 데스크탑에서: 🔴
+defaults write com.apple.WindowManager StandardHideWidgets -bool true
+## 위젯 보기 => 스테이지 매니저에서: 🔴
+defaults write com.apple.WindowManager StageManagerHideWidgets -bool true
+
+# Window
+## 문서를 닫을 때 변경 사항을 저장할지 묻기: 🔴
+defaults write NSGlobalDomain NSCloseAlwaysConfirmsChanges -bool false
+
+# Mission Control
+## Spaces를 최근 사용 내역에 따라 자동으로 재정렬: 🔴
+defaults write com.apple.dock mru-spaces -bool false
+## 응용 프로그램으로 전환할 때, 응용 프로그램에 대해 윈도우가 열려 있는 Space로 전환: 🟢
+defaults write NSGlobalDomain AppleSpacesSwitchOnActivate -bool true
+## 응용 프로그램별로 윈도우 그룹 생성: 🟢
+defaults write com.apple.dock expose-group-apps -bool true
+## 각각의 Spaces가 있는 디스플레이: 🟢(false가 활성화)
+defaults write com.apple.spaces spans-displays -bool false
+## 화면 상단으로 윈도우를 드래그하여 Mission Control 실행 : 🟢
+defaults write com.apple.dock enterMissionControlByTopWindowDrag -bool true
+
+# Hot Corners
+## 상단 좌측: 📌 미설정
+defaults write com.apple.dock wvous-tl-corner -int 0
+defaults write com.apple.dock wvous-tl-modifier -int 0
+## 상단 우측: 📌 미설정
+defaults write com.apple.dock wvous-tr-corner -int 0
+defaults write com.apple.dock wvous-tr-modifier -int 0
+## 하단 좌측: 📌 미설정
+defaults write com.apple.dock wvous-bl-corner -int 0
+defaults write com.apple.dock wvous-bl-modifier -int 0
+## 하단 우측: 📌 미설정
+defaults write com.apple.dock wvous-br-corner -int 0
+defaults write com.apple.dock wvous-br-modifier -int 0
+
+##################################################################################################
+# Spotlight                                                                                      #
+# macOS UI: open "x-apple.systempreferences:com.apple.Spotlight-Settings.extension"              #
+##################################################################################################
+## Apple의 검색 기능 향상에 기여하기: 🔴
+defaults write com.apple.assistant.support "Search Queries Data Sharing Status" -int 2
+
+##################################################################################################
+# 메뉴 막대                                                                                      #
+# macOS UI: open "x-apple.systempreferences:com.apple.ControlCenter-Settings.extension"          #
+##################################################################################################
+## 메뉴 막대 배경 보기: 🟢
+defaults write NSGlobalDomain SLSMenuBarUseBlurredAppearance -bool true
+### 시계 옵션
+#### 날짜 보기: 🟢
+defaults write com.apple.menuextra.clock ShowDate -int 1
+#### 요일 보기: 🔴
+defaults write com.apple.menuextra.clock ShowDayOfWeek -bool false
+#### 시간 스타일: 📌 디지털
+defaults write com.apple.menuextra.clock IsAnalog -bool false
+#### 시간에 초를 표시: 🟢
+defaults write com.apple.menuextra.clock ShowSeconds -bool true
+
+## 메뉴 막대 제어 항목
+### Siri: 🔴
+defaults -currentHost write com.apple.controlcenter Siri -int 8
+### Spotlight: 🔴 (TODO: 이걸로 처리가 되지 않음)
+defaults -currentHost write com.apple.controlcenter Spotlight -int 8
+### Wi-Fi: 🔴
+defaults -currentHost write com.apple.controlcenter WiFi -int 8
+### Bluetooth: 🔴
+defaults -currentHost write com.apple.controlcenter Bluetooth -int 8
+### Battery: 🔴
+defaults -currentHost write com.apple.controlcenter Battery -int 8
+### AirDrop: 🔴
+defaults -currentHost write com.apple.controlcenter AirDrop -int 8
+### 집중 모드: 🔴
+defaults -currentHost write com.apple.controlcenter FocusModes -int 8
+### 화면 미러링: 🔴
+defaults -currentHost write com.apple.controlcenter ScreenMirroring -int 8
+### 디스플레이: 🔴
+defaults -currentHost write com.apple.controlcenter Display -int 8
+### 사운드: 🔴
+defaults -currentHost write com.apple.controlcenter Sound -int 8
+### 지금 재생중: 🔴
+defaults -currentHost write com.apple.controlcenter NowPlaying -int 8
+### 빠른 사용자 전환: 🔴
+defaults -currentHost write com.apple.controlcenter UserSwitcher -int 8
+### 텍스트 입력: 🟢
+defaults write com.apple.TextInputMenuAgent "NSStatusItem VisibleCC Item-0" -int 1
+### Time Machine: 🔴
+defaults -currentHost write com.apple.controlcenter TimeMachine -int 8
+### 키보드 밝기: 🔴
+defaults -currentHost write com.apple.controlcenter KeyboardBrightness -int 8
+### 날씨: 🔴
+defaults -currentHost write com.apple.controlcenter Timer -int 2
+defaults -currentHost write com.apple.controlcenter Weather -int 8
+
+
+##################################################################################################
+# 배경화면 > 화면 보호기                                                                         #
+# macOS UI: open "x-apple.systempreferences:com.apple.Wallpaper-Settings.extension?ScreenSaver"  #
+##################################################################################################
+## 화면 보호기 시작: 📌 5분 후
+defaults -currentHost write com.apple.screensaver idleTime -int 300
+
+##################################################################################################
+# Keyboard                                                                                       #
+# macOS UI: open "x-apple.systempreferences:com.apple.Keyboard-Settings"                         #
+##################################################################################################
+# Disable press-and-hold for keys in favor of key repeat
+# ⚠️ Restarting the Mac, closing the session or restarting the application is necessary to take into effect the changes.
+defaults write NSGlobalDomain ApplePressAndHoldEnabled -bool false
+# 키 반복 속도 및 지연시간
+defaults write NSGlobalDomain KeyRepeat -int 2
+defaults write NSGlobalDomain InitialKeyRepeat -int 25
+# 키보드 탐색: 🟢 (Available values: 활성화(2), 비활성화(0))
+defaults write NSGlobalDomain AppleKeyboardUIMode -int 2
+### 기능키
+#### F1, F2 등의 키를 표준 기능 키로 사용: 🟢
+defaults write NSGlobalDomain com.apple.keyboard.fnState -bool true
+
+## 모든 입력 소스 기능
+### Caps Lock 키로 ABC 입력 소스 전환: 🔴
+defaults write NSGlobalDomain TISRomanSwitchState -bool false
+### 맞춤법 자동 수정: 🔴
+defaults write NSGlobalDomain NSAutomaticSpellingCorrectionEnabled -bool false
+### 자동으로 단어를 대문자로 시작: 🔴
+defaults write NSGlobalDomain NSAutomaticCapitalizationEnabled -bool false
+### 인라인 자동 완성 텍스트 보기: 🔴
+defaults write NSGlobalDomain NSAutomaticInlinePredictionEnabled -bool false
+## 제안된 답장 보기: 🔴
+defaults write NSGlobalDomain NSSmartReplyEnabled -bool false
+## 스페이스를 두 번 눌러 마침표 추가: 🔴
+defaults write NSGlobalDomain NSAutomaticPeriodSubstitutionEnabled -bool false
+### 맞춤법 언어별 자동 설정: 🟢
+defaults write NSGlobalDomain NSSpellCheckerAutomaticallyIdentifiesLanguages -bool true
+### 스마트 인용 부호 사용: 🔴
+defaults write NSGlobalDomain NSAutomaticQuoteSubstitutionEnabled -bool false
+### 스마트 인용 대시 사용: 🔴
+defaults write NSGlobalDomain NSAutomaticDashSubstitutionEnabled -bool false
+
+##########################################################################################################
+# Finder                                                                                                 #
+##########################################################################################################
+FINDER_BASE_VIEW_DOMAINS=(
+    "PackageViewSettings"
+    "NetworkViewSettings"
+    "TrashViewSettings"
+    "ComputerViewSettings"
+    "ICloudViewSettings"
+)
+FINDER_PLIST="$HOME/Library/Preferences/com.apple.finder.plist"
+EXTENDEDLISTVIEWSETTINGSV2_JSON='{
+    "calculateAllSizes": true,
+    "iconSize": 16,
+    "scrollPositionX": -181,
+    "scrollPositionY": 0,
+    "showIconPreview": true,
+    "sortColumn": "name",
+    "textSize": 13,
+    "useRelativeDates": false,
+    "viewOptionsVersion": 1,
+    "columns": [
+        {"identifier":"name","visible":1,"width":539,"ascending":1},
+        {"identifier":"ubiquity","visible":0,"width":35,"ascending":0},
+        {"identifier":"size","visible":1,"width":97,"ascending":0},
+        {"identifier":"dateModified","visible":1,"width":159,"ascending":0},
+        {"identifier":"dateCreated","visible":0,"width":159,"ascending":0},
+        {"identifier":"kind","visible":0,"width":115,"ascending":1},
+        {"identifier":"label","visible":0,"width":100,"ascending":1},
+        {"identifier":"version","visible":0,"width":75,"ascending":1},
+        {"identifier":"comments","visible":0,"width":300,"ascending":1},
+        {"identifier":"dateLastOpened","visible":0,"width":159,"ascending":0},
+        {"identifier":"shareOwner","visible":0,"width":200,"ascending":0},
+        {"identifier":"shareLastEditor","visible":0,"width":200,"ascending":0},
+        {"identifier":"dateAdded","visible":0,"width":159,"ascending":0},
+        {"identifier":"invitationStatus","visible":0,"width":210,"ascending":0}
+    ]
+}'
+LISTVIEWSETTINGS_JSON='{
+    "calculateAllSizes": true,
+    "iconSize": 16,
+    "scrollPositionX": -198,
+    "scrollPositionY": 0,
+    "showIconPreview": true,
+    "sortColumn": "name",
+    "textSize": 13,
+    "useRelativeDates": false,
+    "viewOptionsVersion": 1,
+    "columns": {
+        "comments": {"ascending":true,"index":7,"visible":0,"width":300},
+        "dateCreated": {"ascending":false,"index":3,"visible":0,"width":159},
+        "dateLastOpened": {"ascending":false,"index":8,"visible":0,"width":159},
+        "dateModified": {"ascending":false,"index":2,"visible":1,"width":159},
+        "kind": {"ascending":true,"index":4,"visible":0,"width":115},
+        "label": {"ascending":true,"index":5,"visible":0,"width":100},
+        "name": {"ascending":true,"index":0,"visible":1,"width":539},
+        "size": {"ascending":false,"index":1,"visible":1,"width":97},
+        "version": {"ascending":true,"index":6,"visible":0,"width":75}
+    }
+}'
+
+# 사이드바: 🟢 보기
+# 상태 막대: 🟢 보기
+# 경로 막대: 🟢 보기
+defaults write com.apple.finder ShowSidebar -bool true
+defaults write com.apple.finder ShowStatusBar -bool true
+defaults write com.apple.finder ShowPathbar -bool true
+for DOMAIN in "${FINDER_BASE_VIEW_DOMAINS[@]}" "SearchRecentsViewSettings" "SearchViewSettings" "MeetingRoomViewSetting"; do
+    plutil -insert "$DOMAIN" -xml "<dict/>" "$FINDER_PLIST" 2>/dev/null || true
+    plutil -insert "${DOMAIN}.WindowState" -xml "<dict/>" "$FINDER_PLIST" 2>/dev/null || true
+    EXISTING_WS=$(plutil -extract "${DOMAIN}.WindowState" json -o - "$FINDER_PLIST" 2>/dev/null || echo "{}")
+    UPDATED_WS=$(echo "$EXISTING_WS" | /usr/bin/jq -c '. + {"ShowStatusBar": "1", "ShowPathbar": "1"}')
+    plutil -replace "${DOMAIN}.WindowState" -json "$UPDATED_WS" "$FINDER_PLIST"
+done
+killall "cfprefsd" "Finder" > /dev/null 2>&1
+
+# 일반
+## 데스크탑에서 항목 보기
+### 하드 디스크: 🔴
+defaults write com.apple.finder ShowHardDrivesOnDesktop -bool false
+### 외장 디스크: 🟢
+defaults write com.apple.finder ShowExternalHardDrivesOnDesktop -bool true
+### CD, DVD 및 iPad: 🟢
+defaults write com.apple.finder ShowRemovableMediaOnDesktop -bool true
+### 연결된 서버: 🟢
+defaults write com.apple.finder ShowMountedServersOnDesktop -bool true
+## 새로운 Finder 윈도우 시작 경로: 📌 $HOME
+defaults write com.apple.finder NewWindowTarget -string "PfHm"
+defaults write com.apple.finder NewWindowTargetPath -string "file://$HOME/"
+## 폴더를 새로운 윈도우 대신 탭에서 열기: 🟢
+defaults write com.apple.finder FinderSpawnTab -bool true
+# 고급
+## 모든 파일 확장자 보기: 🟢
+defaults write NSGlobalDomain AppleShowAllExtensions -bool true
+## 파일 확장자 변경 시 경고: 🔴
+defaults write com.apple.finder FXEnableExtensionChangeWarning -bool false
+## 검색할 때: 📌 현재 폴더 검색(SCcf)
+defaults write com.apple.finder FXDefaultSearchScope -string "SCcf"
+## 폴더 우선 정렬 (윈도우에서 - 이름순으로 정렬 시): 🟢
+defaults write com.apple.finder _FXSortFoldersFirst -bool true
+## Layouts
+## 기본 보기 방식: 📌 목록 보기
+defaults write com.apple.finder FXPreferredViewStyle -string "Nlsv"
+## 사이드바 넓이 조정
+defaults write com.apple.finder SidebarWidth2 -int 190
+## 사이드바 태그 섹션: 🔴
+defaults write com.apple.finder ShowRecentTags -bool false
+defaults write com.apple.finder SidebarTagsSctionDisclosedState -bool false
+## 컬럼 설정 (TODO: 추가 확인 필요)
+for DOMAIN in "${FINDER_BASE_VIEW_DOMAINS[@]}" "StandardViewSettings" "FK_StandardViewSettings" "FK_DefaultListViewSettingsV2"; do
+    plutil -insert "$DOMAIN" -xml "<dict/>" "$FINDER_PLIST" 2>/dev/null || true
+    plutil -insert "${DOMAIN}.ExtendedListViewSettingsV2" -xml "<dict/>" "$FINDER_PLIST" 2>/dev/null || true
+    plutil -insert "${DOMAIN}.ListViewSettings" -xml "<dict/>" "$FINDER_PLIST" 2>/dev/null || true
+
+    plutil -replace "${DOMAIN}.ExtendedListViewSettingsV2" -json "$EXTENDEDLISTVIEWSETTINGSV2_JSON" "$FINDER_PLIST"
+    plutil -replace "${DOMAIN}.ListViewSettings" -json "$LISTVIEWSETTINGS_JSON" "$FINDER_PLIST"
+done
+### 윈도우 크기 및 위치
+for DOMAIN in "${FINDER_BASE_VIEW_DOMAINS[@]}" "StandardViewSettings" "SearchRecentsViewSettings" "SearchViewSettings" "MeetingRoomViewSetting"; do
+    plutil -insert "$DOMAIN" -xml "<dict/>" "$FINDER_PLIST" 2>/dev/null || true
+    plutil -insert "${DOMAIN}.WindowState" -xml "<dict/>" "$FINDER_PLIST" 2>/dev/null || true
+
+    EXISTING_WS=$(plutil -extract "${DOMAIN}.WindowState" json -o - "$FINDER_PLIST" 2>/dev/null || echo "{}")
+    UPDATED_WS=$(echo "$EXISTING_WS" | /usr/bin/jq -c '.WindowBounds = "{{ "{{" }}2000, 1000}, {1000, 550{{ "}}" }}"')
+    plutil -replace "${DOMAIN}.WindowState" -json "$UPDATED_WS" "$FINDER_PLIST"
+done
+
+##################################################################################################
+# Kill affected applications                                                                     #
+##################################################################################################
+defaults read NSGlobalDomain > /dev/null
+defaults read com.apple.menuextra.clock > /dev/null
+defaults read com.apple.screensaver > /dev/null
+defaults read com.apple.spaces > /dev/null
+defaults read com.apple.WindowManager > /dev/null
+defaults read com.apple.assistant.support > /dev/null
+defaults -currentHost read com.apple.controlcenter > /dev/null
+defaults read com.apple.dock > /dev/null
+defaults read com.apple.finder > /dev/null
+
+killall Finder Dock SystemUIServer ControlCenter "System Settings" > /dev/null 2>&1 || true
+
+echo_color "$COLOR_GREEN" "macOS Settings: Done."
+
+echo_color "$COLOR_YELLOW" "────────────────────────────────────────"
+echo_color "$COLOR_YELLOW" "💡 [Optional] To batch delete .DS_Store files across all target directories, run:"
+echo 'sudo find ~ /Applications /Users/Shared /opt /usr/local /Library /Volumes -type f -name ".DS_Store" -delete'
+echo_color "$COLOR_RED" "⚠️ [REQUIRED] Some system changes require a logout/restart to take full effect."
+echo_color "$COLOR_RED" "Please restart your Mac to ensure all configurations are properly applied."
+echo ""

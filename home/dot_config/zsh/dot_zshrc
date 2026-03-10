@@ -1,0 +1,9 @@
+# ~/.config/zsh/.zshrc
+local current_dir="${${(%):-%x}:h}"
+
+# zshrc.d (Alias, Functions, Starship 등)만 로드
+if [ -d "$current_dir/zshrc.d" ]; then
+  for config_file in "$current_dir/zshrc.d/"*.zsh(Nn); do
+    source "$config_file"
+  done
+fi

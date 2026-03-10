@@ -1,0 +1,41 @@
+#!/bin/bash
+
+set -eufo pipefail
+
+source "{{ .chezmoi.sourceDir }}/.scripts/utils.sh"
+
+homebrew_shellenv
+
+print_color_box_center "$COLOR_YELLOW" 40 "Prerequisites"
+
+sudo -v
+
+{{/* Xcode CLI Tools */}}
+if ! xcode-select -p &>/dev/null; then
+    echo_color $COLOR_BLUE "Xcode CLI Tools: Installing..."
+    touch /tmp/.com.apple.dt.CommandLineTools.installondemand.in-progress
+    PROD=$(softwareupdate -l | grep "\*.*Command Line" | head -n 1 | awk -F"*" '{print $2}' | sed -e 's/^ *//' | tr -d '\n')
+    softwareupdate -i "$PROD" --verbose
+    rm -f /tmp/.com.apple.dt.CommandLineTools.installondemand.in-progress
+else
+    echo_color $COLOR_BLUE "Xcode CLI Tools: already installed. Skipping..."
+fi
+
+{{- if eq .chezmoi.arch "arm64" }}
+{{- /* Rosetta 2 */}}
+if ! pkgutil --pkgs 2>/dev/null | grep -q "com.apple.pkg.RosettaUpdateAuto"; then
+    echo_color $COLOR_BLUE "Rosetta 2: Installing..."
+    /usr/sbin/softwareupdate --install-rosetta --agree-to-license
+else
+    echo_color $COLOR_BLUE "Rosetta 2: already installed. Skipping..."
+fi
+{{ end }}
+
+{{/* Homebrew 자동 설치 */}}
+if ! command -v brew &> /dev/null; then
+    echo_color $COLOR_BLUE "Homebrew: Installing..."
+    NONINTERACTIVE=1 /bin/bash -c "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/HEAD/install.sh)"
+    homebrew_shellenv
+else
+echo_color $COLOR_BLUE "Homebrew: already installed. Skipping..."
+fi

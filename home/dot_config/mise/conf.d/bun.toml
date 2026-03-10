@@ -1,0 +1,9 @@
+[tools.bun]
+version = "latest"
+postinstall = '''
+bun completions > "$ZCOMP_HOME/_bun"
+'''
+
+[env]
+BUN_INSTALL = "{{env.XDG_DATA_HOME}}/bun"
+_.path = ["{{env.XDG_DATA_HOME}}/bun/bin"]

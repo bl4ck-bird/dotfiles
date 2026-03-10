@@ -1,0 +1,38 @@
+# macOS
+.DS*Store
+.AppleDouble
+.LSOverride
+._*
+.DocumentRevisions-V100
+.fseventsd
+.Spotlight-V100
+.TemporaryItems
+.Trashes
+.Trash
+.VolumeIcon.icns
+
+# Windows
+Thumbs.db
+Thumbs.db:encryptable
+ehthumbs.db
+ehthumbs_vista.db
+*.stackdump
+[Dd]esktop.ini
+$RECYCLE.BIN/
+
+# Environment
+.env
+.env.local
+.env.*.local
+
+# IDE, Editor
+.idea/
+.vscode/
+[._]*.sw[a-p]
+
+# Framwork, Tools
+node_modules/
+vendor/
+venv/
+.ruff_cache/
+*.egg-info/
