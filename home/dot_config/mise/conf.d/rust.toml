@@ -3,6 +3,8 @@ version = "latest"
 postinstall = '''
 rustup completions zsh > "$ZCOMP_HOME/_rustup"
 rustup completions zsh cargo > "$ZCOMP_HOME/_cargo"
+
+rustup component add rustfmt clippy rust-analyzer rust-src semver-checks
 '''
 
 [env]
