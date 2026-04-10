@@ -13,6 +13,7 @@
     ],
     "defaultMode": "bypassPermissions"
   },
+  "model": "opus",
   "enabledPlugins": {
     "clangd-lsp@claude-plugins-official": false,
     "csharp-lsp@claude-plugins-official": false,
@@ -60,16 +61,7 @@
     "telegram@claude-plugins-official": false,
     "superpowers@superpowers-marketplace": true
   },
-    "extraKnownMarketplaces": {
-    "superpowers-marketplace": {
-      "source": {
-        "source": "github",
-        "repo": "obra/superpowers-marketplace"
-      }
-    }
-  },
   "spinnerTipsEnabled": false,
   "alwaysThinkingEnabled": true,
-  "skipDangerousModePermissionPrompt": true,
-  "model": "opus"
+  "skipDangerousModePermissionPrompt": true
 }
