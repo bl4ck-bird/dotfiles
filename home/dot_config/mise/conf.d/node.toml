@@ -1,10 +1,10 @@
 [tools.node]
 version = "lts"
 postinstall = '''
-corepack enable pnpm
+mise exec node@lts -- corepack enable pnpm
 
-npm completion > "$ZCOMP_HOME/_npm"
-pnpm completion zsh > "$ZCOMP_HOME/_pnpm"
+mise exec node@lts -- npm completion > "$ZCOMP_HOME/_npm"
+mise exec node@lts -- pnpm completion zsh > "$ZCOMP_HOME/_pnpm"
 '''
 
 [env]
