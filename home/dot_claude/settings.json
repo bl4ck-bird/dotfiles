@@ -58,7 +58,8 @@
     "serena@claude-plugins-official": false,
     "slack@claude-plugins-official": false,
     "supabase@claude-plugins-official": false,
-    "telegram@claude-plugins-official": false
+    "telegram@claude-plugins-official": false,
+    "superpowers@claude-plugins-official": true
   },
   "spinnerTipsEnabled": false,
   "alwaysThinkingEnabled": true,
