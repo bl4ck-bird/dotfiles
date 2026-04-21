@@ -1,8 +1,6 @@
 [tools.uv]
 version = "latest"
 postinstall = '''
-corepack enable pnpm
-
 uv generate-shell-completion zsh > "$ZCOMP_HOME/_uv"
 '''
 
