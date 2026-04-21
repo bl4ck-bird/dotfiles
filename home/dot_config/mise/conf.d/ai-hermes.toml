@@ -1,0 +1,5 @@
+[tools."pipx:git+https://github.com/NousResearch/hermes-agent.git"]
+version = "latest"
+postinstall = '''
+hermes completion zsh > "$ZCOMP_HOME/_hermes"
+'''
