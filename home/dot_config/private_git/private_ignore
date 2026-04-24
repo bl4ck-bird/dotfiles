@@ -36,3 +36,6 @@ vendor/
 venv/
 .ruff_cache/
 *.egg-info/
+
+# AI Agent local settings
+**/.claude/settings.local.json
