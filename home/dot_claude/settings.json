@@ -13,7 +13,6 @@
     ],
     "defaultMode": "bypassPermissions"
   },
-  "model": "opus",
   "enabledPlugins": {
     "clangd-lsp@claude-plugins-official": false,
     "csharp-lsp@claude-plugins-official": false,
@@ -63,5 +62,6 @@
   },
   "spinnerTipsEnabled": false,
   "alwaysThinkingEnabled": true,
+  "effortLevel": "high",
   "skipDangerousModePermissionPrompt": true
 }
