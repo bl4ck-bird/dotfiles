@@ -60,6 +60,10 @@
     "telegram@claude-plugins-official": false,
     "superpowers@claude-plugins-official": true
   },
+  "statusLine": {
+    "type": "command",
+    "command": "~/.claude/statusline.sh"
+  },
   "spinnerTipsEnabled": false,
   "alwaysThinkingEnabled": true,
   "effortLevel": "high",
