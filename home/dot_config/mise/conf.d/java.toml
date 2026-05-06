@@ -1,0 +1,15 @@
+[tool_alias.java.versions]
+lts25 = "temurin-25"
+lts21 = "temurin-21"
+lts17 = "temurin-17"
+lts11 = "temurin-11"
+lts8 = "temurin-8"
+
+[tools.java]
+version = "lts25"
+
+[env]
+MAVEN_USER_HOME = "{{env.XDG_DATA_HOME}}/maven"
+MAVEN_OPTS = "-Dmaven.repo.local={{env.XDG_CACHE_HOME}}/maven/repository"
+GRADLE_USER_HOME = "{{env.XDG_DATA_HOME}}/gradle"
+KONAN_DATA_DIR = "{{env.XDG_DATA_HOME}}/konan"
