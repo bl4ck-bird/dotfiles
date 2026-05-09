@@ -1,0 +1,116 @@
+---
+name: project-scaffold
+description: Use when starting a new project or adding/refining AGENTS.md, CLAUDE.md, docs, hooks, skills, or reviewer agents in an existing repo.
+---
+
+# Project Scaffold
+
+Set up a repo so Claude Code, Codex, and other coding agents have the same durable project context.
+
+## Workflow
+
+1. Inspect the repository root, existing docs, package manifests, tests, and current agent config.
+2. Preserve existing files. If a target exists, update it only when the user asked for that exact file; otherwise report the suggested change.
+3. Propose a scaffold profile and exact file/action list.
+4. Run the human decision gate before creating files or changing repository shape.
+5. Create only approved files and directories.
+6. Add `.claude/`, `.codex/`, `.agents/`, and `lefthook.yml` only after the user approves them for the project.
+7. Identify dependency or bootstrap commands when useful, but guide the user instead of running them unless the user explicitly asks the agent to execute.
+8. End with a short report listing created files, skipped existing files, approved setup decisions, and recommended next setup.
+
+## Scaffold Profiles
+
+Default to the smallest profile that preserves restartable context:
+
+- `minimal`: agent instructions, core context, workflow, testing, and specs/plans/reviews folders.
+- `product`: `minimal` plus roadmap, architecture, domain model, and ADR template.
+- `data-security`: `product` plus data and security models for projects with persistence, auth, secrets, deletion, sync, external integrations, or sensitive data.
+- `full`: all templates, only when the user wants a heavier governance skeleton.
+
+Recommended files:
+
+```text
+minimal:
+  AGENTS.md
+  CLAUDE.md
+  CONTEXT.md
+  docs/AGENT_WORKFLOW.md
+  docs/CURRENT.md
+  docs/TESTING_STRATEGY.md
+  docs/specs/README.md
+  docs/plans/README.md
+  docs/reviews/README.md
+
+product:
+  minimal +
+  CONTEXT-MAP.md
+  docs/ROADMAP.md
+  docs/ARCHITECTURE.md
+  docs/DOMAIN_MODEL.md
+  docs/DECISIONS/0000-template.md
+
+data-security:
+  product +
+  docs/DATA_MODEL.md
+  docs/SECURITY_MODEL.md
+
+full:
+  data-security
+```
+
+## Human Decision Gate
+
+For a new project, ask for explicit approval before each action:
+
+- initialize git with `git init`
+- scaffold profile and exact template files
+- create `.claude/`, `.codex/`, or `.agents/`
+- create or install `lefthook.yml`
+- list required packages or stack bootstrapping commands
+- run package installation or stack bootstrapping commands only when the user explicitly asks the agent to execute them
+- create an initial commit
+
+For an existing project, ask before modifying existing files, adding hooks, changing agent config, recommending dependency changes, executing dependency installation, or touching git history.
+
+If the user approves only part of the gate, complete the approved part and report the rest as skipped.
+
+## Defaults
+
+- Keep `README.md` high-level and onboarding-friendly.
+- Put durable design rules in focused docs, not in the README.
+- Keep project instructions specific and short enough to be read every session.
+- Do not copy global rules into project files unless the project needs a stricter version.
+- Mark scaffolded docs as `stub` until TODOs are resolved. Agents may read stub docs for structure, but must not treat TODO content as project truth.
+- Treat dependency installation as user-managed by default. Record suggested commands, package manager assumptions, and unresolved choices instead of running installs.
+
+## New Project Defaults
+
+For a new project, propose `minimal` first unless the product idea clearly needs roadmap/domain/architecture/data/security docs. Explain which profile you recommend and why before creating files.
+
+## Existing Project Defaults
+
+For an existing project:
+
+- Do not overwrite local conventions.
+- Identify current commands from package manifests, Makefiles, CI, or README.
+- Infer product and domain terms from code only when docs are missing.
+- Mark inferred claims as uncertain until the user confirms them.
+- Prefer suggested additions over broad rewrites.
+
+## Recommended First Prompts
+
+After scaffolding, suggest:
+
+```text
+Use product-discovery to define the product goal, MVP boundary, non-goals, success metrics, and first vertical slice.
+```
+
+```text
+Use critical-interview and domain-modeling before writing the first spec.
+```
+
+```text
+Use spec-to-slices, implementation-planning, agentic-execution, review-gate, docs-sync, and ship-review for the first feature.
+```
+
+Use templates from `~/.config/ai-harness/templates/project/` when creating new files.

@@ -1,0 +1,58 @@
+---
+name: bug-diagnosis
+description: Use when fixing bugs, flaky tests, production-like failures, unexpected behavior, or regressions before changing implementation code.
+---
+
+# Bug Diagnosis
+
+Fix bugs from evidence, not guesses. Reproduction comes before implementation changes.
+
+## Workflow
+
+1. Restate the observed behavior and expected behavior.
+2. Build or identify the shortest reproduction loop:
+   - failing test
+   - CLI command
+   - curl request
+   - fixture
+   - Playwright flow
+   - small script
+   - log/event trace
+3. Confirm the reproduction fails for the right reason.
+4. Form 3-5 falsifiable hypotheses.
+5. Check hypotheses with the cheapest evidence first.
+6. Add focused instrumentation only when needed, with a unique prefix and a cleanup plan.
+7. Write or preserve a regression test before the fix when practical.
+8. Fix the root cause with the smallest change.
+9. Rerun the reproduction and relevant checks.
+10. Remove temporary instrumentation and update docs or ADRs if the bug exposed a rule.
+
+## Rules
+
+- Do not patch from intuition when a reproduction loop is available.
+- Do not broaden scope into refactoring until the bug is reproduced and understood.
+- Do not change tests to match broken behavior unless the expected behavior was wrong and the user agrees.
+- If reproduction is impossible, explain why and list the evidence used instead.
+- Security, money, data-loss, auth, crypto, and concurrency bugs require a stronger regression test or explicit residual risk note.
+
+## Hypothesis Format
+
+Use this format for non-trivial bugs:
+
+```text
+Hypothesis: <specific mechanism>
+Prediction: <what should be observed if true>
+Check: <command/file/log/test>
+Result: <confirmed/refuted/unknown>
+```
+
+## Output
+
+Report:
+
+- Reproduction path
+- Root cause
+- Fix summary
+- Regression coverage
+- Verification commands and results
+- Residual risk
