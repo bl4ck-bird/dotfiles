@@ -22,10 +22,10 @@ Set up a repo so Claude Code, Codex, and other coding agents have the same durab
 
 Default to the smallest profile that preserves restartable context:
 
-- `minimal`: agent instructions, core context, workflow, testing, and specs/plans/reviews folders.
-- `product`: `minimal` plus roadmap, architecture, domain model, and ADR template.
+- `minimal`: agent instructions, core context, current work, and workflow notes.
+- `product`: `minimal` plus roadmap, testing strategy, specs/plans/reviews folders, architecture, and domain model.
 - `data-security`: `product` plus data and security models for projects with persistence, auth, secrets, deletion, sync, external integrations, or sensitive data.
-- `full`: all templates, only when the user wants a heavier governance skeleton.
+- `full`: `data-security` plus context map and a formal decision record template, only when the user wants a heavier governance skeleton.
 
 Recommended files:
 
@@ -36,18 +36,16 @@ minimal:
   CONTEXT.md
   docs/AGENT_WORKFLOW.md
   docs/CURRENT.md
+
+product:
+  minimal +
   docs/TESTING_STRATEGY.md
   docs/specs/README.md
   docs/plans/README.md
   docs/reviews/README.md
-
-product:
-  minimal +
-  CONTEXT-MAP.md
   docs/ROADMAP.md
   docs/ARCHITECTURE.md
   docs/DOMAIN_MODEL.md
-  docs/DECISIONS/0000-template.md
 
 data-security:
   product +
@@ -55,7 +53,9 @@ data-security:
   docs/SECURITY_MODEL.md
 
 full:
-  data-security
+  data-security +
+  CONTEXT-MAP.md
+  docs/DECISIONS/0000-template.md
 ```
 
 ## Human Decision Gate
@@ -66,11 +66,10 @@ For a new project, ask for explicit approval before each action:
 - scaffold profile and exact template files
 - create `.claude/`, `.codex/`, or `.agents/`
 - create or install `lefthook.yml`
-- list required packages or stack bootstrapping commands
 - run package installation or stack bootstrapping commands only when the user explicitly asks the agent to execute them
 - create an initial commit
 
-For an existing project, ask before modifying existing files, adding hooks, changing agent config, recommending dependency changes, executing dependency installation, or touching git history.
+For an existing project, ask before modifying existing files, adding hooks, changing agent config, changing dependency manifests, executing dependency installation, or touching git history. Recommending or recording dependency/bootstrap commands is allowed when assumptions are stated and no command is executed.
 
 If the user approves only part of the gate, complete the approved part and report the rest as skipped.
 
@@ -85,7 +84,7 @@ If the user approves only part of the gate, complete the approved part and repor
 
 ## New Project Defaults
 
-For a new project, propose `minimal` first unless the product idea clearly needs roadmap/domain/architecture/data/security docs. Explain which profile you recommend and why before creating files.
+For a new project, propose `minimal` first unless the product idea clearly needs roadmap, domain, architecture, data, security, or formal decision records. Explain which profile you recommend and why before creating files.
 
 ## Existing Project Defaults
 
@@ -106,11 +105,11 @@ Use product-discovery to define the product goal, MVP boundary, non-goals, succe
 ```
 
 ```text
-Use critical-interview and domain-modeling before writing the first spec.
+Use pressure-test and domain-modeling before writing the first acceptance artifact when assumptions or terms are unclear.
 ```
 
 ```text
-Use spec-to-slices, implementation-planning, agentic-execution, review-gate, docs-sync, and ship-review for the first feature.
+Use write-spec when an acceptance artifact is needed. Run spec-review for full specs, PRDs, or unclear acceptance criteria. Then use compact write-plan, plan-review, execute-plan for multi-slice work with behavior-tdd inside each slice, implementation-review, docs-sync, and ship-check for the first feature.
 ```
 
 Use templates from `~/.config/ai-harness/templates/project/` when creating new files.

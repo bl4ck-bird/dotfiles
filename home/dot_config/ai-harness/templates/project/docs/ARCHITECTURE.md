@@ -65,7 +65,7 @@ Avoid ceremonial DDD for simple CRUD or thin glue code.
 
 ## Tradeoffs
 
-Record intentional constraints and decisions that future agents should preserve. Use ADRs for hard-to-reverse or surprising tradeoffs.
+Record intentional constraints and decisions that future agents should preserve. Use formal decision records only for hard-to-reverse, surprising tradeoffs from real options; otherwise keep normal durable decisions in the relevant docs.
 
 ## Open Architecture Questions
 

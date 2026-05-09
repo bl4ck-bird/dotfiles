@@ -9,7 +9,7 @@ Keep durable docs aligned with the project state.
 
 ## Check
 
-Review changed files and decide whether any of these need updates:
+Review changed files, identify the durable concerns they touched, and decide whether any of these candidate docs need updates. This is not a mandatory checklist:
 
 - `README.md`
 - `AGENTS.md`
@@ -51,7 +51,7 @@ Update docs when:
 - A new external dependency, runtime surface, adapter, or storage model is introduced.
 - Test commands, test strategy, or verification expectations change.
 - Review finds a durable architecture, security, or data decision hidden only in chat.
-- The active phase, active spec, active plan, blocker, completed slice, or next action changes.
+- The active phase, active acceptance artifact/source, active plan, blocker, completed slice, verification evidence, or next action materially changes.
 
 ## Handoffs
 
@@ -63,7 +63,7 @@ When the session is about to be cleared, add or update a handoff in `docs/review
 - verification evidence
 - next safe action
 
-Also update `docs/CURRENT.md` with the active phase and next recommended action when those fields changed.
+Also update `docs/CURRENT.md` with the active phase and next recommended action when those fields changed. If the same session continues immediately, update once at the end of the phase instead of churning the file after every small step.
 
 ## Output
 

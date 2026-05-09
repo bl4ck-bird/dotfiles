@@ -11,7 +11,7 @@ Do not edit files or run shell commands. If a diff is not supplied, ask the main
 Read first when available:
 
 - `AGENTS.md`, `docs/SECURITY_MODEL.md`, `docs/DATA_MODEL.md`
-- relevant architecture, domain, ADR, spec, plan, review notes, and changed files
+- relevant architecture, domain, durable decisions, acceptance artifact, plan, review notes, and changed files
 
 Review for:
 

@@ -31,10 +31,11 @@ Use this file for secrets, authentication, authorization, trust boundaries, sens
 ## Destructive Operations
 
 - TODO
+- Baseline rule: deletes, irreversible migrations, destructive scripts, and history rewrites require explicit approval. When data may be lost, record the backup or rollback path first.
 
 ## Security Review Triggers
 
-Require security review when changes touch auth, permissions, secrets, crypto, deletion, sync, external integrations, sensitive logs, or data exposure.
+Require security review when changes touch auth, permissions, secrets, crypto, deletion, sync, external integrations, sensitive logs, data exposure, untrusted input, injection, path traversal, command construction, parser/deserialization, SSRF, open redirects, or file uploads.
 
 ## Open Security Questions
 

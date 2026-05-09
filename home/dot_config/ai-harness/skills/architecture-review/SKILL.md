@@ -52,7 +52,7 @@ Translate SOLID into concrete findings:
 
 ## File And Complexity Thresholds
 
-Use these as review gates, not mechanical rewrite commands:
+Use these as review thresholds, not mechanical rewrite commands:
 
 - Source file over 300 lines: require responsibility review.
 - Source file over 600 lines: finding unless generated, vendored, migration, fixture, or documented exception.

@@ -1,16 +1,28 @@
-# AI Harness
+# BB Harness
 
 Central agent workflow, project templates, skills, reviewer agents, and conservative hooks managed by chezmoi.
 
-This harness turns ad-hoc Claude Code, Codex, and skill usage into an inspectable development workflow for side projects.
+BB Harness turns ad-hoc Claude Code, Codex, and skill usage into a restartable side-project workflow. The point is not to create documents for their own sake. The point is to make product intent, acceptance criteria, implementation plan, verification evidence, review decisions, and residual risk inspectable after the agent session ends.
+
+This README is the human orientation guide. Agents should treat `AGENTS.md`, project-local instructions, and `skills/*/SKILL.md` as the executable source of truth. The README may be used for orientation, but it should not duplicate every skill rule.
+
+## Design Goals
+
+- Use the right workflow weight for the task.
+- Prefer skills and plugins when they exist for the job.
+- Keep durable context outside chat.
+- Make non-trivial work reviewable before implementation.
+- Keep plans compact enough to execute without wasting context.
+- Use TDD and project hooks for repeatable verification.
+- Use independent review when risk justifies it, not as default ceremony.
 
 ## Layout
 
-- `AGENTS.md` is the shared global instruction file for Codex-compatible agents.
-- `skills/` contains reusable workflow skills for discovery, interview, DDD, specs, planning, TDD, execution, review, docs sync, and shipping.
-- `claude-agents/` contains Claude Code reviewer subagent definitions.
-- `hooks/` contains conservative hook scripts. They are not wired into global settings by default.
-- `templates/project/` contains starter files for new side projects, including a lightweight `docs/CURRENT.md` status file.
+- `AGENTS.md`: shared global defaults for Codex-compatible agents.
+- `skills/`: executable workflow skills. `bb-workflow` is the router.
+- `claude-agents/`: Claude Code reviewer subagent definitions.
+- `hooks/`: conservative hook scripts. They are not wired globally by default.
+- `templates/project/`: starter project instructions and durable docs.
 
 ## Link Strategy
 
@@ -23,379 +35,251 @@ Chezmoi installs `~/.config/ai-harness` as the source of truth, then links agent
 - `~/.claude/skills`
 - `~/.claude/agents/<agent-name>.md`
 
-Claude Code and Codex see the same workflow source. Claude-specific plugin settings still live under `~/.claude`, and Codex runtime settings still live under `~/.codex`.
+Claude Code and Codex see the same workflow source. Tool-specific runtime settings still live under their native config directories.
+
+## Skill-First Posture
+
+When the BB Harness is in use, skills are the workflow surface. Use them rather than recreating their process in chat.
+
+Skill-first does not mean "load every skill." It means:
+
+- Start or resume with `bb-workflow` when the phase is unclear.
+- Use a direct matching skill when the task clearly maps to one.
+- Move from phase to phase through skills instead of improvising.
+- Skip a relevant skill only when the task is clearly small/local or the skill would not materially protect the work.
+- If a skill is skipped, record the reason briefly.
+
+This keeps plugins and skills useful without turning every change into a heavyweight ritual.
 
 ## Workflow Model
 
-Use this as the default lifecycle for non-trivial side-project work:
+Default non-trivial flow:
 
 ```text
-Brainstorming / product discovery
--> Critical interview when unclear or risky
--> Domain modeling when domain language matters
--> Spec or light PRD
--> Vertical slices
--> Spec review
--> Implementation plan
--> Plan review
--> Behavior TDD execution
--> Implementation review
--> Risk-based review / second review when required
--> Docs sync
--> Ship review
+bb-workflow
+-> product-discovery when goal, users, MVP, or non-goals are unclear
+-> pressure-test when assumptions are unclear or risky
+-> domain-modeling when domain language or boundaries matter
+-> acceptance artifact: spec, PRD, issue, review finding, or approved task
+-> spec-review when a spec/PRD exists or acceptance criteria need shaping
+-> compact implementation plan
+-> plan-review for non-trivial or multi-step plans
+-> execute-plan for reviewed multi-slice plans
+-> behavior-tdd for small/local work or each implementation slice
+-> implementation-review and focused reviews as needed
+-> second-review when high risk or independently requested
+-> docs-sync
+-> ship-check
 ```
 
-The workflow is deliberately heavier than a one-shot prompt. The goal is not more documents for their own sake. The goal is that a human can later inspect the product goal, domain language, implementation plan, review findings, and verification evidence without reconstructing an agent session.
+A separate spec is not mandatory for every task. Non-trivial work needs a reviewed acceptance artifact: something durable enough to state the behavior, acceptance criteria, risks, and boundaries.
+
+Use a full `docs/specs/` spec when product scope, domain language, public API, data/storage, auth/security, deletion, sync, external integrations, or user workflow is still being decided. For already-clear work, an issue, review finding, or approved user task can be enough.
+
+Plans should be compact. A plan records file responsibility, TDD steps, verification, docs impact, review needs, and rollback notes. It should not restate the spec or become line-by-line implementation prose.
+
+## Workflow Weight
+
+Use the lightest workflow that protects correctness, evidence, safety, and consistency:
+
+- Tiny/local: bounded files in one component or module, no product/domain/API/data/security decision. Use direct edit or `behavior-tdd` plus `ship-check`.
+- Scope review: three or more files, uncertain blast radius, or unclear module boundary. Decide whether the small path still fits.
+- Non-trivial: product behavior, user workflow, domain language, public API, persistence, auth/security, sync/concurrency, deletion, or external integration. Use a reviewed acceptance artifact, compact plan, focused reviews, and docs gates.
+- Risky/substantial: core architecture, money, crypto, data loss, auth, deletion, broad refactor, weak tests, five or more files, two or more modules, or 300/600-line file thresholds. Require the relevant focused review. Require `second-review` for high-risk security/data-loss/money/auth/crypto/deletion/core-architecture work, and consider it for large diffs or weak verification.
 
 ## Skill Map
 
-| Phase | Skill | Purpose |
-| --- | --- | --- |
-| Session entry | `using-ai-harness` | Choose workflow weight, next phase, and required artifacts. |
-| Start a repo | `project-scaffold` | Create or refresh project instructions and durable docs. |
-| Brainstorming / product thinking | `product-discovery` | Clarify goal, users, MVP, non-goals, risks, success metrics. |
-| Pressure test | `critical-interview` | Ask one critical question at a time until major ambiguity is resolved. |
-| Domain design | `domain-modeling` | Align terms, bounded contexts, invariants, ADR candidates. |
-| Spec writing | `spec-to-slices` | Turn resolved context into spec and vertical slices. |
-| Planning | `implementation-planning` | Create file-mapped TDD implementation plan. |
-| Coding | `tdd-workflow` | Implement public behavior one test at a time through red-green-refactor. |
-| Parallel work | `agentic-execution` | Execute plan slices with Codex workers, subagents, and review checkpoints. |
-| Bounded automation | `bounded-goal-loop` | Continue toward an approved goal inside explicit allowed actions and stop conditions. |
-| Bugs | `bug-diagnosis` | Reproduce, hypothesize, instrument, fix with regression tests. |
-| Architecture | `architecture-review` | Review DDD, SOLID, module boundaries, complexity, file size. |
-| Review | `review-gate` | Run self/subagent review and independent Codex review. |
-| Docs | `docs-sync` | Update durable docs after plans or implementation. |
-| Finish | `ship-review` | Final diff, test, docs, review, and risk check. |
+| Situation | Skill |
+| --- | --- |
+| Choose workflow weight and next phase | `bb-workflow` |
+| Start or refresh project instructions | `project-scaffold` |
+| Product direction is unclear | `product-discovery` |
+| Assumptions need challenge | `pressure-test` |
+| Domain language or boundaries matter | `domain-modeling` |
+| Create an acceptance artifact and slices | `write-spec` |
+| Review a spec, PRD, or acceptance artifact | `spec-review` |
+| Create a compact implementation plan | `write-plan` |
+| Review implementation plan before execution | `plan-review` |
+| Execute reviewed multi-slice plan | `execute-plan` |
+| Implement behavior through red-green-refactor | `behavior-tdd` |
+| Diagnose a bug or regression | `bug-diagnosis` |
+| Review architecture, DDD, SOLID, file size | `architecture-review` |
+| Review implementation diff or completed slice | `implementation-review` |
+| Review auth, secrets, crypto, deletion, untrusted input, data loss | `security-review` |
+| Review durable docs and drift | `docs-review` |
+| Request or record independent Codex review | `second-review` |
+| Sync docs after behavior or workflow changes | `docs-sync` |
+| Final handoff, verification, and residual risk check | `ship-check` |
+| Continue bounded autonomous iterations | `bounded-loop` |
 
-## Workflow Weight Rules
+## Acceptance Artifact, Spec, And Plan
 
-Use the lightest workflow that still protects the project:
+The harness separates "what should be true" from "how to change files."
 
-- Tiny/local: bounded files in one component or module, no product/domain/API/data/security decision. Tests, styles, and docs that directly support the same change do not make it non-trivial by themselves. Use direct edit or `tdd-workflow` plus `ship-review`.
-- Scope review: three or more files, or uncertainty about blast radius. Decide whether the small path still fits before escalating.
-- Non-trivial: product behavior, user workflow, domain language, public API, persistence, auth/security, sync/concurrency, deletion, or external integration. Use spec, plan, review, and docs gates.
-- Risky/substantial: core architecture, money, crypto, data loss, broad refactor, weak tests, five or more files, two or more modules, or 300/600-line file thresholds. Require `review-gate` and independent second review when available.
+Acceptance artifact:
 
-## New Project Workflow
+- Owns behavior, acceptance criteria, scope, non-goals, and risks.
+- Can be a full spec, PRD, issue, review finding, or approved user task.
+- Should be reviewed at the right weight before implementation.
 
-1. Open or create the project directory. If git, stack bootstrapping, hooks, or initial commit are not decided yet, let `project-scaffold` ask through its decision gate.
-2. Start with the harness entry skill:
+Spec:
+
+- Use when product, domain, API, data, security, or user workflow decisions are still being shaped.
+- Avoid for small clear tasks where it only restates the request.
+- Review with `spec-review` when it exists or when acceptance criteria are unclear.
+
+Plan:
+
+- Owns file responsibility, TDD steps, verification commands, docs impact, rollback, and review checkpoints.
+- Should link to the acceptance artifact instead of copying it. If the accepted task only exists in chat, the plan should include a short approved request anchor with scope, acceptance criteria, and non-goals or stop conditions.
+- Review with `plan-review` for non-trivial or multi-step implementation.
+
+This means the flow is not always "full spec -> huge plan -> code." For clear work it can be "accepted issue -> compact plan -> TDD."
+
+## Review Routing
+
+Use the lightest useful review:
+
+- `spec-review`: full specs, PRDs, or unclear acceptance criteria.
+- `plan-review`: non-trivial or multi-step implementation plans.
+- `implementation-review`: substantial slices or review-fix passes.
+- `architecture-review`: boundaries, DDD/SOLID, file size, over-abstraction.
+- `security-review`: auth, secrets, crypto, deletion, sensitive data, destructive operations, untrusted input, injection, path traversal, command construction, parser/deserialization, SSRF, open redirects, data loss.
+- `docs-review`: durable docs, handoffs, or documentation drift.
+- `second-review`: required independent Codex review for high-risk security, data-loss, money, auth, crypto, deletion, or core-architecture work when available. Optional for specs, plans, broad diffs, weak tests, and user-requested independent checks.
+
+In Claude Code, prefer the Codex plugin for `second-review` when available. If unavailable, use a clean Codex session, Codex CLI, or record the fallback and accepted risk.
+
+Review routing exists to prevent both under-review and review overload. It should answer "which review protects this work?" rather than "how many reviews can we add?"
+
+## Verification
+
+Behavior changes should use `behavior-tdd`:
+
+1. Write one failing behavior or regression test.
+2. Confirm the expected failure.
+3. Implement the smallest change.
+4. Run focused verification.
+5. Refactor only after green.
+
+Production behavior changes may skip TDD only with explicit user approval and a recorded residual-risk reason. Generated code, pure docs, and mechanical config with no test harness can skip TDD with the reason noted in the final report.
+
+Prefer automated project checks:
+
+- focused tests
+- full tests when risk justifies it
+- typecheck
+- lint
+- build
+- lefthook or other project hooks
+
+Manual/browser QA is not a separate BB Harness phase. Use it only when automated tests and hooks cannot cover the behavior well.
+
+## Scaffold Profiles
+
+`project-scaffold` should propose the smallest profile that preserves restartable context.
+
+- `minimal`: `AGENTS.md`, `CLAUDE.md`, `CONTEXT.md`, `docs/AGENT_WORKFLOW.md`, `docs/CURRENT.md`.
+- `product`: `minimal` plus testing strategy, specs/plans/reviews folders, roadmap, architecture, and domain model.
+- `data-security`: `product` plus data and security models.
+- `full`: `data-security` plus context map and a formal decision record template.
+
+Dependency installation is user-managed by default. Agents may suggest commands and assumptions, but should not execute installs unless explicitly asked.
+
+## Durable Docs
+
+Project docs have separate ownership:
+
+- `CONTEXT.md`: product identity, canonical vocabulary, current boundaries.
+- `CONTEXT-MAP.md`: multiple contexts, apps, packages, or integrations.
+- `docs/CURRENT.md`: current phase, active acceptance artifact/source, blocker, last verification, and next action.
+- `docs/ROADMAP.md`: product goal, MVP, milestones, parking lot.
+- `docs/ARCHITECTURE.md`: boundaries, layers, dependency rules, tradeoffs.
+- `docs/DOMAIN_MODEL.md`: domain terms, invariants, workflows, entities, value objects.
+- `docs/DATA_MODEL.md`: storage, retention, deletion, migration, backup.
+- `docs/SECURITY_MODEL.md`: secrets, auth, permissions, trust boundaries, sensitive data.
+- `docs/TESTING_STRATEGY.md`: TDD rules, test levels, verification commands, hooks.
+- `docs/specs/`: temporary feature specs when needed.
+- `docs/plans/`: compact implementation plans when needed.
+- `docs/reviews/`: substantial review records and handoffs.
+- `docs/DECISIONS/`: formal decision records only for hard-to-reverse, surprising tradeoffs.
+
+README files in projects should stay user-facing and high-level.
+
+## Hooks
+
+The hook scripts are conservative building blocks:
+
+- `block-dangerous-bash.sh`: destructive shell command checks and common shell-based secret reads.
+- `protect-sensitive-read.sh`: read checks for `.env`, private keys, credentials, and secret files.
+- `protect-sensitive-write.sh`: write checks for sensitive files and direct lockfile edits.
+- `protect-sensitive-files.sh`: compatibility wrapper for tools that cannot split read/write hooks.
+- `session-context.sh`: short session-start git context when supported.
+
+Hooks are guardrails, not a sandbox. Wire them at the project level first, then promote globally only after they are quiet enough for daily use.
+
+## Quick Starts
+
+New project:
 
 ```text
-Use using-ai-harness.
+Use bb-workflow.
 Project state: new project.
 Goal: <short product idea>.
-Decide the workflow weight, next phase, scaffold needs, and user approvals before editing.
+Decide the workflow weight, next phase, scaffold needs, and approvals before editing.
 ```
 
-3. Ask an agent to run the scaffold:
+Existing project:
 
 ```text
-Use project-scaffold for this new side project.
-Product idea: <short idea>.
-Recommend a scaffold profile: minimal, product, data-security, or full.
-Before creating or changing anything, ask me to approve each scaffold decision: git init, scaffold profile and exact files, .claude/.codex/.agents dirs, lefthook, package/bootstrap commands to suggest, package/bootstrap execution if explicitly requested, and initial commit.
-Do not overwrite existing files without showing me the diff first.
-Dependency installation is user-managed by default. Suggest commands and assumptions, but do not execute installs unless I explicitly ask you to run them.
+Use bb-workflow.
+Task: <describe task>.
+Read project instructions, current docs, tests, and relevant code. Report workflow weight, selected next skill, required artifact or approval, and next safe action before editing.
 ```
 
-4. Run brainstorming / product discovery:
+Small behavior change:
 
 ```text
-Use product-discovery.
-Help me define the product goal, target users, MVP boundary, explicit non-goals, success metrics, and first milestone for this project.
-Ask only the questions needed to remove real ambiguity.
+Use behavior-tdd and ship-check for this small behavior change.
+Run docs-sync only if behavior, architecture, testing, or user-facing behavior changes.
+Change: <describe change>.
 ```
 
-5. Run critical interview:
+Non-trivial feature:
 
 ```text
-Use critical-interview.
-Grill this product direction before we write a spec.
-Ask one question at a time, recommend an answer, and stop when the important decision branches are resolved.
+Use bb-workflow first.
+Feature: <describe feature>.
+Use the relevant skills for acceptance artifact, review, compact plan, execute-plan for multi-slice work, behavior-tdd inside behavior-changing slices, docs sync, and ship check. Keep the workflow weight proportional to risk.
 ```
 
-6. Run domain modeling:
+Bounded autonomous loop:
 
 ```text
-Use domain-modeling.
-Read AGENTS.md, CONTEXT.md, CONTEXT-MAP.md, docs/DOMAIN_MODEL.md, and docs/DECISIONS.
-Resolve overloaded terms, define bounded contexts and invariants, and propose ADRs only for hard-to-reverse tradeoffs.
-```
-
-7. Write the first spec and slices:
-
-```text
-Use spec-to-slices.
-Turn the resolved context into a light spec in docs/specs/YYYY-MM-DD-<feature>.md.
-Then split it into vertical slices with AFK/HITL labels, acceptance criteria, tests, docs impact, and review needs.
-```
-
-8. Review the spec:
-
-```text
-Use review-gate on docs/specs/YYYY-MM-DD-<feature>.md.
-Run a primary spec review for product goal, MVP boundary, acceptance criteria, vertical slices, domain language, testing decisions, docs impact, and open risks.
-Ask Codex for independent second review if risk requires it.
-```
-
-9. Plan and execute:
-
-```text
-Use implementation-planning.
-Create docs/plans/YYYY-MM-DD-<feature>.md with spec review reference, file responsibility mapping, TDD steps, verification commands, docs impact, and review checkpoints.
-```
-
-```text
-Use agentic-execution.
-Execute the approved plan task by task. Use tdd-workflow for behavior changes.
-When using Codex or another worker agent, assign one vertical slice or disjoint write scope, pass artifact paths instead of chat history, and review for spec compliance plus code quality before the next task.
-Run review-gate after each substantial slice.
-```
-
-10. Finish:
-
-```text
-Use docs-sync, then review-gate, then ship-review.
-Include verification evidence and residual risk.
-```
-
-## Existing Project Workflow
-
-Use this when adding the harness to a repo that already has code:
-
-```text
-Use project-scaffold for an existing project.
-First inspect README, package manifests, tests, docs, AGENTS.md/CLAUDE.md, and the main source directories.
-Do not overwrite project conventions. Propose missing harness docs and update only the files I approve.
-```
-
-Then run a short context pass:
-
-```text
-Use domain-modeling.
-Infer the current product goal, main bounded contexts, vocabulary, invariants, and architecture decisions from the repo.
-Create or update CONTEXT.md, CONTEXT-MAP.md, docs/DOMAIN_MODEL.md, and docs/ARCHITECTURE.md.
-Mark uncertainties explicitly instead of inventing facts.
-```
-
-For the next feature, use the normal feature workflow from spec onward. Existing projects should not be force-fit into a perfect DDD structure. The first goal is shared context and safe boundaries, not a rewrite.
-
-## Current Work Tracking
-
-Use `docs/CURRENT.md` as the lightweight progress pointer:
-
-- update it at phase boundaries
-- update it after completed implementation slices
-- update it before clearing or pausing context
-- keep it short; specs, plans, reviews, ADRs, and roadmap remain the durable source of detail
-
-## Feature Workflow
-
-Use this for meaningful feature work:
-
-```text
-Use using-ai-harness first, then use only the needed skills from critical-interview, domain-modeling, spec-to-slices, review-gate, implementation-planning, agentic-execution, docs-sync, and ship-review for this feature.
-Feature idea: <feature>.
-Prefer vertical slices. Keep the MVP small. Require Codex second review before implementation and before ship if the plan or diff is risky.
-```
-
-Let the harness continue the workflow:
-
-```text
-Use using-ai-harness.
-Continue the project workflow from docs/CURRENT.md.
-After each non-trivial phase, update docs/CURRENT.md and recommend exactly one next phase with a concise confirmation question.
-Do not auto-advance across setup, dependency execution, hook, delete, git-history, product, domain, architecture, data, or security decisions unless I approved a bounded goal covering them.
-```
-
-If the work is small and local, shorten it:
-
-```text
-Use tdd-workflow and ship-review for this small behavior change.
-Also run docs-sync only if behavior, architecture, testing, or user-facing behavior changes.
-```
-
-## Bounded Goal Loop
-
-Use this when the target is clear enough for limited automation, but not broad enough to hand over the whole project:
-
-```text
-Use bounded-goal-loop.
+Use bounded-loop.
 Goal: <specific outcome>.
 Allowed scope: <files/modules/docs/commands>.
 Allowed autonomous actions: <exact file areas, commands, review/fix scope, and worker-agent use>.
 Forbidden actions: <setup/dependencies/hooks/git history/deletes/deploys/etc>.
 Iteration budget: <max loops or timebox>.
 Verification gate: <test/typecheck/lint/build/manual check>.
-Review gate: <when to run review-gate or Codex second review>.
-Stop and ask me if scope expands, verification fails twice for the same reason, a product/domain/architecture decision changes, unapproved worker scope is needed, or setup/destructive/git-history action is needed.
+Stop and ask if scope expands, verification fails twice for the same reason, or an unapproved product/domain/architecture/setup/destructive/git-history decision appears.
 ```
 
-Good targets:
+## Common Anti-Patterns
 
-- Fix all findings from an approved review within named files.
-- Complete one approved implementation-plan slice.
-- Iterate on docs until review-gate finds no material drift.
-- Investigate a failing test with a bounded hypothesis budget.
-
-Do not use it for product discovery, broad refactors, dependency changes, git setup, hook installation, deletes, history rewrites, or open-ended "improve everything" requests.
-
-## Bug Workflow
-
-```text
-Use bug-diagnosis.
-Reproduce the bug first, write or identify a failing regression test, form falsifiable hypotheses, fix the root cause, rerun the repro, then use review-gate and ship-review.
-Bug: <description>.
-```
-
-Do not let the agent patch from vibes. A bug is not ready to fix until there is a reproduction loop or a clear explanation of why reproduction is impossible.
-
-## Refactor Workflow
-
-```text
-Use architecture-review first.
-Identify refactor candidates that improve testability, module depth, domain clarity, or file responsibility.
-Do not change behavior. Propose small vertical refactor slices and ask before editing.
-```
-
-If approved:
-
-```text
-Use implementation-planning and tdd-workflow for the refactor.
-Keep tests green throughout and run review-gate before ship.
-```
-
-## Prompt Cookbook
-
-Start a session:
-
-```text
-Use using-ai-harness.
-Task: <what you want to do>.
-Read AGENTS.md, CONTEXT.md, docs/CURRENT.md, docs/AGENT_WORKFLOW.md, current docs/specs and docs/plans relevant to this task, plus data/security docs when relevant.
-Summarize the workflow weight, current state, open decisions, and the next safe action before editing.
-```
-
-Ask for a spec review:
-
-```text
-Use review-gate on docs/specs/<spec>.md.
-Run a primary spec review for product goal, MVP boundary, acceptance criteria, vertical slices, domain language, testing decisions, docs impact, and open risks.
-Ask Codex for independent second review if risk requires it.
-```
-
-Ask for a plan review:
-
-```text
-Use review-gate on docs/plans/<plan>.md.
-Confirm the spec review exists or accepted risk is recorded. Then review for spec coverage, file responsibility, TDD granularity, DDD/SOLID fit, file size risk, docs impact, and missing verification.
-Then request independent Codex review if available.
-```
-
-Ask for Codex second review from Claude Code:
-
-```text
-Use the Codex plugin for an independent second review of this spec/plan/diff.
-Ask Codex to focus on hidden assumptions, architecture drift, missing tests, DDD/SOLID violations, oversized files, and docs drift.
-```
-
-Independent second review fallback:
-
-```text
-Use a clean Codex session or Codex CLI as an independent reviewer.
-Read AGENTS.md, CONTEXT.md, docs/CURRENT.md, docs/AGENT_WORKFLOW.md, the relevant spec/plan/review notes, and the diff or changed file list.
-Return findings first with P0-P3 severity, evidence, suggested fixes, and pass/pass-with-follow-ups/blocked.
-Do not rely on the primary agent's chat summary except as a pointer to artifacts.
-```
-
-If neither plugin nor separate Codex session is available, record:
-
-```text
-Second review: unavailable.
-Reason: <plugin unavailable / no network / no clean session / user skipped>.
-Compensating review: <self-review / reviewer subagent / manual human review>.
-Accepted risk: <what could be missed>.
-```
-
-Do not ship P0/P1-risk work without explicit user acceptance when independent review is unavailable.
-
-Ask for implementation:
-
-```text
-Use agentic-execution for docs/plans/<plan>.md.
-Execute one vertical slice at a time. For behavior changes, use tdd-workflow. After each substantial slice, run review-gate and update the plan checklist.
-Update docs/CURRENT.md after each completed slice.
-```
-
-Ask for finalization:
-
-```text
-Use docs-sync and ship-review.
-Check git status, changed files, tests, docs, review records, and residual risk. Do not claim done without verification evidence.
-```
-
-## When To Clear Or Restart A Session
-
-Clear context when the agent has enough durable artifacts to restart safely:
-
-- After product discovery and critical interview are summarized into roadmap, context, and spec.
-- After a spec is approved and before implementation planning, if the conversation included lots of brainstorming.
-- After a detailed plan is written and reviewed, before a long implementation session.
-- After several vertical slices are complete and the remaining context is mostly old diffs or logs.
-- After fixing review findings, before final ship review, if the session is cluttered.
-
-Before clearing, ask the agent to write a handoff:
-
-```text
-Write a handoff note in docs/reviews/YYYY-MM-DD-<topic>-handoff.md.
-Include current goal, relevant docs, decisions made, open questions, completed slices, verification evidence, known risks, and next action.
-Update docs/CURRENT.md before clearing.
-```
-
-New session prompt:
-
-```text
-Resume from docs/reviews/<handoff>.md.
-Read AGENTS.md, CONTEXT.md, docs/CURRENT.md, docs/AGENT_WORKFLOW.md, the current spec, the current plan, and recent review notes.
-Confirm what is done, what remains, and what you will do next.
-```
-
-## Document Status
-
-Use explicit status labels so agents do not mistake scaffolding for truth:
-
-- `stub`: template exists. TODO claims are not authoritative; non-TODO workflow, safety, and quality rules still apply.
-- `draft`: partially confirmed by the user or repo, open questions remain.
-- `ready`: current source of truth until a later reviewed change updates it.
-
-When reading docs, prefer `ready` over `draft`. For `stub` docs, follow non-TODO workflow/safety rules and treat TODO claims as unknown.
-
-## Document Ownership
-
-- `README.md`: human onboarding and product overview.
-- `AGENTS.md`: project-specific agent rules that must be loaded every session.
-- `CONTEXT.md`: bounded-context glossary and core domain language.
-- `CONTEXT-MAP.md`: relationships between bounded contexts or subsystems.
-- `docs/AGENT_WORKFLOW.md`: project-specific workflow commands and phase rules.
-- `docs/CURRENT.md`: current phase, active artifacts, blockers, last verification, and next action.
-- `docs/ROADMAP.md`: MVP, later phases, non-goals, open product decisions.
-- `docs/ARCHITECTURE.md`: system boundaries, dependency direction, quality rules.
-- `docs/DOMAIN_MODEL.md`: entities, value objects, invariants, domain workflows.
-- `docs/DATA_MODEL.md`: persisted data, derived data, migrations, retention, deletion, backups.
-- `docs/SECURITY_MODEL.md`: secrets, auth, permissions, trust boundaries, sensitive data handling.
-- `docs/TESTING_STRATEGY.md`: test levels, required commands, TDD rules.
-- `docs/DECISIONS/`: ADRs for hard-to-reverse or surprising tradeoffs.
-- `docs/specs/`: feature specs and light PRDs.
-- `docs/plans/`: implementation plans.
-- `docs/reviews/`: review records, handoffs, and risk notes.
+- Creating a full spec only to repeat a clear task.
+- Writing a plan that copies the spec instead of constraining file changes.
+- Running broad reviews because a review skill exists, not because the risk calls for it.
+- Skipping TDD for behavior changes without recording why.
+- Updating durable docs with unverified claims.
+- Treating hooks as complete security controls.
+- Delegating unresolved product, domain, architecture, dependency, setup, delete, or git-history decisions to a worker.
 
 ## Tool Policy
 
-Use local project docs and harness skills as the workflow source. External tools can help with execution, review, browsing, or stack-specific work, but durable decisions belong in `CONTEXT.md`, `docs/`, specs, plans, reviews, and ADRs.
-
-Recommended default:
-
-- Claude Code can be the main planning/scaffolding agent when useful.
-- Codex can be an independent second reviewer for specs, plans, diffs, and stuck debugging.
-- Stack-specific hooks and test checks belong at the project level, usually with `lefthook`.
+- Dependency installation is user-managed by default.
+- Ask before setup, dependency execution, hooks, deletion, history rewrite, broad scope expansion, or unresolved product/domain/architecture decisions.
+- Prefer TDD plus project hooks such as lefthook for repeatable checks.
+- Use manual/browser QA only for behavior that tests and hooks cannot cover well.
+- Keep long-lived project decisions in project docs, not chat history.

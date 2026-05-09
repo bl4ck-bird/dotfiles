@@ -18,7 +18,7 @@ Before non-trivial edits, read:
 - `CONTEXT.md`
 - `docs/CURRENT.md`
 - `docs/AGENT_WORKFLOW.md`
-- relevant specs, plans, and review notes
+- relevant acceptance artifacts, plans, and review notes
 
 Read conditionally when relevant:
 
@@ -71,28 +71,28 @@ If a required or conditional doc is `stub`, use non-TODO rules as guidance and t
 
 For non-trivial work, select only the phases justified by workflow weight:
 
-0. `using-ai-harness` at session start, resume, or when the next workflow phase is unclear.
+0. `bb-workflow` at session start, resume, or when the next workflow phase is unclear.
 1. `product-discovery` for new product direction or major features.
-2. `critical-interview` to pressure-test unclear ideas.
+2. `pressure-test` to pressure-test unclear ideas.
 3. `domain-modeling` to align vocabulary and invariants.
-4. `spec-to-slices` to write a spec and vertical slices.
-5. `review-gate` for primary spec review before implementation planning.
-6. `implementation-planning` before editing code.
-7. `review-gate` for plan review before implementation.
-8. `tdd-workflow` for behavior changes.
-9. `agentic-execution` for multi-slice plans, Codex worker execution, or subagent work.
-10. `bounded-goal-loop` only when goal, scope, allowed autonomous actions, iteration budget, verification gate, and stop conditions are explicit.
-11. `review-gate` for implementation, architecture, tests, docs, security, loops, and Codex second review.
-12. `docs-sync` after behavior, architecture, testing, or workflow changes.
-13. `ship-review` before handoff, commit, PR, or release.
+4. `write-spec` to write the lightest acceptance artifact and vertical slices when needed.
+5. `spec-review` for full specs, PRDs, or unclear acceptance criteria.
+6. `write-plan` to create a compact implementation plan before non-trivial code edits.
+7. `plan-review` before implementation.
+8. `execute-plan` for reviewed multi-slice plans, Codex worker execution, or subagent work.
+9. `behavior-tdd` for small/local behavior changes or each implementation slice.
+10. `bounded-loop` only when goal, scope, allowed autonomous actions, iteration budget, verification gate, and stop conditions are explicit.
+11. `implementation-review`, `architecture-review`, `docs-review`, `security-review`, or optional/required `second-review` as risk requires.
+12. `docs-sync` after behavior, architecture, testing, security, or workflow changes.
+13. `ship-check` before handoff, commit, PR, or release.
 
-Small local changes may use `tdd-workflow` + `ship-review` only when no product, domain, or architecture decision changes.
+Small local changes may use `behavior-tdd` + `ship-check` only when no product, domain, or architecture decision changes. Reviewed multi-slice plans use `execute-plan` as the controller, with `behavior-tdd` inside each behavior-changing slice.
 
-When delegating coding work to Codex or another worker agent, assign one vertical slice or disjoint write scope and review the result for spec compliance plus code quality before the next task.
+When delegating coding work to Codex or another worker agent, assign one vertical slice or disjoint write scope and review the result for acceptance compliance plus code quality before the next task.
 
 Before using a bounded loop, stop and ask if scope expands, verification fails twice for the same reason, unapproved worker scope is needed, or setup/destructive/git-history actions are needed.
 
-After each non-trivial phase, update `docs/CURRENT.md` and recommend the next phase with one concise confirmation question.
+After each non-trivial phase, update `docs/CURRENT.md` when the active phase, active acceptance artifact/source, active plan, blocker, completed slice, verification evidence, or next action materially changes. If the same session continues immediately, update it once at the end of the phase.
 
 Use a scope review when a change touches three or more files. Keep the small path if those files are bounded to one component/module and include direct tests, styles, fixtures, or docs for the same behavior.
 

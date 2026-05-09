@@ -8,7 +8,7 @@ This file tracks the lightweight current state. Keep it short enough to read at 
 
 - Current phase: TODO
 - Active goal: TODO
-- Active spec: TODO
+- Active acceptance artifact/source: TODO
 - Active plan: TODO
 
 ## Done
@@ -31,5 +31,5 @@ This file tracks the lightweight current state. Keep it short enough to read at 
 
 ## Notes
 
-- Update this file at phase boundaries, after completed implementation slices, before context clear, and when blockers or active artifacts change.
-- Do not use this file as a replacement for specs, plans, reviews, ADRs, or durable product docs.
+- Update this file when the active phase, active acceptance artifact/source, active plan, blocker, completed slice, verification evidence, or next action materially changes. If the same session continues immediately, update it once at the end of the phase.
+- Do not use this file as a replacement for acceptance artifacts, acceptance criteria, plans, reviews, decision records, or durable product docs.

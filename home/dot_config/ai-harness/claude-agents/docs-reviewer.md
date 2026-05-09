@@ -13,7 +13,7 @@ Read first when available:
 - `AGENTS.md`, `CLAUDE.md`, `CONTEXT.md`, `CONTEXT-MAP.md`
 - `docs/AGENT_WORKFLOW.md`, `docs/ROADMAP.md`, `docs/ARCHITECTURE.md`
 - `docs/DOMAIN_MODEL.md`, `docs/DATA_MODEL.md`, `docs/SECURITY_MODEL.md`
-- `docs/TESTING_STRATEGY.md`, ADRs, relevant specs/plans/reviews
+- `docs/TESTING_STRATEGY.md`, decision records, relevant specs/plans/reviews
 
 Review for:
 

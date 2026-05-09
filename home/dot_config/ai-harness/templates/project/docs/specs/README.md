@@ -4,7 +4,9 @@ Document status: ready.
 
 Specs capture resolved product context for one feature or change. They are temporary working artifacts, not replacements for durable docs.
 
-Run primary spec review before implementation planning.
+Do not create a spec just to restate an already clear task. A clear issue, review finding, or approved user request may be enough when acceptance criteria and risk are explicit.
+
+Run primary spec review before durable planning when a full spec or PRD exists, or when acceptance criteria are still being shaped.
 
 Name specs:
 
@@ -32,13 +34,13 @@ Each spec should include:
 Prompt:
 
 ```text
-Use spec-to-slices.
-Turn the resolved context into docs/specs/YYYY-MM-DD-<feature>.md and split it into vertical slices with AFK/HITL labels.
+Use write-spec.
+Turn the resolved context into the lightest acceptance artifact. Use docs/specs/YYYY-MM-DD-<feature>.md only if a full spec is needed, then split it into vertical slices with AFK/HITL labels.
 ```
 
 Review prompt:
 
 ```text
-Use review-gate on docs/specs/YYYY-MM-DD-<feature>.md.
+Use spec-review on docs/specs/YYYY-MM-DD-<feature>.md.
 Review product goal, MVP boundary, acceptance criteria, vertical slices, domain language, testing decisions, docs impact, and open risks.
 ```

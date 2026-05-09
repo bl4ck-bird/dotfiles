@@ -11,8 +11,8 @@ Do not edit files or run shell commands. If a diff is not supplied, ask the main
 Read first when available:
 
 - `AGENTS.md`, `CONTEXT.md`, `CONTEXT-MAP.md`
-- `docs/ARCHITECTURE.md`, `docs/DOMAIN_MODEL.md`, relevant ADRs
-- relevant spec, plan, review notes, and changed files
+- `docs/ARCHITECTURE.md`, `docs/DOMAIN_MODEL.md`, relevant durable decisions
+- relevant acceptance artifact, plan, review notes, and changed files
 
 Review for:
 

@@ -54,9 +54,10 @@ When instructions or tradeoffs conflict, prefer in this order:
 
 ## Methodology Defaults
 
-- Use the AI harness workflow for non-trivial project work, selecting only the phases justified by workflow weight: brainstorming/product discovery, critical interview, domain modeling, spec-to-slices, spec review, implementation planning, behavior TDD execution, bounded goal loops when explicitly approved, review gates, docs sync, and ship review.
+- Use a skill-first posture when the BB Harness applies: prefer the relevant harness skill over ad-hoc process, and skip skills only when the task is clearly small/local or the skill does not materially protect the work.
+- Use the BB Harness workflow for non-trivial project work, selecting only the phases justified by workflow weight: product discovery, pressure-test, domain modeling, acceptance artifact, spec-review when needed, compact write-plan, plan-review, execute-plan, behavior-tdd, implementation-review, focused risk reviews, docs-sync, and ship-check.
 - Pressure-test product and engineering work before implementation: challenge the goal, scope, risk, and plan.
-- Resolve overloaded domain terms, keep a bounded-context glossary, and record hard-to-reverse tradeoffs as ADRs.
+- Resolve overloaded domain terms, keep a bounded-context glossary, and record hard-to-reverse, surprising tradeoffs as durable decisions.
 - Use behavior TDD for changes: one failing public-interface or user-visible test, minimal implementation, refactor only after green.
 - Use systematic debugging for bugs: reproduce first, form falsifiable hypotheses, instrument narrowly, fix with a regression test, and clean up.
 
@@ -68,19 +69,19 @@ When instructions or tradeoffs conflict, prefer in this order:
 - Treat work as non-trivial when it changes product behavior, domain language, public APIs, database/storage shape, auth/security, sync/concurrency, deletion, payments, or external integrations.
 - Treat three or more changed files as a scope-review trigger, not automatic full workflow. Tests, styles, fixtures, or docs supporting the same bounded change may stay on the small path.
 - Before major implementation, confirm that the project has current roadmap, architecture, domain model, data/security model when relevant, testing guidance, and agent workflow docs.
-- For non-trivial features, produce or update a spec and run a primary spec review before an implementation plan. Specs live in `docs/specs/`.
-- Convert specs into vertical slices before planning code. Avoid plans split only by technical layer such as "database, API, UI".
-- Plans live in `docs/plans/` and must include file responsibility mapping, TDD steps, verification commands, docs impact, and review checkpoints.
-- Use separate review passes for plan quality, architecture, tests, docs, and security instead of relying on a single self-review.
-- Use Codex as an independent second reviewer for product specs, implementation plans, large diffs, risky architecture, security-sensitive work, or stuck debugging sessions when available.
+- For non-trivial features, produce or identify a reviewed acceptance artifact before an implementation plan. Use a full spec in `docs/specs/` when product scope, domain language, public API, data/storage, auth/security, deletion, sync, external integrations, or user workflow is still being decided.
+- Convert accepted behavior into vertical slices before planning code. Avoid plans split only by technical layer such as "database, API, UI".
+- Plans live in `docs/plans/` when durable planning is needed. Keep them compact: file responsibility mapping, TDD steps, verification commands, docs impact, rollback notes, and review checkpoints.
+- Use separate review skills for spec, plan, implementation, architecture, docs, and security instead of relying on one broad review step.
+- Use `second-review` for independent Codex review of high-risk work, or optionally for product specs, implementation plans, large diffs, weak tests, risky architecture, security-sensitive work, or stuck debugging sessions. In Claude Code, prefer the Codex plugin when available.
 - Store review records for substantial work in `docs/reviews/` when useful for later human inspection.
 - Prefer reviewer subagents for repeated quality gates: architecture, tests, docs, and security.
-- When delegating coding work to Codex or another worker agent, assign one vertical slice or disjoint write scope, pass artifact paths instead of chat history, and review for spec compliance plus code quality before the next task.
-- Use `bounded-goal-loop` only after the goal, file scope, allowed autonomous actions, iteration budget, verification gate, and stop conditions are explicit.
-- Keep `docs/CURRENT.md` current at phase boundaries, after completed implementation slices, before context clear, and when blockers or active artifacts change.
+- When delegating coding work to Codex or another worker agent, assign one vertical slice or disjoint write scope, pass artifact paths instead of chat history, and review for acceptance compliance plus code quality before the next task.
+- Use `bounded-loop` only after the goal, file scope, allowed autonomous actions, iteration budget, verification gate, and stop conditions are explicit.
+- Keep `docs/CURRENT.md` current when the active phase, active acceptance artifact/source, active plan, blocker, completed slice, verification evidence, or next action materially changes.
 - Persist the current goal, plan, evidence, and next action in project artifacts so work can resume without chat history.
 - Keep global hooks conservative. Prefer project-level hooks for stack-specific enforcement.
-- Keep long-lived product decisions in durable docs such as `docs/ROADMAP.md`, `docs/ARCHITECTURE.md`, `docs/DOMAIN_MODEL.md`, `docs/TESTING_STRATEGY.md`, and `docs/DECISIONS/`.
+- Keep long-lived product decisions in durable docs such as `docs/ROADMAP.md`, `docs/ARCHITECTURE.md`, `docs/DOMAIN_MODEL.md`, and `docs/TESTING_STRATEGY.md`. Use `docs/DECISIONS/` only for hard-to-reverse tradeoffs that would surprise future maintainers.
 
 ## Quality Gates
 
@@ -96,14 +97,14 @@ When instructions or tradeoffs conflict, prefer in this order:
 - Apply DDD only where domain complexity exists. Use entities, value objects, aggregates, domain services, repositories, and adapters when they clarify invariants and boundaries.
 - Do not introduce ceremonial DDD layers for CRUD screens or simple glue code.
 - Tests should verify public behavior and domain invariants. Avoid tests coupled to private helpers, incidental mocks, or file layout.
-- Broad or risky changes need two reviews before shipping: primary self/subagent review and independent second review, preferably Codex.
+- High-risk changes need two reviews before shipping: the relevant focused primary review and `second-review`, preferably Codex. Broad but lower-risk changes may use `second-review` optionally.
 
 ## Session Hygiene
 
 - Keep specs, plans, reviews, and docs as durable artifacts so humans can inspect the reasoning after an agent session ends.
 - Clear or restart an agent session after a major phase boundary when context gets large: after discovery/spec, after plan approval, after large implementation slices, or after review fixes.
-- Before clearing a session, write a handoff note in the relevant spec, plan, or review file with current state, decisions, verification, and next action.
-- New sessions must begin by reading `AGENTS.md`, `CONTEXT.md`, `docs/CURRENT.md`, current spec/plan, recent reviews, and relevant code.
+- Before clearing a session, write a handoff note in the relevant acceptance artifact, plan, or review file with current state, decisions, verification, and next action.
+- New sessions must begin by reading `AGENTS.md`, `CONTEXT.md`, `docs/CURRENT.md`, current acceptance artifact/plan, recent reviews, and relevant code.
 - Long-running loops must record iteration count, verification evidence, remaining risk, and the next safe action before context is cleared.
 
 ## Safety Rules

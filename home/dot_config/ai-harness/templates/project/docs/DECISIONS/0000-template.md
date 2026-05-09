@@ -1,6 +1,6 @@
 # 0000. Decision Title
 
-Document status: template. Copy this file before writing an ADR.
+Document status: template. Copy this file before writing a formal decision record.
 
 Date: YYYY-MM-DD
 

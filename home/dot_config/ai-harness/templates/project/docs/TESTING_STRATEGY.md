@@ -4,13 +4,11 @@ Document status: stub. TODO claims are not project truth yet. Non-TODO workflow,
 
 ## TDD Rule
 
-For behavior changes, write one failing behavior test first, confirm the expected failure, implement the smallest change, then refactor after green.
+For behavior changes, write one failing behavior test first, confirm the expected failure, implement the smallest change, then refactor after green. Production behavior changes may skip TDD only with explicit user approval and a recorded residual-risk reason.
 
 Reasonable exceptions:
 
-- generated code
-- pure documentation
-- mechanical config without a test harness
+- generated code, pure documentation, or mechanical config without a test harness; record the reason in the final report
 - throwaway prototype
 - emergency fix with documented residual risk
 
@@ -30,6 +28,12 @@ Reasonable exceptions:
 - Lint: TODO
 - Build: TODO
 - E2E/manual: TODO
+
+## Hook Policy
+
+Prefer automated project hooks for repeatable checks. When the project uses lefthook, wire only commands that are already known and stable for the stack, such as focused tests, typecheck, lint, format check, or secret/file guards.
+
+Do not add or enable lefthook commands that require missing dependencies, slow services, credentials, or unconfirmed package-manager behavior. Keep manual/browser QA as a documented exception for behavior that automated tests and hooks cannot cover well.
 
 ## Principles
 
@@ -65,5 +69,6 @@ Before shipping:
 - Do tests prove acceptance criteria?
 - Are critical edge cases covered?
 - Are tests stable and reasonably fast?
+- Are project hooks covering the checks that should run before commit?
 - Does the suite protect against the bug or regression being fixed?
 - Are there remaining manual checks or untested risks?

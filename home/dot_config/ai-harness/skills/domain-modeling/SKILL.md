@@ -1,11 +1,11 @@
 ---
 name: domain-modeling
-description: Use when aligning product plans, specs, code, or tests with DDD vocabulary, bounded contexts, invariants, CONTEXT.md, CONTEXT-MAP.md, or ADRs.
+description: Use when aligning product plans, acceptance artifacts, code, or tests with DDD vocabulary, bounded contexts, invariants, CONTEXT.md, CONTEXT-MAP.md, or durable decisions.
 ---
 
 # Domain Modeling
 
-Keep agent plans aligned with the product's language and boundaries. This skill should run after critical interview and before spec-to-slices for domain-heavy work.
+Keep agent plans aligned with the product's language and boundaries. This skill should run after pressure-test and before write-spec for domain-heavy work.
 
 ## Read First
 
@@ -74,15 +74,16 @@ When the repo has multiple subsystems or bounded contexts, update `CONTEXT-MAP.m
 - Integration style
 - Translation or anti-corruption needs
 
-## ADR Rule
+## Decision Record Rule
 
-Suggest an ADR only when all are true:
+Suggest a formal decision record only when all are true:
 
 - The decision is hard to reverse.
 - The decision would surprise a future maintainer without context.
 - The decision came from a real tradeoff.
 
-Do not create ADRs for routine implementation details.
+Do not create formal decision records for routine implementation details.
+Do not mention formal decision records in routine acceptance artifacts or plans unless this rule is met. Use "durable decision" for normal project notes that do not need that weight.
 
 ## Outputs
 
