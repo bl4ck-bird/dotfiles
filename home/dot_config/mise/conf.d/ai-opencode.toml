@@ -1,2 +1,2 @@
-[tools."npm:opencode-ai"]
+[tools.opencode]
 version = "latest"

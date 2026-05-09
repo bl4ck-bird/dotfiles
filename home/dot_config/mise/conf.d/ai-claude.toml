@@ -1,2 +1,2 @@
-[tools."npm:@anthropic-ai/claude-code"]
+[tools.claude-code]
 version = "latest"
