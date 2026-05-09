@@ -1,2 +1,0 @@
-[tools."pipx:git+https://github.com/NousResearch/hermes-agent.git"]
-version = "latest"
