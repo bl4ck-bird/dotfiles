@@ -5,11 +5,13 @@ description: Use when brainstorming, starting a new product, side project, major
 
 # Brainstorming / Product Discovery
 
-Clarify the product goal before architecture or code. This is the product-facing entry point of the harness and covers lightweight brainstorming.
+Clarify the product goal before architecture or code. This is the product-facing entry point of the
+harness and covers lightweight brainstorming.
 
 ## Questions To Resolve
 
-Do not ask all questions mechanically. Inspect existing docs first, then ask only the questions that remove real ambiguity.
+Do not ask all questions mechanically. Inspect existing docs first, then ask only the questions that
+remove real ambiguity.
 
 Resolve:
 
@@ -29,10 +31,13 @@ Resolve:
 Create or update only the artifacts justified by the approved scaffold profile and project risk:
 
 - `docs/reviews/YYYY-MM-DD-<topic>-discovery.md` for longer discovery sessions
-- `docs/CURRENT.md` when the active phase, next step, blocker, or active acceptance artifact/plan changes
-- `docs/ROADMAP.md` when product scope, milestones, non-goals, or open product decisions need durable tracking
+- `docs/CURRENT.md` when the active phase, next step, blocker, or active acceptance artifact/plan
+  changes
+- `docs/ROADMAP.md` when product scope, milestones, non-goals, or open product decisions need
+  durable tracking
 
-Do not create a spec from discovery directly. Route resolved discovery output through `write-spec` when an acceptance artifact is needed.
+Do not create a spec from discovery directly. Route resolved discovery output through `write-spec`
+when an acceptance artifact is needed.
 
 For new projects, also ensure the approved scaffold profile has the right docs:
 
@@ -46,8 +51,10 @@ Add only when relevant:
 - `CONTEXT-MAP.md`: multiple contexts, apps, packages, or integrations.
 - `docs/ARCHITECTURE.md`: boundaries, runtime surfaces, or dependency direction matter.
 - `docs/DOMAIN_MODEL.md`: domain terms, invariants, or workflows matter.
-- `docs/DATA_MODEL.md`: persistence, migration, retention, deletion, import/export, or backup matter.
-- `docs/SECURITY_MODEL.md`: auth, permissions, secrets, trust boundaries, sensitive data, deletion, or crypto matter.
+- `docs/DATA_MODEL.md`: persistence, migration, retention, deletion, import/export, or backup
+  matter.
+- `docs/SECURITY_MODEL.md`: auth, permissions, secrets, trust boundaries, sensitive data, deletion,
+  or crypto matter.
 
 ## Discovery Output Format
 
@@ -89,4 +96,5 @@ After discovery, run:
 2. `domain-modeling` if domain language matters.
 3. `write-spec` when the direction is ready for an acceptance artifact.
 
-End by recommending exactly one next phase and asking for confirmation, for example: "제품 방향이 정리됐습니다. 다음 단계로 스펙 초안을 작성할까요?"
+End by recommending exactly one next phase and asking for confirmation, for example: "제품 방향이 정리됐습니다.
+다음 단계로 스펙 초안을 작성할까요?"

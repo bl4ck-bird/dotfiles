@@ -1,8 +1,10 @@
 # Domain Model
 
-Document status: stub. TODO claims are not project truth yet. Non-TODO workflow, safety, and quality rules apply immediately.
+Document status: stub. TODO claims are not project truth yet. Non-TODO workflow, safety, and quality
+rules apply immediately.
 
-Use this file for durable domain structure. Use `CONTEXT.md` for the glossary and canonical language.
+Use this file for durable domain structure. Use `CONTEXT.md` for the glossary and canonical
+language.
 
 ## Core Concepts
 
@@ -33,7 +35,8 @@ Define what belongs in the domain and what belongs outside it.
 
 ## Language
 
-Canonical terms live in `CONTEXT.md`. Do not introduce synonyms in specs, plans, tests, or UI copy without updating context.
+Canonical terms live in `CONTEXT.md`. Do not introduce synonyms in specs, plans, tests, or UI copy
+without updating context.
 
 ## Entities
 

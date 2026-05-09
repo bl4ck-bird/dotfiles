@@ -5,9 +5,11 @@ description: Use when converting resolved product context, PRDs, feature ideas, 
 
 # Write Spec
 
-Turn resolved context into the lightest acceptance artifact that can be implemented and reviewed. Then split it into vertical slices.
+Turn resolved context into the lightest acceptance artifact that can be implemented and reviewed.
+Then split it into vertical slices.
 
-Do not create a full spec just to restate an already clear task. A clear issue, PRD, review finding, or approved user request may be enough when acceptance criteria and risk are already explicit.
+Do not create a full spec just to restate an already clear task. A clear issue, PRD, review finding,
+or approved user request may be enough when acceptance criteria and risk are already explicit.
 
 ## Save Location
 
@@ -19,13 +21,16 @@ docs/specs/YYYY-MM-DD-<feature>.md
 
 Use the project's established location if it already has one.
 
-For small well-understood work, use the existing issue, review record, or approved user request as the acceptance source instead of creating a new spec file. `docs/CURRENT.md` may point to the active source, but it should not replace the acceptance source.
+For small well-understood work, use the existing issue, review record, or approved user request as
+the acceptance source instead of creating a new spec file. `docs/CURRENT.md` may point to the active
+source, but it should not replace the acceptance source.
 
 ## Inputs
 
 Light artifact mode:
 
-Use this when an issue, review finding, PRD section, or approved user request is already clear enough to become the acceptance source. Read:
+Use this when an issue, review finding, PRD section, or approved user request is already clear
+enough to become the acceptance source. Read:
 
 - `CONTEXT.md`
 - `docs/CURRENT.md`
@@ -34,7 +39,8 @@ Use this when an issue, review finding, PRD section, or approved user request is
 
 Full spec mode:
 
-Use this when product scope, domain language, public API, data/storage, auth/security, deletion, sync, external integrations, or user workflow is still being decided. Also read:
+Use this when product scope, domain language, public API, data/storage, auth/security, deletion,
+sync, external integrations, or user workflow is still being decided. Also read:
 
 - `docs/ROADMAP.md`
 - Discovery or interview notes
@@ -43,12 +49,53 @@ Read conditionally in either mode when relevant:
 
 - `CONTEXT-MAP.md`: multiple contexts, apps, packages, or integrations.
 - `docs/DOMAIN_MODEL.md`: domain terms, invariants, or workflows may change.
-- `docs/DATA_MODEL.md`: persistence, migration, retention, deletion, import/export, or backup may change.
-- `docs/SECURITY_MODEL.md`: auth, permissions, secrets, trust boundaries, sensitive data, deletion, or crypto may change.
+- `docs/DATA_MODEL.md`: persistence, migration, retention, deletion, import/export, or backup may
+  change.
+- `docs/SECURITY_MODEL.md`: auth, permissions, secrets, trust boundaries, sensitive data, deletion,
+  or crypto may change.
 - Relevant durable decisions when decisions are hard to reverse or surprising.
 
 If the idea is still ambiguous, run `pressure-test` before writing the artifact.
 If terms are unstable, run `domain-modeling` before writing the artifact.
+
+## Light Acceptance Brief
+
+Use this for non-trivial work when a full spec would only duplicate an already clear
+request. The source can live in an issue, review record, plan anchor, or short
+`docs/specs/` note, but it must include every field below:
+
+```markdown
+# <Feature or Change> Acceptance Brief
+
+## Goal
+
+## Accepted Behavior
+
+## Acceptance Criteria
+
+## Non-Goals / Stop Conditions
+
+## Touched Surfaces
+- Product:
+- API:
+- Data/storage:
+- Security/privacy:
+- UI:
+- Docs:
+- Tests:
+
+## Edge And Error Cases
+
+## Docs / Test Impact
+
+## Risk Level
+
+## Required Reviews
+
+## Second Review
+
+## AFK / HITL Boundary
+```
 
 ## Full Spec Template
 
@@ -111,7 +158,10 @@ Prefer:
 
 ## Review
 
-Before writing a durable implementation plan, run `spec-review` when a full spec or PRD exists, or when acceptance criteria are still being shaped. Review:
+Before writing a durable implementation plan, run `spec-review` when a full spec or PRD
+exists, or when acceptance criteria are still being shaped. A light Acceptance Brief can
+skip separate `spec-review` only when it has every canonical field and no
+product/domain/API/data/security/user-workflow decision is being made. Review:
 
 - product goal and MVP fit
 - domain language
@@ -119,7 +169,10 @@ Before writing a durable implementation plan, run `spec-review` when a full spec
 - vertical slice quality
 - missing testing or docs decisions
 
-Use `second-review` optionally for product direction, MVP boundary, core architecture, data/security behavior, or other risky surfaces. It is required only when the risk is high enough that a missed issue could cause security, data-loss, money, auth, crypto, deletion, or core architecture harm. In Claude Code, prefer the Codex plugin when available.
+Use `second-review` optionally for product direction, MVP boundary, core architecture, data/security
+behavior, or other risky surfaces. It is required only when the risk is high enough that a missed
+issue could cause security, data-loss, money, auth, crypto, deletion, or core architecture harm. In
+Claude Code, prefer the Codex plugin when available.
 
 ## Output
 

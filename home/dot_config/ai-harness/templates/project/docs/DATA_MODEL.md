@@ -1,8 +1,10 @@
 # Data Model
 
-Document status: stub. TODO claims are not project truth yet. Non-TODO workflow, safety, and quality rules apply immediately.
+Document status: stub. TODO claims are not project truth yet. Non-TODO workflow, safety, and quality
+rules apply immediately.
 
-Use this file for persisted data, derived data, migration, retention, deletion, and backup decisions.
+Use this file for persisted data, derived data, migration, retention, deletion, and backup
+decisions.
 
 ## Storage Surfaces
 

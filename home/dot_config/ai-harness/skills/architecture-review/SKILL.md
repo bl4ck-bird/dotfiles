@@ -21,7 +21,8 @@ Read what exists before judging:
 
 - Boundary clarity between domain, application, infrastructure, and UI layers.
 - Coupling direction, dependency inversion, circular dependencies, and framework leakage.
-- Whether new abstractions are justified by real complexity, repeated variation, or established project patterns.
+- Whether new abstractions are justified by real complexity, repeated variation, or established
+  project patterns.
 - File size, responsibility creep, hidden mutation, and confusing control flow.
 - Testability of core behavior without relying on UI, network, database, or filesystem details.
 - Whether the implementation supports the roadmap without building speculative infrastructure.
@@ -55,10 +56,13 @@ Translate SOLID into concrete findings:
 Use these as review thresholds, not mechanical rewrite commands:
 
 - Source file over 300 lines: require responsibility review.
-- Source file over 600 lines: finding unless generated, vendored, migration, fixture, or documented exception.
+- Source file over 600 lines: finding unless generated, vendored, migration, fixture, or documented
+  exception.
 - Function over 50-80 lines: consider extraction if it mixes concerns or has deep branching.
-- Three or more repeated conditionals on the same concept: consider a domain concept, strategy, lookup table, or policy object.
-- Long files are acceptable when they are data tables, generated code, test fixtures, or deliberately documented framework glue.
+- Three or more repeated conditionals on the same concept: consider a domain concept, strategy,
+  lookup table, or policy object.
+- Long files are acceptable when they are data tables, generated code, test fixtures, or
+  deliberately documented framework glue.
 
 ## Agentic Maintainability
 

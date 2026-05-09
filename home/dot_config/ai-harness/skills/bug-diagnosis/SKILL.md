@@ -25,15 +25,18 @@ Fix bugs from evidence, not guesses. Reproduction comes before implementation ch
 7. Write or preserve a regression test before the fix when practical.
 8. Fix the root cause with the smallest change.
 9. Rerun the reproduction and relevant checks.
-10. Remove temporary instrumentation and update durable docs if the bug exposed a rule. Use formal decision records only when the decision meets the formal threshold.
+10. Remove temporary instrumentation and update durable docs if the bug exposed a rule. Use formal
+    decision records only when the decision meets the formal threshold.
 
 ## Rules
 
 - Do not patch from intuition when a reproduction loop is available.
 - Do not broaden scope into refactoring until the bug is reproduced and understood.
-- Do not change tests to match broken behavior unless the expected behavior was wrong and the user agrees.
+- Do not change tests to match broken behavior unless the expected behavior was wrong and the user
+  agrees.
 - If reproduction is impossible, explain why and list the evidence used instead.
-- Security, money, data-loss, auth, crypto, and concurrency bugs require a stronger regression test or explicit residual risk note.
+- Security, money, data-loss, auth, crypto, and concurrency bugs require a stronger regression test
+  or explicit residual risk note.
 
 ## Hypothesis Format
 

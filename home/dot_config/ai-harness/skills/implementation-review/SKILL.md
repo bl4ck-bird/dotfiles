@@ -5,7 +5,8 @@ description: Use when reviewing an implementation diff, completed slice, tests, 
 
 # Implementation Review
 
-Review a completed slice or diff against the accepted artifact and plan. This is the default post-implementation review before docs sync or ship check.
+Review a completed slice or diff against the accepted artifact and plan. This is the default
+post-implementation review before docs sync or ship check.
 
 ## Inputs
 
@@ -29,6 +30,7 @@ Read:
 ## Follow-On Reviews
 
 - Use `architecture-review` for maintainability or boundary concerns.
+- Use `test-review` when acceptance depends on test quality or verification is weak.
 - Use `security-review` for sensitive surfaces.
 - Use `docs-review` when durable docs changed or may have drifted.
 - Use `second-review` for broad, risky, or hard-to-inspect diffs.
@@ -42,4 +44,5 @@ Lead with findings and end with:
 - Required fixes before `ship-check`
 - Residual risk
 
-For substantial reviews, save the record in `docs/reviews/YYYY-MM-DD-<topic>-implementation-review.md`.
+For substantial reviews, save the record in
+`docs/reviews/YYYY-MM-DD-<topic>-implementation-review.md`.

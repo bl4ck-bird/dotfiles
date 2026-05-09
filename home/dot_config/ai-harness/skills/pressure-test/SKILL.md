@@ -5,11 +5,13 @@ description: Use when a product idea, feature, architecture, spec, or plan needs
 
 # Pressure Test
 
-Pressure-test the idea before turning it into a spec or code. This is the harness version of a grill-me style interview.
+Pressure-test the idea before turning it into a spec or code. This is the harness version of a
+grill-me style interview.
 
 ## Core Rule
 
-Ask one question at a time. For each question, include your recommended answer or tradeoff so the user is not forced to design from a blank page.
+Ask one question at a time. For each question, include your recommended answer or tradeoff so the
+user is not forced to design from a blank page.
 
 ## What To Challenge
 
@@ -45,7 +47,8 @@ Stop when:
 - Product goal, MVP, non-goals, and success criteria are clear enough for a spec.
 - Domain terms are either resolved or marked as open questions.
 - Risky tradeoffs are identified.
-- The next artifact is obvious: `CONTEXT.md`, acceptance artifact, durable decision, or implementation plan.
+- The next artifact is obvious: `CONTEXT.md`, acceptance artifact, durable decision, or
+  implementation plan.
 
 ## Output
 

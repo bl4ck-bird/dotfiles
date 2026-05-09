@@ -5,16 +5,19 @@ description: Use when requesting or recording an independent Codex review of a s
 
 # Second Review
 
-Run an independent review after the primary review. This skill defines when and how to ask Codex or another clean reviewer without replacing the primary review.
+Run an independent review after the primary review. This skill defines when and how to ask Codex or
+another clean reviewer without replacing the primary review.
 
-Second review is a risk control, not a default ceremony. Use it when independence is likely to find something the primary workflow could miss.
+Second review is a risk control, not a default ceremony. Use it when independence is likely to find
+something the primary workflow could miss.
 
 ## Required When Available
 
 Use independent second review when any are true:
 
 - high-risk security, data-loss, money, auth, crypto, deletion, or core architecture changes
-- a P0/P1 issue could plausibly be missed because the change is hard to inspect or lacks strong verification
+- a P0/P1 issue could plausibly be missed because the change is hard to inspect or lacks strong
+  verification
 - the user explicitly asks
 
 ## Strongly Consider
@@ -25,11 +28,14 @@ Strongly consider, but do not automatically require, independent second review w
 - tests are weak, flaky, slow, expensive, or heavily mocked
 - the primary agent is stuck or changed approach more than once
 - bounded automation is proposed for broad or user-facing work
-- product direction, MVP boundary, persistence, sync, concurrency, external integrations, or broad architecture direction changes
+- product direction, MVP boundary, persistence, sync, concurrency, external integrations, or broad
+  architecture direction changes
 
 ## Optional For Specs And Plans
 
-For specs and plans, `second-review` is optional unless the change meets the required criteria above. The primary `spec-review` or `plan-review` may pass with a recommendation to get independent Codex review before implementation or before ship.
+For specs and plans, `second-review` is optional unless the change meets the required criteria
+above. The primary `spec-review` or `plan-review` may pass with a recommendation to get independent
+Codex review before implementation or before ship.
 
 ## Procedure
 
@@ -57,7 +63,8 @@ Accepted risk: <what could be missed>
 User accepted proceeding: <yes/no>
 ```
 
-Do not approve P0/P1-risk work without explicit user acceptance when independent review is unavailable.
+Do not approve P0/P1-risk work without explicit user acceptance when independent review is
+unavailable.
 
 ## Output
 

@@ -5,7 +5,8 @@ description: Use when reviewing auth, permissions, secrets, crypto, deletion, de
 
 # Security Review
 
-Review security-sensitive work with evidence from code, config, docs, and verification. Do not rely on intent alone.
+Review security-sensitive work with evidence from code, config, docs, and verification. Do not rely
+on intent alone.
 
 ## Triggers
 
@@ -16,7 +17,8 @@ Use this skill when work touches:
 - crypto, hashing, signing, or key management
 - deletion, destructive commands, backups, restore, import, export, or data retention
 - external integrations, webhooks, sync, concurrency, permissions, or sensitive data exposure
-- untrusted input, validation, injection, path traversal, command construction, parser/deserialization, SSRF, open redirects, or file uploads
+- untrusted input, validation, injection, path traversal, command construction,
+  parser/deserialization, SSRF, open redirects, or file uploads
 
 ## Checks
 
@@ -26,7 +28,8 @@ Use this skill when work touches:
 - Destructive operations require explicit user or product-level approval.
 - Crypto and secret handling follow project docs or primary-source guidance.
 - Tests or manual checks cover denial, invalid input, and failure behavior when practical.
-- `docs/SECURITY_MODEL.md` is updated when durable security behavior changes. Use formal decision records only when the decision meets the formal threshold.
+- `docs/SECURITY_MODEL.md` is updated when durable security behavior changes. Use formal decision
+  records only when the decision meets the formal threshold.
 
 ## Output
 

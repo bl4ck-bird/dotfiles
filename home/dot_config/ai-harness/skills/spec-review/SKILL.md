@@ -5,9 +5,13 @@ description: Use when reviewing a feature spec, PRD, acceptance criteria, MVP sc
 
 # Spec Review
 
-Review a spec, PRD, or unclear acceptance artifact before durable planning. Keep the review focused on product clarity, scope, acceptance criteria, and slice quality.
+Review a spec, PRD, or unclear acceptance artifact before durable planning. Keep the review focused
+on product clarity, scope, acceptance criteria, and slice quality.
 
-Skip this skill for small tasks when an issue, review finding, or user-approved request already contains clear acceptance criteria and no product/domain/API/data/security decision is being made. Record that reason in the plan instead.
+Skip this skill for small or already-clear tasks when an issue, review finding, or user-approved
+request already contains an Acceptance Brief quality source and no
+product/domain/API/data/security/user-workflow decision is being made. Record that reason in the
+plan instead.
 
 ## Inputs
 
@@ -16,12 +20,16 @@ Read:
 - `AGENTS.md`, `CONTEXT.md`, and `docs/CURRENT.md`
 - `docs/ROADMAP.md` when product scope or milestones matter
 - relevant `docs/specs/<spec>.md`, PRD, issue, review finding, or accepted task
-- `docs/DOMAIN_MODEL.md`, `docs/DATA_MODEL.md`, or `docs/SECURITY_MODEL.md` when the spec touches those surfaces
+- `docs/DOMAIN_MODEL.md`, `docs/DATA_MODEL.md`, or `docs/SECURITY_MODEL.md` when the spec touches
+  those surfaces
 
 ## Checks
 
 - Goal, problem, users, MVP, and non-goals are explicit.
 - Acceptance criteria are testable and not merely implementation notes.
+- Lightweight acceptance sources include every canonical Acceptance Brief field,
+  including docs/test impact, required reviews, second review status, and AFK/HITL
+  boundary.
 - Domain terms match `CONTEXT.md` and domain docs.
 - Vertical slices deliver reviewable behavior, not horizontal layers.
 - AFK/HITL labels are realistic.
@@ -30,7 +38,10 @@ Read:
 
 ## Second Review
 
-Use `second-review` optionally when the artifact changes product direction, MVP boundary, data/security behavior, architecture direction, money, deletion, sync, or external integration behavior. Require it only when missing an issue could cause security, data-loss, money, auth, crypto, deletion, or core architecture harm. In Claude Code, prefer the Codex plugin when available.
+Use `second-review` optionally when the artifact changes product direction, MVP boundary,
+data/security behavior, architecture direction, money, deletion, sync, or external integration
+behavior. Require it only when missing an issue could cause security, data-loss, money, auth,
+crypto, deletion, or core architecture harm. In Claude Code, prefer the Codex plugin when available.
 
 ## Output
 

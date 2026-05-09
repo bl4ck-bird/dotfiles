@@ -1,6 +1,7 @@
 # Context
 
-Document status: stub. TODO claims are not project truth yet. Non-TODO workflow, safety, and quality rules apply immediately.
+Document status: stub. TODO claims are not project truth yet. Non-TODO workflow, safety, and quality
+rules apply immediately.
 
 This is the bounded-context glossary and durable domain language for agents and humans.
 

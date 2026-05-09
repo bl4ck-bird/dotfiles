@@ -5,23 +5,28 @@ description: Use when implementing features, bug fixes, behavior changes, or ref
 
 # Behavior TDD Workflow
 
-Implement public behavior one test at a time through red, green, and refactor. This is not test-count ceremony; the test should prove user-visible behavior, public API behavior, or a domain invariant.
+Implement public behavior one test at a time through red, green, and refactor. This is not
+test-count ceremony; the test should prove user-visible behavior, public API behavior, or a domain
+invariant.
 
 ## Core Rule
 
-No production behavior change without first seeing a relevant test fail, unless the user explicitly chooses an exception and the residual risk is recorded.
+No production behavior change without first seeing a relevant test fail, unless the user explicitly
+chooses an exception and the residual risk is recorded.
 
 Reasonable exceptions:
 
 - throwaway prototype
-- generated code, purely textual docs, or mechanical config with no test harness; record the reason in the final report
+- generated code, purely textual docs, or mechanical config with no test harness; record the reason
+  in the final report
 - emergency fix where the residual risk is documented
 
 ## Red-Green-Refactor
 
 For each behavior:
 
-1. RED: write one focused behavior test through a public interface, user-visible flow, or stable domain boundary.
+1. RED: write one focused behavior test through a public interface, user-visible flow, or stable
+domain boundary.
 2. Verify RED: run it and confirm it fails for the expected reason.
 3. GREEN: write the smallest implementation that passes.
 4. Verify GREEN: rerun the focused test and related narrow checks.
@@ -32,13 +37,17 @@ Do not write all tests first and all implementation later. Work vertically.
 
 ## Refactor Gate
 
-After GREEN and before moving to the next behavior, check maintainability while the change is still small:
+After GREEN and before moving to the next behavior, check maintainability while the change is still
+small:
 
 - The changed module has one primary reason to change.
-- Domain or application logic does not depend on UI, framework, storage, network, or filesystem details unless the project intentionally uses that simpler shape.
+- Domain or application logic does not depend on UI, framework, storage, network, or filesystem
+  details unless the project intentionally uses that simpler shape.
 - Interfaces stay small and caller-focused.
-- Repeated conditionals, duplicated branching, or long functions are extracted only when the extraction clarifies a real concept.
-- Source files over 300 lines get a responsibility check; files over 600 lines need a documented exception or split plan.
+- Repeated conditionals, duplicated branching, or long functions are extracted only when the
+  extraction clarifies a real concept.
+- Source files over 300 lines get a responsibility check; files over 600 lines need a documented
+  exception or split plan.
 
 Refactor only after tests are green, and rerun the focused verification after the refactor.
 

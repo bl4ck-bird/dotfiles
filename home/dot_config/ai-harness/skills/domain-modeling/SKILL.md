@@ -5,7 +5,8 @@ description: Use when aligning product plans, acceptance artifacts, code, or tes
 
 # Domain Modeling
 
-Keep agent plans aligned with the product's language and boundaries. This skill should run after pressure-test and before write-spec for domain-heavy work.
+Keep agent plans aligned with the product's language and boundaries. This skill should run after
+pressure-test and before write-spec for domain-heavy work.
 
 ## Read First
 
@@ -83,7 +84,8 @@ Suggest a formal decision record only when all are true:
 - The decision came from a real tradeoff.
 
 Do not create formal decision records for routine implementation details.
-Do not mention formal decision records in routine acceptance artifacts or plans unless this rule is met. Use "durable decision" for normal project notes that do not need that weight.
+Do not mention formal decision records in routine acceptance artifacts or plans unless this rule is
+met. Use "durable decision" for normal project notes that do not need that weight.
 
 ## Outputs
 
