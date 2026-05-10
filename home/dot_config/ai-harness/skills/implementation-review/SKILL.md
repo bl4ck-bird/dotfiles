@@ -49,8 +49,6 @@ Lead with findings and end with:
 - Verification evidence reviewed
 - Required fixes before `ship-check`
 - Residual risk
-- Memory candidates: route patterns surprising or repeating across reviews to `retro-capture` for
-  memory persistence.
 
 For substantial reviews, save the record in
 `docs/reviews/YYYY-MM-DD-<topic>-implementation-review.md`.

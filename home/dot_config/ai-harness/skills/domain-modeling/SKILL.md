@@ -77,15 +77,9 @@ When the repo has multiple subsystems or bounded contexts, update `CONTEXT-MAP.m
 
 ## Decision Record Rule
 
-Suggest a formal decision record only when all are true:
-
-- The decision is hard to reverse.
-- The decision would surprise a future maintainer without context.
-- The decision came from a real tradeoff.
-
-Do not create formal decision records for routine implementation details.
-Do not mention formal decision records in routine acceptance artifacts or plans unless this rule is
-met. Use "durable decision" for normal project notes that do not need that weight.
+Suggest a formal decision record only for hard-to-reverse decisions that came from a real tradeoff
+and would surprise a future maintainer. Otherwise use "durable decision" notes in the relevant
+durable doc.
 
 ## Outputs
 

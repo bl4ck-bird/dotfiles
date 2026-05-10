@@ -60,7 +60,5 @@ When the interview is done, summarize:
 - Risks
 - Suggested next skill
 - Docs to update
-- Memory candidates: route non-obvious assumptions to `retro-capture` for memory persistence so
-  future sessions inherit them.
 
 Do not create a long spec in this skill. Use `write-spec` next.

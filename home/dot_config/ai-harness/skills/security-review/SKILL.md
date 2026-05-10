@@ -30,8 +30,7 @@ Use this skill when work touches:
 - Destructive operations require explicit user or product-level approval.
 - Crypto and secret handling follow project docs or primary-source guidance.
 - Tests or manual checks cover denial, invalid input, and failure behavior when practical.
-- `docs/SECURITY_MODEL.md` is updated when durable security behavior changes. Use formal decision
-  records only when the decision meets the formal threshold.
+- `docs/SECURITY_MODEL.md` is updated when durable security behavior changes.
 
 ## Output
 

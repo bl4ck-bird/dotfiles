@@ -10,9 +10,6 @@ prevents loading every process at once.
 
 ## Skill-First Rule
 
-When the BB Harness is in use, prefer harness skills over ad-hoc process. Skills are the executable
-workflow surface, not background reading.
-
 - Start with `bb-workflow` when the current phase is unclear, a session is starting/resuming, or
   work may be non-trivial.
 - If the task directly matches a skill, use that skill instead of rephrasing its procedure in chat.
@@ -65,19 +62,20 @@ in `write-spec`. Do not duplicate them here.
 
 ## Review Routing
 
-Use the lightest review that protects the work. Detailed checks live in each review skill.
+Reviews are opt-in on signal, not default ceremony. Call a review skill only when the trigger
+signal in the left column is present in the touched surface. "Skill exists" is not a reason.
 
-| Concern | Skill |
+| Trigger signal (only call when present) | Skill |
 | --- | --- |
 | Spec/PRD or unclear acceptance criteria | `spec-review` |
 | Non-trivial or multi-step plan before execution | `plan-review` (required) |
 | Substantial slice or review-fix pass | `implementation-review` |
 | Weak/flaky/heavily-mocked/acceptance-critical tests | `test-review` |
-| Boundary, DDD, SOLID, file-size, over-abstraction | `architecture-review` |
-| Auth, secrets, crypto, deletion, sensitive data, untrusted input, injection, SSRF | `security-review` |
-| Durable docs or drift | `docs-review` |
+| Boundary, DDD, SOLID, file-size, over-abstraction signal | `architecture-review` |
+| Auth, secrets, crypto, deletion, sensitive data, untrusted input, injection, SSRF touched | `security-review` |
+| Durable docs touched or suspected drift | `docs-review` |
 | High-risk security/data-loss/money/auth/crypto/deletion/core-architecture | `second-review` (required) |
-| Independent second review required or requested | `second-review` (procedure and Codex preference defined in the skill) |
+| Independent second review explicitly requested | `second-review` |
 
 ## Execution Model
 
@@ -114,7 +112,6 @@ Choose the next phase, not the entire lifecycle:
 | Behavior/architecture/testing/security/workflow changed | `docs-sync` |
 | Work ready to hand off, commit, PR, release | `ship-check` |
 | Commit/stack/PR/release action approved | `ship-check` then commit/stack gate |
-| Memory candidates or retro insights surfaced from a review or ship-check | `retro-capture` |
 | User approved repeated autonomous progress | `bounded-loop` |
 
 ## Phase Loop
@@ -133,24 +130,12 @@ After each phase:
    commit/stack actions, history rewrite, broad scope expansion, or unresolved
    product/domain/architecture decisions.
 
-## Continuation Prompts
+## Continuation
 
-Defaults after finishing a phase:
-
-- After product discovery: "제품 방향이 정리됐습니다. 아직 불확실한 가정을 pressure-test할까요, 아니면 바로 acceptance artifact를
-  정리할까요?"
-- After pressure-test: "주요 가정이 정리됐습니다. 도메인 모델링이 필요할까요, 아니면 acceptance artifact 작성으로 넘어갈까요?"
-- After domain modeling: "도메인 언어가 정리됐습니다. 이 내용으로 acceptance artifact와 vertical slice를 작성할까요?"
-- After write-spec: "Acceptance artifact가 준비됐습니다. full spec/PRD이거나 기준이 아직 흔들리면 spec-review가 필요합니다.
-  가벼운 accepted task라면 compact implementation plan으로 넘어가겠습니다."
-- After spec review: "Acceptance review가 끝났습니다. compact implementation plan을 작성할까요?"
-- After write-plan: "계획이 준비됐습니다. non-trivial 또는 multi-step이면 plan-review를 진행하겠습니다. 범위를 small path로
-  줄이려면 알려주세요."
-- After plan review: "계획 리뷰가 끝났습니다. 첫 vertical slice 구현을 시작할까요?"
-- After implementation review: "리뷰 결과를 반영했습니다. docs-sync와 ship-check로 마무리할까요?"
-
-If the user already approved an end-to-end bounded goal, continue inside the approved scope and
-stop conditions instead of asking after every safe phase.
+After each phase, recommend exactly one next phase and ask a concise confirmation question. Phrase
+it naturally in the user's language (the global `AGENTS.md` Korean default applies unless the user
+asks otherwise). If the user already approved an end-to-end bounded goal, continue inside the
+approved scope and stop conditions instead of asking after every safe phase.
 
 ## Parallel Work
 

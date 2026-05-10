@@ -5,9 +5,8 @@ description: Use when implementing features, bug fixes, behavior changes, or ref
 
 # Behavior TDD Workflow
 
-Implement public behavior one test at a time through red, green, and refactor. This is not
-test-count ceremony; the test should prove user-visible behavior, public API behavior, or a domain
-invariant.
+Implement public behavior one test at a time through red, green, and refactor. Each test must prove
+user-visible behavior, public API behavior, or a domain invariant.
 
 ## Core Rule
 

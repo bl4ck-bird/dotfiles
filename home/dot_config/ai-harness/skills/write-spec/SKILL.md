@@ -99,22 +99,15 @@ request. The source can live in an issue, review record, plan anchor, or short
 
 ## Application Rules
 
-The fields above apply wherever non-trivial work needs an acceptance source. Other skills,
-templates, AGENTS.md, and README must reference this template rather than re-listing or partially
-quoting the fields.
-
-- **Light acceptance source** (issue, PRD section, review finding, approved user task): must
-  include every Light Acceptance Brief field. Skip separate `spec-review` only when no
-  product/domain/API/data/security/user-workflow decision is being made.
-- **Full spec mode**: required when product scope, domain language, public API, data/storage,
-  auth/security, deletion, sync, external integrations, or user workflow is still being decided.
-  Use the Full Spec Template below plus a `spec-review`.
-- **Chat-only acceptance**: when the request never lands in an issue/spec, the implementation plan
-  must capture every Light Acceptance Brief field in an "Approved Request Anchor" section.
-- **Partial citations are forbidden**: outside this skill, do not quote a subset of the fields.
-  Either reference the full template by link or include the full template inline.
-- **Field changes**: when adding, renaming, or removing a field, change only this file. Other
-  skills, AGENTS.md, README, and templates carry references and need no edit.
+- Light acceptance source (issue, PRD section, review finding, approved user task) must include
+  every field above. Skip `spec-review` only when no product/domain/API/data/security/user-workflow
+  decision is being made.
+- Full spec mode (use the Full Spec Template below plus `spec-review`) is required when product
+  scope, domain language, public API, data/storage, auth/security, deletion, sync, external
+  integrations, or user workflow is still being decided.
+- When the request lives only in chat, the implementation plan must capture every field in an
+  "Approved Request Anchor" section.
+- Other skills/docs link to this template; field changes happen only here.
 
 ## Full Spec Template
 

@@ -25,8 +25,7 @@ Fix bugs from evidence, not guesses. Reproduction comes before implementation ch
 7. Write or preserve a regression test before the fix when practical.
 8. Fix the root cause with the smallest change.
 9. Rerun the reproduction and relevant checks.
-10. Remove temporary instrumentation and update durable docs if the bug exposed a rule. Use formal
-    decision records only when the decision meets the formal threshold.
+10. Remove temporary instrumentation. Update durable docs if the bug exposed a rule.
 
 ## Rules
 

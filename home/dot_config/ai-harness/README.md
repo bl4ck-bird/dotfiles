@@ -129,7 +129,6 @@ bb-workflow
 -> second-review when high risk or independently requested
 -> docs-sync
 -> ship-check
--> retro-capture when memory candidates or retro insights surface
 -> commit/stack gate when explicitly approved or required
 ```
 
@@ -165,7 +164,6 @@ source of truth; this table tracks it.
 | Review durable docs and drift | `docs-review` |
 | Request or record independent second review | `second-review` |
 | Sync docs after behavior or workflow changes | `docs-sync` |
-| Persist memory candidates or retro insights | `retro-capture` |
 | Final handoff, verification, and residual risk check | `ship-check` |
 | Continue bounded autonomous iterations | `bounded-loop` |
 

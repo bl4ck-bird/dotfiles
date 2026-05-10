@@ -32,8 +32,7 @@ toward a goal across repeated iterations. Do not run open-ended loops from `exec
 ## Workspace Isolation
 
 For multi-slice plans, broad refactors, or work that should not touch the user's tree, run in an
-isolated workspace. This skill defines the *judgment* only; the host agent runs the actual git
-commands.
+isolated workspace. The host agent runs the git commands.
 
 - **Detect first**: if the workspace is already isolated (linked worktree, host-managed sandbox),
   skip creation. Treat git submodules as normal repos.

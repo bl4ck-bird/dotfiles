@@ -78,10 +78,8 @@ When commit or stack work is approved:
 5. Run available pre-commit and commit-msg hooks.
 6. Report the commit hash, PR URL, or the reason the action was blocked.
 
-If the host agent provides a commit or PR helper (Claude Code `commit-commands` plugin, Codex
-commit recipe, or a project script), prefer it because it usually wires the project's hooks.
-Otherwise run standard `git`/`gh` commands. The harness rule is the staging and gate behavior,
-not a specific tool name.
+Prefer the host agent's commit/PR helper (Claude Code `commit-commands` plugin, Codex commit
+recipe, or project script) when available. Otherwise run standard `git`/`gh` commands.
 
 ## Worktree Cleanup Provenance
 
@@ -100,8 +98,9 @@ After substantial work, capture one to three short lines:
 - What surprised us
 - One rule worth keeping for future work
 
-Promote a rule into agent feedback memory only when it is non-obvious from the code and would help
-future sessions. Otherwise leave it in the review record.
+Promote a rule into the host agent's memory system only when it is non-obvious from the code and
+would help future sessions; the host agent (e.g. Claude global `auto memory`) owns format and
+classification. Otherwise leave the line in the review record.
 
 ## Output
 
@@ -114,7 +113,8 @@ Keep the final report short:
 - Docs updated or intentionally unchanged
 - Commit status and suggested message or commit hash
 - What remains risky or unverified
-- Memory candidates: route retro rules to `retro-capture` for memory persistence.
+- Memory candidates: persist non-obvious rules through the host agent's memory system per Retro
+  guidance above.
 
 ## Do Not Ship If
 

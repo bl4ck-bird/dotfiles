@@ -58,6 +58,4 @@ Review Result
 - Second review: required/not required
 ```
 
-- Memory candidates: route repeated spec gaps to `retro-capture` for memory persistence.
-
 For substantial reviews, save the record in `docs/reviews/YYYY-MM-DD-<topic>-spec-review.md`.

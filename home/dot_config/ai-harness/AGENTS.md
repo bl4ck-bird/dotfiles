@@ -69,81 +69,54 @@ When instructions or tradeoffs conflict, prefer in this order:
 - If evidence is insufficient for a minimal correct change, ask a targeted question or report the
   gap.
 
-## Methodology Defaults
+## Methodology
 
-- Use a skill-first posture when the BB Harness applies. Prefer the relevant harness skill
-  over ad-hoc process, and skip skills only when the task is clearly small/local or the
-  skill would not materially protect the work.
-- Use the BB Harness workflow for non-trivial project work, selecting only phases justified
-  by workflow weight: product discovery, pressure-test, domain modeling, acceptance
-  artifact, spec-review when needed, compact write-plan, required plan-review,
-  execute-plan, behavior-tdd, implementation-review, focused risk reviews, docs-sync,
-  ship-check, and an approved commit/stack gate when needed.
-- Pressure-test product and engineering work before implementation: challenge the goal, scope, risk,
-  and plan.
-- Resolve overloaded domain terms, keep a bounded-context glossary, and record hard-to-reverse,
-  surprising tradeoffs as durable decisions.
-- Use behavior TDD for changes: one failing public-interface or user-visible test, minimal
-  implementation, refactor only after green.
-- Use systematic debugging for bugs: reproduce first, form falsifiable hypotheses, instrument
-  narrowly, fix with a regression test, and clean up.
+- Use a skill-first posture when the BB Harness applies. Prefer the relevant harness skill over
+  ad-hoc process; skip a skill only when the task is clearly small/local or the skill would not
+  materially protect the work, and record the skip reason.
+- `bb-workflow` is the executable workflow router. Phase selection, routing tables, review routing,
+  and continuation rules live there — do not duplicate them in this file.
+- Pressure-test goals before implementation. Resolve overloaded domain terms. Use behavior TDD for
+  changes (one failing public-interface test → minimal code → refactor). Use systematic debugging
+  for bugs (reproduce → falsifiable hypothesis → fix with regression test → clean up).
 
 ## AI Development Workflow
 
-- New projects start with brainstorming/product discovery before scaffolding implementation details.
-- Existing projects start by reading project instructions, durable docs, current tests, and the
-  surrounding code before proposing changes.
-- Ask before choices that change behavior, API or UX, naming, persistence, auth, dependencies,
-  config, compatibility, product scope, or domain language unless the approved plan already covers
-  them.
+- Existing projects: read project instructions, durable docs, current tests, and surrounding code
+  before proposing changes. New projects: start with brainstorming/product discovery.
+- Ask before changing behavior, API/UX, naming, persistence, auth, dependencies, config,
+  compatibility, product scope, or domain language unless the approved plan already covers it.
 - Treat work as non-trivial when it changes product behavior, domain language, public APIs,
   database/storage shape, auth/security, sync/concurrency, deletion, payments, or external
-  integrations.
-- Treat three or more changed files as a scope-review trigger, not automatic full workflow. Tests,
-  styles, fixtures, or docs supporting the same bounded change may stay on the small path when the
-  reason, files/modules, unchanged product/API/data/security decisions, verification, and docs
-  impact are recorded.
-- Before major implementation, confirm that the project has current roadmap, architecture, domain
-  model, data/security model when relevant, testing guidance, and agent workflow docs.
+  integrations. Three or more changed files is a scope-review trigger, not automatic full workflow.
 - For non-trivial features, produce or identify a reviewed acceptance artifact before an
   implementation plan. A lightweight artifact must include all canonical Acceptance Brief fields
-  (see `write-spec` Light Acceptance Brief template).
-- Use a full spec in `docs/specs/` when product scope, domain language, public API,
-  data/storage, auth/security, deletion, sync, external integrations, or user workflow is
-  still being decided.
-- Convert accepted behavior into vertical slices before planning code. Avoid plans split only by
-  technical layer such as "database, API, UI".
-- Plans live in `docs/plans/` when durable planning is needed. Keep them compact:
-  file responsibility mapping, TDD steps, verification commands, docs impact,
-  commit/stack strategy, rollback notes, and review checkpoints.
+  (see `write-spec` Light Acceptance Brief template). Use a full spec in `docs/specs/` only when
+  product scope, domain language, API, data/storage, auth/security, deletion, sync, external
+  integrations, or user workflow is still being decided.
+- Convert accepted behavior into vertical slices. Plans in `docs/plans/` stay compact (file
+  responsibility map, TDD steps, verification commands, docs impact, commit/stack strategy,
+  rollback notes, review checkpoints).
+- **Reviews are opt-in on signal, not default ceremony.** Call a review skill only when the touched
+  surface matches its triggers; "skill exists" is not a reason to call it. The review chain is
+  defined in `bb-workflow` Review Routing.
 - Accepted-risk exceptions may skip a normal gate only when explicitly approved by the user or
   recorded in an already approved plan. Record the skipped gate, reason, risk, compensating check,
   user acceptance, and follow-up or expiry.
-- Use separate review skills for spec, plan, implementation, architecture, docs, and security
-  instead of relying on one broad review step.
-- Use `second-review` for independent review of high-risk work, or optionally for product specs,
-  implementation plans, large diffs, weak tests, risky architecture, security-sensitive work, or
-  stuck debugging sessions. Use the host agent's Codex integration when available; the
-  `second-review` skill defines the canonical Codex-preferred procedure.
-- Store review records for substantial work in `docs/reviews/` when useful for later human
-  inspection.
-- Prefer reviewer subagents for repeated quality gates: architecture, tests, docs, and security.
-- When delegating coding work to Codex or another worker agent, assign one vertical slice or
-  disjoint write scope, pass artifact paths instead of chat history, and review for acceptance
-  compliance plus code quality before the next task.
-- Use `bounded-loop` only after the goal, file scope, allowed autonomous actions, iteration budget,
-  verification gate, and stop conditions are explicit.
-- Keep `docs/CURRENT.md` current when the active phase, active acceptance artifact/source, active
-  plan, blocker, completed slice, verification evidence, or next action materially changes.
-- Persist the current goal, plan, evidence, and next action in project artifacts so work can resume
-  without chat history.
-- Keep global hooks conservative. Prefer project-level hooks for stack-specific enforcement.
-- Do not commit, push, create PRs, initialize stacks, or rewrite stack history unless the
-  user requested it, project-local instructions require it, or an approved bounded goal
-  includes that action.
-- Keep long-lived product decisions in durable docs such as `docs/ROADMAP.md`,
-  `docs/ARCHITECTURE.md`, `docs/DOMAIN_MODEL.md`, and `docs/TESTING_STRATEGY.md`. Use
-  `docs/DECISIONS/` only for hard-to-reverse tradeoffs that would surprise future maintainers.
+- When delegating coding work to a worker agent, assign one vertical slice or disjoint write scope,
+  pass artifact paths instead of chat history, and review for acceptance compliance plus code
+  quality before the next task. Use `bounded-loop` only after goal, scope, allowed actions,
+  iteration budget, verification gate, and stop conditions are explicit.
+- Keep `docs/CURRENT.md` current at phase boundaries (active phase, acceptance source, plan,
+  blocker, completed slice, verification, next action). Persist goal/plan/evidence/next action in
+  project artifacts so work resumes without chat history.
+- Do not commit, push, create PRs, initialize stacks, or rewrite stack history unless the user
+  requested it, project-local instructions require it, or an approved bounded goal includes that
+  action. Keep global hooks conservative; prefer project-level hooks for stack-specific
+  enforcement.
+- Long-lived product decisions live in durable docs (`docs/ROADMAP.md`, `docs/ARCHITECTURE.md`,
+  `docs/DOMAIN_MODEL.md`, `docs/TESTING_STRATEGY.md`). Use `docs/DECISIONS/` only for
+  hard-to-reverse tradeoffs that would surprise future maintainers.
 
 ## Quality Gates
 

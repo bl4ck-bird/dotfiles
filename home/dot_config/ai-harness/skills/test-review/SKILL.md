@@ -57,7 +57,5 @@ Also record:
 - Review result: pass, pass with follow-ups, or blocked
 - Gaps or residual risk
 - Required fixes before `ship-check`
-- Memory candidates: route repeated test-design failures to `retro-capture` for memory
-  persistence.
 
 For substantial reviews, save the record in `docs/reviews/YYYY-MM-DD-<topic>-test-review.md`.

@@ -80,9 +80,7 @@ Always-applicable checks. Each finding should cite a file/line.
 
 ## File And Complexity Thresholds
 
-This section is the canonical definition of file/function size thresholds for the harness. Other
-skills, AGENTS.md, README, and project templates reference these values; do not redefine them
-elsewhere.
+Canonical thresholds for the harness; other docs link here.
 
 - **300 lines (source file)**: require responsibility review. Split when multiple reasons to
   change are mixed.

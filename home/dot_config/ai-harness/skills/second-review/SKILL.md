@@ -5,19 +5,13 @@ description: Use when requesting or recording an independent Codex review of a s
 
 # Second Review
 
-Run an independent review after the primary review. This skill defines when and how to ask Codex or
-another clean reviewer without replacing the primary review.
-
-Second review is a risk control, not a default ceremony. Use it when independence is likely to find
-something the primary workflow could miss.
+Run an independent review after the primary review. Use it as risk control, not default ceremony.
 
 ## Required When Available
 
 Use independent second review when any are true:
 
 - high-risk security, data-loss, money, auth, crypto, deletion, or core architecture changes
-- a P0/P1 issue could plausibly be missed because the change is hard to inspect or lacks strong
-  verification
 - the user explicitly asks
 
 ## Strongly Consider
@@ -46,11 +40,8 @@ Prefer, in order:
 2. A separate clean Codex app session or Codex CLI in the same repo.
 3. Human/manual review using the same output format.
 
-The harness rule is independence and the artifact-driven review, not a specific tool name. Codex
-is the default independent reviewer because it is the most readily available second model in this
-setup; substitute another reviewer only when Codex is unavailable and record the fallback.
-
-The reviewer must read artifacts, not only chat summaries:
+Codex is the default; substitute another reviewer only when Codex is unavailable and record the
+fallback. The reviewer must read artifacts, not only chat summaries:
 
 - `AGENTS.md`, `CONTEXT.md`, `docs/CURRENT.md`, `docs/AGENT_WORKFLOW.md`
 - relevant acceptance artifact, plan, review records, durable decisions, and changed files or diff

@@ -137,10 +137,8 @@ Required for non-trivial work. Choose one:
 - Include commit/stack strategy, but do not authorize commit, push, PR, or stack operations
   unless the user or project-local instructions already approved them.
 - Include focused review checkpoints only for the concerns the task actually touches.
-- Read `second-review` when deciding review needs. Follow its Required / Strongly Consider rules,
-  including hard-to-inspect work or weak verification that could hide P0/P1 issues. Do not add
-  optional `second-review` by default; record why it is required, strongly considered, or not
-  needed for this plan.
+- Decide `second-review` need per its Required / Strongly Consider rules. Do not add it by default;
+  record why it is required, strongly considered, or not needed for this plan.
 - Include `test-review` when tests are weak, heavily mocked, flaky, missing acceptance coverage, or
   central to the acceptance risk.
 
