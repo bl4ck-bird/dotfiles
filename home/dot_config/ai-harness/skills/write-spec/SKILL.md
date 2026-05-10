@@ -100,6 +100,13 @@ request. The source can live in an issue, review record, plan anchor, or short
 ## AFK / HITL Boundary
 ```
 
+## Edit-On-Review Mode
+
+When `write-spec` is invoked because `spec-review` returned `Blocked` or P0/P1 findings, update
+the existing artifact at the same path. Do not create a new spec file or restart from scratch.
+Address each finding, preserve sections the review did not flag, and re-submit the changed
+artifact to `spec-review`. See `bb-workflow` Review Iteration Pattern.
+
 ## Application Rules
 
 - Light acceptance source (issue, PRD section, review finding, approved user task) must include

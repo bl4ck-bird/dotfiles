@@ -57,4 +57,8 @@ Review Result
 - Second review: required/not required
 ```
 
+If the result is `Blocked` or has P0/P1 findings, fix the artifact in `write-spec` (Edit-On-
+Review mode) and re-run `spec-review` on the changed artifact. Only proceed to `write-plan` when
+the result is `Pass` or `Pass with follow-ups`. See `bb-workflow` Review Iteration Pattern.
+
 For substantial reviews, save the record in `docs/reviews/YYYY-MM-DD-<topic>-spec-review.md`.

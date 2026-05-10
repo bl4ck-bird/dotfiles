@@ -56,4 +56,8 @@ Lead with findings and end with:
 - Required fixes before `execute-plan`
 - Required follow-on reviews
 
+If the result is `Blocked` or has P0/P1 findings, fix the plan in `write-plan` (Edit-On-Review
+mode) and re-run `plan-review` on the changed plan. Only proceed to `execute-plan` when the
+result is `Pass` or `Pass with follow-ups`. See `bb-workflow` Review Iteration Pattern.
+
 For substantial reviews, save the record in `docs/reviews/YYYY-MM-DD-<topic>-plan-review.md`.

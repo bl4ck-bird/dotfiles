@@ -85,6 +85,21 @@ A focused review may automatically recommend at most **one** follow-on review (e
 
 `second-review` is exempt from the cap when its Required When Available criteria are met.
 
+### Review Iteration Pattern
+
+For each phase that has a focused review (spec, plan, implementation):
+
+1. Author or execute the artifact.
+2. Run the focused review.
+3. If the result is `Blocked` or carries P0/P1 findings, fix in the authoring skill (Edit-On-
+   Review mode) and re-run the same review on the changed artifact.
+4. Advance to the next phase only when the result is `Pass` or `Pass with follow-ups`.
+
+`Pass with follow-ups` is acceptable when each follow-up is tracked (issue, plan task, or
+explicit accepted-risk record). Iteration count is normally 1-2. **More than 2 cycles in the
+same phase is a signal that the artifact needs scope or scaffolding rework, not another review
+pass** — pause and ask the user before continuing.
+
 ## Execution Model
 
 - Small/local behavior change: `behavior-tdd` then `ship-check`.

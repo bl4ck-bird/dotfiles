@@ -123,6 +123,13 @@ Required for non-trivial work. Choose one:
 ## Open Risks
 ```
 
+## Edit-On-Review Mode
+
+When `write-plan` is invoked because `plan-review` returned `Blocked` or P0/P1 findings, update
+the existing plan at the same path. Do not create a new plan file or restart from scratch.
+Address each finding, preserve tasks the review did not flag, and re-submit the changed plan to
+`plan-review`. See `bb-workflow` Review Iteration Pattern.
+
 ## Planning Rules
 
 - Keep plans compact. Link to the acceptance artifact instead of restating it.

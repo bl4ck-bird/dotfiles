@@ -50,5 +50,9 @@ Lead with findings and end with:
 - Required fixes before `ship-check`
 - Residual risk
 
+If the result is `Blocked` or has P0/P1 findings, fix in `behavior-tdd` or the relevant slice
+work and re-run `implementation-review` on the changed diff. Only proceed to `ship-check` when
+the result is `Pass` or `Pass with follow-ups`. See `bb-workflow` Review Iteration Pattern.
+
 For substantial reviews, save the record in
 `docs/reviews/YYYY-MM-DD-<topic>-implementation-review.md`.
