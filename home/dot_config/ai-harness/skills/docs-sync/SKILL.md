@@ -10,7 +10,7 @@ Keep durable docs aligned with the project state.
 ## Check
 
 Review changed files, identify the durable concerns they touched, and decide whether any of these
-candidate docs need updates. This is not a mandatory checklist:
+candidate docs need updates:
 
 - `README.md`
 - `AGENTS.md`

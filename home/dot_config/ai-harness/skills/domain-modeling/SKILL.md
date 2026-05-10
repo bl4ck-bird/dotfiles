@@ -5,8 +5,7 @@ description: Use when aligning product plans, acceptance artifacts, code, or tes
 
 # Domain Modeling
 
-Keep agent plans aligned with the product's language and boundaries. This skill should run after
-pressure-test and before write-spec for domain-heavy work.
+Keep agent plans aligned with the product's language and boundaries.
 
 ## Read First
 
@@ -77,9 +76,7 @@ When the repo has multiple subsystems or bounded contexts, update `CONTEXT-MAP.m
 
 ## Decision Record Rule
 
-Suggest a formal decision record only for hard-to-reverse decisions that came from a real tradeoff
-and would surprise a future maintainer. Otherwise use "durable decision" notes in the relevant
-durable doc.
+Suggest a formal decision record only for hard-to-reverse, surprising tradeoffs.
 
 ## Outputs
 

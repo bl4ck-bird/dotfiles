@@ -32,7 +32,12 @@ domain boundary.
 5. REFACTOR: clean names, duplication, boundaries, or file responsibility after green.
 6. Verify again.
 
-Do not write all tests first and all implementation later. Work vertically.
+Do not write all tests first and all implementation later. Work vertically:
+
+```text
+WRONG: test1, test2, test3 → impl1, impl2, impl3
+RIGHT: test1 → impl1 → test2 → impl2 → test3 → impl3
+```
 
 ## Refactor Gate
 

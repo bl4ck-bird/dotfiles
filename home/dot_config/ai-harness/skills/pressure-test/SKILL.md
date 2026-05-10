@@ -5,8 +5,7 @@ description: Use when a product idea, feature, architecture, spec, or plan needs
 
 # Pressure Test
 
-Pressure-test the idea before turning it into a spec or code. This is the harness version of a
-grill-me style interview.
+Pressure-test the idea before turning it into a spec or code.
 
 ## Core Rule
 

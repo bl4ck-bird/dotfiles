@@ -5,8 +5,6 @@ description: Use when reviewing implementation plans, diffs, or designs for arch
 
 # Architecture Review
 
-Review the current plan, diff, or implementation as a skeptical architecture reviewer.
-
 ## Inputs
 
 Read what exists before judging:
@@ -29,7 +27,7 @@ Read what exists before judging:
 
 ## DDD Checks
 
-Use DDD where domain complexity exists. Do not force ceremony onto simple CRUD.
+Use DDD where domain complexity exists.
 
 Check:
 
@@ -90,9 +88,7 @@ Canonical thresholds for the harness; other docs link here.
 - **3+ repeated conditionals on the same concept**: consider a domain concept, strategy, lookup
   table, or policy object.
 - Long files are acceptable when they are data tables, generated code, test fixtures, or
-  deliberately documented framework glue.
-
-Treat these as review thresholds, not mechanical rewrite commands.
+  documented framework glue.
 
 ## Agentic Maintainability
 
@@ -117,9 +113,5 @@ For each finding include:
 
 If there are no material issues, say so directly and list residual risks or test gaps.
 
-## Biases
-
-- Prefer simpler boundaries over ceremonial DDD.
-- Prefer explicit project rules over generic SOLID slogans.
-- Do not recommend large rewrites unless the current design blocks the requested work.
-- Prefer small refactor slices that keep tests green.
+Do not recommend large rewrites unless the current design blocks the requested work. Prefer
+small refactor slices that keep tests green.

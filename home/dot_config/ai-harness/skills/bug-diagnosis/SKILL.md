@@ -7,17 +7,23 @@ description: Use when fixing bugs, flaky tests, production-like failures, unexpe
 
 Fix bugs from evidence, not guesses. Reproduction comes before implementation changes.
 
+The reproduction loop is the core of this skill. Iterate on the loop itself: make it faster,
+sharpen the assertion, remove flakiness. For non-deterministic bugs, raise the reproduction rate
+until it is debuggable rather than chasing a single clean repro.
+
 ## Workflow
 
 1. Restate the observed behavior and expected behavior.
-2. Build or identify the shortest reproduction loop:
-   - failing test
-   - CLI command
-   - curl request
-   - fixture
-   - Playwright flow
-   - small script
-   - log/event trace
+2. Build or identify the shortest reproduction loop. Try in roughly this order:
+   - failing test at the seam that reaches the bug (unit, integration, e2e)
+   - curl/HTTP script against a running dev server
+   - CLI invocation diffing stdout against a known-good snapshot
+   - headless browser script (Playwright/Puppeteer)
+   - replay a captured trace (request payload, event log, network capture)
+   - throwaway harness exercising the bug code path with one function call
+   - property/fuzz loop for "sometimes wrong output"
+   - bisection harness when the bug appeared between two known states
+   - differential loop diffing old vs new version on the same input
 3. Confirm the reproduction fails for the right reason.
 4. Form 3-5 falsifiable hypotheses.
 5. Check hypotheses with the cheapest evidence first.

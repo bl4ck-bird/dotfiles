@@ -5,7 +5,7 @@ description: Use when requesting or recording an independent Codex review of a s
 
 # Second Review
 
-Run an independent review after the primary review. Use it as risk control, not default ceremony.
+Run an independent review after the primary review.
 
 ## Required When Available
 

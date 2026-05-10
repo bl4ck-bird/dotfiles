@@ -60,8 +60,7 @@ Judgment rules (host runs the commands):
 - **Merge**: only delete the feature branch and clean up the worktree *after* the merge
   succeeds, not before.
 - **PR**: keep the worktree alive for review iteration.
-- **Discard**: require the user to confirm explicitly (typed token recommended) before deletion;
-  this is the only destructive option.
+- **Discard**: require the user to confirm explicitly (typed token recommended) before deletion.
 
 ## Commit / Stack Gate
 

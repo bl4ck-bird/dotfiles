@@ -14,8 +14,7 @@ prevents loading every process at once.
   work may be non-trivial.
 - If the task directly matches a skill, use that skill instead of rephrasing its procedure in chat.
 - Use the next relevant skill at each phase boundary.
-- Do not load every skill just because the harness exists. Choose the smallest set that materially
-  protects the work.
+- Choose the smallest set of skills that materially protects the work.
 - If a relevant skill is skipped for a small/local task, state the reason briefly.
 
 ## Start
@@ -44,7 +43,7 @@ domain, architecture, or safety decisions.
 | Tiny/local | One bounded module, no product/domain/API/data/security decision | Direct edit or `behavior-tdd` + `ship-check` |
 | Scope review | 3+ files, uncertain blast radius, unclear module boundary | Decide if small path still fits; record bounded scope |
 | Non-trivial | Product behavior, user workflow, domain language, public API, persistence, auth, sync, deletion, external integration | Reviewed acceptance artifact + compact plan + focused reviews + docs gates |
-| Risky/substantial | Core architecture, money, crypto, data loss, auth, deletion, broad refactor, weak tests, 5+ files, 2+ modules, 300/600-line file thresholds | Required focused review + `second-review` for high-risk security/data-loss/money/auth/crypto/deletion/core-architecture |
+| Risky/substantial | Module boundary or dependency-direction change, refactor crossing 2+ modules, money, crypto, data loss, auth, deletion, weak tests, 5+ files, 2+ modules, 300/600-line file thresholds | Required focused review + `second-review` for high-risk security/data-loss/money/auth/crypto/deletion or boundary/dependency-direction change |
 
 ## Acceptance Artifact
 
@@ -62,8 +61,8 @@ in `write-spec`. Do not duplicate them here.
 
 ## Review Routing
 
-Reviews are opt-in on signal, not default ceremony. Call a review skill only when the trigger
-signal in the left column is present in the touched surface. "Skill exists" is not a reason.
+Call a review skill only when the trigger signal in the left column is present in the touched
+surface.
 
 | Trigger signal (only call when present) | Skill |
 | --- | --- |

@@ -75,7 +75,7 @@ When instructions or tradeoffs conflict, prefer in this order:
   ad-hoc process; skip a skill only when the task is clearly small/local or the skill would not
   materially protect the work, and record the skip reason.
 - `bb-workflow` is the executable workflow router. Phase selection, routing tables, review routing,
-  and continuation rules live there — do not duplicate them in this file.
+  and continuation rules live there.
 - Pressure-test goals before implementation. Resolve overloaded domain terms. Use behavior TDD for
   changes (one failing public-interface test → minimal code → refactor). Use systematic debugging
   for bugs (reproduce → falsifiable hypothesis → fix with regression test → clean up).
@@ -97,8 +97,7 @@ When instructions or tradeoffs conflict, prefer in this order:
 - Convert accepted behavior into vertical slices. Plans in `docs/plans/` stay compact (file
   responsibility map, TDD steps, verification commands, docs impact, commit/stack strategy,
   rollback notes, review checkpoints).
-- **Reviews are opt-in on signal, not default ceremony.** Call a review skill only when the touched
-  surface matches its triggers; "skill exists" is not a reason to call it. The review chain is
+- Call a review skill only when the touched surface matches its triggers. The review chain is
   defined in `bb-workflow` Review Routing.
 - Accepted-risk exceptions may skip a normal gate only when explicitly approved by the user or
   recorded in an already approved plan. Record the skipped gate, reason, risk, compensating check,
@@ -122,7 +121,7 @@ When instructions or tradeoffs conflict, prefer in this order:
 
 - File and complexity thresholds are defined in `skills/architecture-review/SKILL.md` (File And
   Complexity Thresholds). Treat that section as the single source of truth.
-- Apply SOLID as operational checks, not slogans:
+- Apply SOLID as operational checks:
   - Single Responsibility: each module has one primary reason to change.
   - Open/Closed: extension points exist only where variation is real.
   - Liskov: subtype or interface implementations preserve behavior contracts.

@@ -79,57 +79,30 @@ unknown until confirmed.
 
 ## Development Workflow
 
-For non-trivial work, select only the phases justified by workflow weight:
+Use `skills/bb-workflow/SKILL.md` as the routing source. Phase selection follows the workflow
+weight defined there.
 
-0. `bb-workflow` at session start, resume, or when the next workflow phase is unclear.
-1. `product-discovery` for new product direction or major features.
-2. `pressure-test` to pressure-test unclear ideas.
-3. `domain-modeling` to align vocabulary and invariants.
-4. `write-spec` to write the lightest acceptance artifact and vertical slices when needed.
-   Non-trivial work must include all canonical Acceptance Brief fields (see `write-spec` Light
-   Acceptance Brief template; do not re-list the fields here).
-5. `spec-review` for full specs, PRDs, or unclear acceptance criteria.
-6. `write-plan` to create a compact implementation plan before non-trivial code edits.
-7. `plan-review` before non-trivial or multi-step implementation.
-8. `execute-plan` for reviewed multi-slice plans, coding worker execution, or subagent work.
-9. `behavior-tdd` for small/local behavior changes or each implementation slice.
-10. `bounded-loop` only when goal, scope, allowed autonomous actions, iteration budget, verification
-    gate, and stop conditions are explicit.
-11. `implementation-review`, `test-review`, `architecture-review`, `docs-review`, `security-review`,
-    or optional/required `second-review` as risk requires.
-12. `docs-sync` after behavior, architecture, testing, security, or workflow changes.
-13. `ship-check` before handoff, commit, stacked branch/PR, or release.
-14. Commit/stack gate only when the user, project instructions, or approved bounded goal
-    explicitly authorizes it.
+Project-specific overrides (add only when the project diverges from the harness default):
 
-Small local changes may use `behavior-tdd` + `ship-check` only when no product, domain, or
-architecture decision changes. Reviewed multi-slice plans use `execute-plan` as the controller, with
-`behavior-tdd` inside each behavior-changing slice.
+- TODO: project-specific phase additions, skips, or required reviews.
 
-When delegating coding work to a worker agent (Codex or equivalent), assign one vertical slice or
-disjoint write scope and review the result for acceptance compliance plus code quality before the
-next task.
-
-Before using a bounded loop, stop and ask if scope expands, verification fails twice for the same
-reason, unapproved worker scope is needed, or setup/destructive/git-history actions are needed.
-
-After each non-trivial phase, update `docs/CURRENT.md` when the active phase, active acceptance
-artifact/source, active plan, blocker, completed slice, verification evidence, or next action
-materially changes. If the same session continues immediately, update it once at the end of the
-phase.
-
-Use a scope review when a change touches three or more files. Keep the small path if
-those files are bounded to one component/module and include direct tests, styles, fixtures,
-or docs for the same behavior. Record why the work is bounded, the files/modules involved,
-why no product/API/data/security decision is changing, verification, and docs impact.
+Use a scope review when a change touches three or more files. Keep the small path if those files
+are bounded to one component/module and include direct tests, styles, fixtures, or docs for the
+same behavior. Record why the work is bounded, the files/modules involved, why no
+product/API/data/security decision is changing, verification, and docs impact.
 
 Accepted-risk exceptions may skip a normal gate only when explicitly approved by the user or
 recorded in an already approved plan. Record the skipped gate, reason, risk, compensating check,
 user acceptance, and follow-up or expiry.
 
 Use the heavier workflow when a change touches product behavior, domain language, public API,
-persistence, auth/security, sync/concurrency, deletion, external integrations, two or more modules,
-or 300/600-line file thresholds.
+persistence, auth/security, sync/concurrency, deletion, external integrations, two or more
+modules, or 300/600-line file thresholds.
+
+After each non-trivial phase, update `docs/CURRENT.md` when the active phase, active acceptance
+artifact/source, active plan, blocker, completed slice, verification evidence, or next action
+materially changes. If the same session continues immediately, update once at the end of the
+phase.
 
 ## Verification
 

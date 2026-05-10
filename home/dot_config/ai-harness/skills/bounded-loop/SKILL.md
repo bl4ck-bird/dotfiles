@@ -39,8 +39,7 @@ action.
 5. Decide: continue, stop successful, stop blocked, or ask the user.
 6. Update the plan, review record, or handoff note with evidence.
 
-Do not continue just because budget remains. Continue only when the next iteration has a clear
-expected improvement.
+Continue only when the next iteration has a clear expected improvement.
 
 The loop may proceed without per-iteration approval only inside the approved goal, scope, allowed
 actions, iteration budget, and stop conditions. Tool permission prompts, destructive operations, and
