@@ -97,6 +97,25 @@ request. The source can live in an issue, review record, plan anchor, or short
 ## AFK / HITL Boundary
 ```
 
+## Application Rules
+
+The fields above apply wherever non-trivial work needs an acceptance source. Other skills,
+templates, AGENTS.md, and README must reference this template rather than re-listing or partially
+quoting the fields.
+
+- **Light acceptance source** (issue, PRD section, review finding, approved user task): must
+  include every Light Acceptance Brief field. Skip separate `spec-review` only when no
+  product/domain/API/data/security/user-workflow decision is being made.
+- **Full spec mode**: required when product scope, domain language, public API, data/storage,
+  auth/security, deletion, sync, external integrations, or user workflow is still being decided.
+  Use the Full Spec Template below plus a `spec-review`.
+- **Chat-only acceptance**: when the request never lands in an issue/spec, the implementation plan
+  must capture every Light Acceptance Brief field in an "Approved Request Anchor" section.
+- **Partial citations are forbidden**: outside this skill, do not quote a subset of the fields.
+  Either reference the full template by link or include the full template inline.
+- **Field changes**: when adding, renaming, or removing a field, change only this file. Other
+  skills, AGENTS.md, README, and templates carry references and need no edit.
+
 ## Full Spec Template
 
 ```markdown
@@ -171,8 +190,8 @@ product/domain/API/data/security/user-workflow decision is being made. Review:
 
 Use `second-review` optionally for product direction, MVP boundary, core architecture, data/security
 behavior, or other risky surfaces. It is required only when the risk is high enough that a missed
-issue could cause security, data-loss, money, auth, crypto, deletion, or core architecture harm. In
-Claude Code, prefer the Codex plugin when available.
+issue could cause security, data-loss, money, auth, crypto, deletion, or core architecture harm.
+Use the host agent's Codex integration when available.
 
 ## Output
 

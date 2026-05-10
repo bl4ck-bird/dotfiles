@@ -41,9 +41,14 @@ Codex review before implementation or before ship.
 
 Prefer, in order:
 
-1. Claude Code Codex plugin, when available.
-2. Separate clean Codex app session or Codex CLI in the same repo.
+1. The host agent's Codex integration when available (for example a Claude Code Codex plugin, an
+   in-tool Codex command, or a project-specific Codex helper).
+2. A separate clean Codex app session or Codex CLI in the same repo.
 3. Human/manual review using the same output format.
+
+The harness rule is independence and the artifact-driven review, not a specific tool name. Codex
+is the default independent reviewer because it is the most readily available second model in this
+setup; substitute another reviewer only when Codex is unavailable and record the fallback.
 
 The reviewer must read artifacts, not only chat summaries:
 

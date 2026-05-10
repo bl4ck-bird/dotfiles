@@ -77,7 +77,13 @@ printf '%s' '{"tool_name":"Read","tool_input":{"file_path":".env"}}' | PATH=/usr
 ## Coverage And Gaps
 
 Hooks are guardrails, not complete security controls. Treat this list as a starting point for
-project-level wiring:
+project-level wiring.
+
+**Do not assume hooks block all secret reads.** The Bash guard only covers `cat|less|grep|sed|awk`
+direct reads of `.env` and a small fixed set of credential filenames. Bypass paths still allowed:
+`tail`, `head`, `cp`, shell redirection, language interpreters (`python -c`, `node -e`, etc.), and
+any file in the Candidate column below. Wire project-level rules when those paths matter, or add
+project-specific patterns to the harness scripts before relying on them.
 
 | Area | Status | Notes |
 | --- | --- | --- |

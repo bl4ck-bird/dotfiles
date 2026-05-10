@@ -85,6 +85,38 @@ no command is executed.
 If the user approves only part of the gate, complete the approved part and report the rest as
 skipped.
 
+## Lefthook / Pre-Commit Hooks
+
+When the project uses lefthook (or another git hook runner), include hooks for the concerns the
+harness cannot enforce from skills alone. Propose; do not install.
+
+### Dependency Audit Hooks
+
+Trigger when manifest files change in staged commits. Run language-appropriate audit tools and
+fail the commit on findings the project rejects.
+
+| Manifest changed | Recommended audit |
+| --- | --- |
+| `package.json`, `package-lock.json`, `pnpm-lock.yaml`, `yarn.lock` | `npm audit` / `pnpm audit` / `yarn npm audit` |
+| `requirements.txt`, `pyproject.toml`, `poetry.lock`, `uv.lock` | `pip-audit` / `safety check` |
+| `Cargo.toml`, `Cargo.lock` | `cargo audit` |
+| `go.mod`, `go.sum` | `govulncheck ./...` |
+| `Gemfile`, `Gemfile.lock` | `bundler-audit` |
+
+Recommended commit-msg behavior: when a commit touches a manifest file, require the message body
+to mention dependency rationale (added / replaced / upgraded reason, alternatives considered when
+relevant). Lefthook can enforce this with a small commit-msg script. The harness rule is
+*trigger* automation by hook; the *judgment* (alternatives, license, removal cost) lives in
+`plan-review` and `security-review` for high-risk deps.
+
+### Other Hook Targets
+
+- Pre-commit: lint, typecheck, focused test, secret scan (if available).
+- Commit-msg: project conventional-commit format if used.
+- Pre-push: full test suite (when fast enough).
+
+Hook implementation specifics belong in `lefthook.yml`, not in this skill.
+
 ## Defaults
 
 - Keep `README.md` high-level and onboarding-friendly.

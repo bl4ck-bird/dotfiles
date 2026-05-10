@@ -27,9 +27,8 @@ Read:
 
 - Goal, problem, users, MVP, and non-goals are explicit.
 - Acceptance criteria are testable and not merely implementation notes.
-- Lightweight acceptance sources include every canonical Acceptance Brief field,
-  including docs/test impact, required reviews, second review status, and AFK/HITL
-  boundary.
+- Lightweight acceptance sources include every canonical Acceptance Brief field per `write-spec`
+  Light Acceptance Brief template.
 - Domain terms match `CONTEXT.md` and domain docs.
 - Vertical slices deliver reviewable behavior, not horizontal layers.
 - AFK/HITL labels are realistic.
@@ -41,7 +40,7 @@ Read:
 Use `second-review` optionally when the artifact changes product direction, MVP boundary,
 data/security behavior, architecture direction, money, deletion, sync, or external integration
 behavior. Require it only when missing an issue could cause security, data-loss, money, auth,
-crypto, deletion, or core architecture harm. In Claude Code, prefer the Codex plugin when available.
+crypto, deletion, or core architecture harm. Use the host agent's Codex integration when available.
 
 ## Output
 
@@ -58,5 +57,7 @@ Review Result
 - Pass / Pass with follow-ups / Blocked
 - Second review: required/not required
 ```
+
+- Memory candidates: route repeated spec gaps to `retro-capture` for memory persistence.
 
 For substantial reviews, save the record in `docs/reviews/YYYY-MM-DD-<topic>-spec-review.md`.

@@ -106,10 +106,8 @@ When instructions or tradeoffs conflict, prefer in this order:
 - Before major implementation, confirm that the project has current roadmap, architecture, domain
   model, data/security model when relevant, testing guidance, and agent workflow docs.
 - For non-trivial features, produce or identify a reviewed acceptance artifact before an
-  implementation plan. A lightweight artifact must include the canonical Acceptance Brief
-  fields: goal, accepted behavior, acceptance criteria, non-goals or stop conditions,
-  touched surfaces, edge/error cases, docs/test impact, risk level, required reviews,
-  second review, and AFK/HITL boundary.
+  implementation plan. A lightweight artifact must include all canonical Acceptance Brief fields
+  (see `write-spec` Light Acceptance Brief template).
 - Use a full spec in `docs/specs/` when product scope, domain language, public API,
   data/storage, auth/security, deletion, sync, external integrations, or user workflow is
   still being decided.
@@ -123,10 +121,10 @@ When instructions or tradeoffs conflict, prefer in this order:
   user acceptance, and follow-up or expiry.
 - Use separate review skills for spec, plan, implementation, architecture, docs, and security
   instead of relying on one broad review step.
-- Use `second-review` for independent Codex review of high-risk work, or optionally for
-  product specs, implementation plans, large diffs, weak tests, risky architecture,
-  security-sensitive work, or stuck debugging sessions. In Claude Code, prefer the Codex
-  plugin when available.
+- Use `second-review` for independent review of high-risk work, or optionally for product specs,
+  implementation plans, large diffs, weak tests, risky architecture, security-sensitive work, or
+  stuck debugging sessions. Use the host agent's Codex integration when available; the
+  `second-review` skill defines the canonical Codex-preferred procedure.
 - Store review records for substantial work in `docs/reviews/` when useful for later human
   inspection.
 - Prefer reviewer subagents for repeated quality gates: architecture, tests, docs, and security.
@@ -149,12 +147,8 @@ When instructions or tradeoffs conflict, prefer in this order:
 
 ## Quality Gates
 
-- Source files over 300 lines require a responsibility review. Split when multiple reasons to change
-  are mixed.
-- Source files over 600 lines are a review finding unless generated, vendored, fixtures, migrations,
-  or a project explicitly documents the exception.
-- Functions over 50-80 lines, deeply nested conditionals, or repeated switch/if chains require
-  extraction or a written reason to keep them.
+- File and complexity thresholds are defined in `skills/architecture-review/SKILL.md` (File And
+  Complexity Thresholds). Treat that section as the single source of truth.
 - Apply SOLID as operational checks, not slogans:
   - Single Responsibility: each module has one primary reason to change.
   - Open/Closed: extension points exist only where variation is real.

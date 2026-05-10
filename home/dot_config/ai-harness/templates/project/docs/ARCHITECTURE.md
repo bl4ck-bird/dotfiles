@@ -27,9 +27,9 @@ TODO: Describe system boundaries, primary runtime surfaces, deployment shape, an
 ## Module Responsibility Rules
 
 - Prefer small, focused files with one primary reason to change.
-- Source files over 300 lines require responsibility review.
-- Source files over 600 lines require explicit exception, split plan, or approval.
-- Functions over 50-80 lines should be reviewed for extraction when they mix concerns.
+- File and complexity thresholds (300/600 lines, 50-80-line functions, repeated-conditional
+  triggers) follow `skills/architecture-review/SKILL.md` (File And Complexity Thresholds). Do not
+  redefine numbers here; record project-specific exceptions only.
 - Do not introduce abstractions without real variation, meaningful complexity, or an established
   project pattern.
 

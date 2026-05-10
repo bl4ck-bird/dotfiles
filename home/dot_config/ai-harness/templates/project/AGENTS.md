@@ -71,8 +71,8 @@ unknown until confirmed.
 
 - Prefer vertical slices over horizontal technical phases.
 - Behavior tests should exercise public interfaces, user-visible flows, or stable domain boundaries.
-- Source files over 300 lines require responsibility review.
-- Source files over 600 lines require explicit approval, documented exception, or split plan.
+- File and complexity thresholds follow `skills/architecture-review/SKILL.md` (File And Complexity
+  Thresholds). Do not redefine the numbers here.
 - Use SOLID as concrete checks for responsibility, dependency direction, and interface size.
 - Use DDD only where domain complexity justifies it.
 - Do not introduce speculative abstractions.
@@ -86,13 +86,12 @@ For non-trivial work, select only the phases justified by workflow weight:
 2. `pressure-test` to pressure-test unclear ideas.
 3. `domain-modeling` to align vocabulary and invariants.
 4. `write-spec` to write the lightest acceptance artifact and vertical slices when needed.
-   Non-trivial work needs the canonical Acceptance Brief fields: goal, accepted behavior,
-   acceptance criteria, non-goals or stop conditions, touched surfaces, edge/error cases,
-   docs/test impact, risk level, required reviews, second review, and AFK/HITL boundary.
+   Non-trivial work must include all canonical Acceptance Brief fields (see `write-spec` Light
+   Acceptance Brief template; do not re-list the fields here).
 5. `spec-review` for full specs, PRDs, or unclear acceptance criteria.
 6. `write-plan` to create a compact implementation plan before non-trivial code edits.
 7. `plan-review` before non-trivial or multi-step implementation.
-8. `execute-plan` for reviewed multi-slice plans, Codex worker execution, or subagent work.
+8. `execute-plan` for reviewed multi-slice plans, coding worker execution, or subagent work.
 9. `behavior-tdd` for small/local behavior changes or each implementation slice.
 10. `bounded-loop` only when goal, scope, allowed autonomous actions, iteration budget, verification
     gate, and stop conditions are explicit.
@@ -107,8 +106,9 @@ Small local changes may use `behavior-tdd` + `ship-check` only when no product, 
 architecture decision changes. Reviewed multi-slice plans use `execute-plan` as the controller, with
 `behavior-tdd` inside each behavior-changing slice.
 
-When delegating coding work to Codex or another worker agent, assign one vertical slice or disjoint
-write scope and review the result for acceptance compliance plus code quality before the next task.
+When delegating coding work to a worker agent (Codex or equivalent), assign one vertical slice or
+disjoint write scope and review the result for acceptance compliance plus code quality before the
+next task.
 
 Before using a bounded loop, stop and ask if scope expands, verification fails twice for the same
 reason, unapproved worker scope is needed, or setup/destructive/git-history actions are needed.

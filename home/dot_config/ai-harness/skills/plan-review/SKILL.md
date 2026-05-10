@@ -25,9 +25,8 @@ Read:
   unnecessary using Acceptance Brief criteria.
 - Accepted-risk exceptions include skipped gate, reason, risk, compensating check, user acceptance,
   and follow-up or expiry.
-- Chat-only acceptance sources are captured in an approved request anchor with every
-  canonical Acceptance Brief field, including docs/test impact, required reviews, second
-  review status, and AFK/HITL boundary.
+- Chat-only acceptance sources are captured in an approved request anchor with every canonical
+  Acceptance Brief field per `write-spec` Light Acceptance Brief template.
 - Every acceptance criterion maps to at least one task or explicit non-goal.
 - The plan links to the acceptance artifact instead of restating it at length.
 - File responsibility map is specific enough to constrain edits.
@@ -35,7 +34,10 @@ Read:
 - Behavior changes use `behavior-tdd` with expected RED/GREEN signals.
 - Verification commands are exact where known.
 - Docs impact, commit/stack strategy, and rollback/recovery are named.
-- DDD/SOLID, file-size, security, data-loss, and dependency risks are surfaced.
+- DDD/SOLID, file-size, security, and data-loss risks are surfaced.
+- Dependency adds/replaces/upgrades record: alternatives considered, audit tool run, license
+  compatibility, removal cost, and project fit. High-risk deps (auth/payment/crypto/native code)
+  flag `security-review` and `second-review`.
 
 ## Follow-On Reviews
 

@@ -8,6 +8,10 @@ description: Use when reviewing an implementation diff, completed slice, tests, 
 Review a completed slice or diff against the accepted artifact and plan. This is the default
 post-implementation review before docs sync or ship check.
 
+Scope: acceptance compliance, scope/churn, test signal, obvious code-quality smells. Defer deeper
+DDD/SOLID/file-size findings to `architecture-review`, deeper test-design findings to
+`test-review`, and deeper auth/data-loss findings to `security-review`.
+
 ## Inputs
 
 Read:
@@ -23,6 +27,8 @@ Read:
 - Behavior matches acceptance criteria.
 - Tests prove public behavior, user-visible flows, or domain invariants.
 - Edge cases, regressions, and failure paths are covered or explicitly accepted.
+- No silent failures: swallowed exceptions, broad catches without re-raise, or fallbacks that mask
+  upstream errors.
 - Architecture, DDD/SOLID, file-size, and complexity rules are still satisfied.
 - Security/data/docs impacts were reviewed with the appropriate focused skill when relevant.
 - Review findings were fixed, deferred, or accepted with a reason.
@@ -43,6 +49,8 @@ Lead with findings and end with:
 - Verification evidence reviewed
 - Required fixes before `ship-check`
 - Residual risk
+- Memory candidates: route patterns surprising or repeating across reviews to `retro-capture` for
+  memory persistence.
 
 For substantial reviews, save the record in
 `docs/reviews/YYYY-MM-DD-<topic>-implementation-review.md`.

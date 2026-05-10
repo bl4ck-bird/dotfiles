@@ -5,19 +5,18 @@ description: Use when starting, resuming, or routing side-project work through t
 
 # BB Workflow
 
-Use this as the entry point for agent work. It selects the lightest sufficient workflow, names the
-next skill to use, and prevents loading every process at once.
+Entry point for agent work. Selects the lightest sufficient workflow, names the next skill, and
+prevents loading every process at once.
 
 ## Skill-First Rule
 
-When the BB Harness is in use, prefer using the harness skills over ad-hoc process. Skills are the
-executable workflow surface, not background reading.
+When the BB Harness is in use, prefer harness skills over ad-hoc process. Skills are the executable
+workflow surface, not background reading.
 
 - Start with `bb-workflow` when the current phase is unclear, a session is starting/resuming, or
   work may be non-trivial.
 - If the task directly matches a skill, use that skill instead of rephrasing its procedure in chat.
-- Use the next relevant skill at each phase boundary: discovery, pressure-test, domain-modeling,
-  acceptance artifact, review, plan, execution, docs-sync, or ship-check.
+- Use the next relevant skill at each phase boundary.
 - Do not load every skill just because the harness exists. Choose the smallest set that materially
   protects the work.
 - If a relevant skill is skipped for a small/local task, state the reason briefly.
@@ -28,105 +27,66 @@ executable workflow surface, not background reading.
 2. If present, read `CONTEXT.md`, `docs/CURRENT.md`, `docs/AGENT_WORKFLOW.md`, the active acceptance
 artifact, plan, and recent review or handoff note.
 3. Check available skills for a direct match before choosing the execution path.
-4. Summarize only:
-   - current goal
-   - workflow weight
-   - missing decisions or artifacts
-   - next safe action
+4. Summarize only: current goal, workflow weight, missing decisions or artifacts, next safe action.
 
 If key context is missing, ask for it or propose a minimal recovery step. Do not invent product,
 domain, architecture, or safety decisions.
 
 ## Evidence Gate
 
-- For trivial edits, inspect the target file and adjacent context before editing.
-- For behavior, API, dependency, data, security, or infrastructure changes, trace the execution
-  path, call sites, constraints, and regression surface first.
-- If the next action would change behavior, API or UX, naming, persistence, auth, dependency,
-  config, compatibility, product scope, or domain language outside an approved plan, ask before
-  continuing.
+- Trivial edits: inspect the target file and adjacent context before editing.
+- Behavior, API, dependency, data, security, or infrastructure changes: trace execution path, call
+  sites, constraints, and regression surface first.
+- If the next action would change behavior, API/UX, naming, persistence, auth, dependency, config,
+  compatibility, product scope, or domain language outside an approved plan, ask first.
 
 ## Workflow Weight
 
-- Tiny/local: one bounded component or module, no product/domain/API/data/security
-  decision. Tests, styles, fixtures, or docs supporting the same bounded change may stay
-  on the small path. Use direct edit or `behavior-tdd` plus `ship-check`.
-- Scope review: three or more files, uncertain blast radius, or unclear module boundary.
-  Decide whether the small path still fits. If it does, record the bounded scope, files,
-  unchanged product/API/data/security decisions, verification, and docs impact.
-- Non-trivial: product behavior, user workflow, domain language, public API, persistence,
-  auth/security, sync/concurrency, deletion, or external integration. Use a reviewed
-  acceptance artifact, compact plan, focused reviews, and docs gates.
-- Risky/substantial: core architecture, money, crypto, data loss, auth, deletion, broad
-  refactor, weak tests, five or more files, two or more modules, or 300/600-line file
-  thresholds. Require the relevant focused review. Require `second-review` for high-risk
-  security/data-loss/money/auth/crypto/deletion/core-architecture work when available;
-  consider it for large diffs, weak tests, or hard-to-inspect work.
+| Weight | Trigger | Default path |
+| --- | --- | --- |
+| Tiny/local | One bounded module, no product/domain/API/data/security decision | Direct edit or `behavior-tdd` + `ship-check` |
+| Scope review | 3+ files, uncertain blast radius, unclear module boundary | Decide if small path still fits; record bounded scope |
+| Non-trivial | Product behavior, user workflow, domain language, public API, persistence, auth, sync, deletion, external integration | Reviewed acceptance artifact + compact plan + focused reviews + docs gates |
+| Risky/substantial | Core architecture, money, crypto, data loss, auth, deletion, broad refactor, weak tests, 5+ files, 2+ modules, 300/600-line file thresholds | Required focused review + `second-review` for high-risk security/data-loss/money/auth/crypto/deletion/core-architecture |
 
 ## Acceptance Artifact
 
-Before implementation, non-trivial work needs one artifact accepted or reviewed at the right weight
-that says what behavior is being built and how it will be accepted. This may be:
+Non-trivial work needs a reviewed acceptance artifact (spec, PRD, issue, review finding, or
+approved task) before implementation. The canonical Acceptance Brief fields and full template are
+in `write-spec`. Do not duplicate them here.
 
-- a feature spec in `docs/specs/`
-- a clear issue, PRD, review finding, or user-approved task with testable acceptance criteria
-
-For non-trivial work, the artifact must meet the canonical Acceptance Brief fields.
-
-The canonical Acceptance Brief fields are:
-
-- Goal
-- Accepted Behavior
-- Acceptance Criteria
-- Non-Goals / Stop Conditions
-- Touched Surfaces
-- Edge And Error Cases
-- Docs / Test Impact
-- Risk Level
-- Required Reviews
-- Second Review
-- AFK / HITL Boundary
-
-For a clear task, the implementation plan records why separate `spec-review` is unnecessary.
-If the request only exists in chat, the plan must include an approved request anchor with
-the same canonical fields.
-
-Create a separate spec when product scope, domain language, public API, data/storage, auth/security,
-deletion, sync, external integrations, or user workflow is still being decided. Do not create a spec
-only to restate an already clear task.
-
-Accepted-risk exceptions may skip a normal gate only when explicitly approved by the user or
-recorded in an already approved plan. Record the skipped gate, reason, risk, compensating check,
-user acceptance, and follow-up or expiry.
+- Use a full `docs/specs/` spec when product scope, domain language, public API, data/storage,
+  auth/security, deletion, sync, external integrations, or user workflow is still being decided.
+- For an already-clear task, an issue/review finding/approved request can be enough when it meets
+  the canonical fields. If it only exists in chat, the plan must capture them in an Approved
+  Request Anchor.
+- Accepted-risk exceptions may skip a normal gate only with explicit user acceptance. Record:
+  skipped gate, reason, risk, compensating check, user acceptance, follow-up/expiry.
 
 ## Review Routing
 
-Use the lightest review that protects the work:
+Use the lightest review that protects the work. Detailed checks live in each review skill.
 
-- `spec-review`: when a separate spec or PRD exists, or when acceptance criteria are still being
-  shaped.
-- `plan-review`: required before executing a non-trivial or multi-step implementation plan, unless
-  an explicit accepted-risk record exists.
-- `implementation-review`: after substantial slices or review-fix passes.
-- `test-review`: when tests are weak, flaky, heavily mocked, missing acceptance coverage, or central
-  to the risk.
-- `architecture-review`, `security-review`, or `docs-review`: only when the touched surface matches
-  the review concern.
-- `second-review`: required for high-risk
-  security/data-loss/money/auth/crypto/deletion/core-architecture work; optional for specs, plans,
-  broad diffs, weak tests, or when the user wants an independent Codex check.
-
-Prefer the Claude Code Codex plugin for `second-review` when working in Claude Code. If unavailable,
-use a clean Codex session, Codex CLI, or record the fallback.
+| Concern | Skill |
+| --- | --- |
+| Spec/PRD or unclear acceptance criteria | `spec-review` |
+| Non-trivial or multi-step plan before execution | `plan-review` (required) |
+| Substantial slice or review-fix pass | `implementation-review` |
+| Weak/flaky/heavily-mocked/acceptance-critical tests | `test-review` |
+| Boundary, DDD, SOLID, file-size, over-abstraction | `architecture-review` |
+| Auth, secrets, crypto, deletion, sensitive data, untrusted input, injection, SSRF | `security-review` |
+| Durable docs or drift | `docs-review` |
+| High-risk security/data-loss/money/auth/crypto/deletion/core-architecture | `second-review` (required) |
+| Independent second review required or requested | `second-review` (procedure and Codex preference defined in the skill) |
 
 ## Execution Model
 
-- Small/local behavior change: use `behavior-tdd` directly, then `ship-check`.
-- Reviewed multi-slice plan: use `execute-plan` as the controller. Each implementation slice still
-  uses `behavior-tdd` for behavior changes.
-- Worker/subagent execution: delegate one vertical slice or disjoint write scope at a time. The
-  controller must inspect for acceptance compliance and code quality; run implementation, focused,
-  or second review when the result is substantial, risky, hard to inspect, or required by the plan.
+- Small/local behavior change: `behavior-tdd` then `ship-check`.
+- Reviewed multi-slice plan: `execute-plan` as controller; each behavior-changing slice uses
+  `behavior-tdd`.
+- Worker/subagent: delegate one vertical slice or disjoint write scope. Controller inspects for
+  acceptance compliance and code quality; run focused or second review when result is substantial,
+  risky, hard to inspect, weakly verified, or required by the plan.
 
 ## Routing
 
@@ -135,46 +95,47 @@ Choose the next phase, not the entire lifecycle:
 | Situation | Next skill |
 | --- | --- |
 | New or unscaffolded repo | `project-scaffold` |
-| Product brainstorming, goal, MVP, users, or non-goals unclear | `product-discovery` |
+| Product brainstorming, goal, MVP, users, non-goals unclear | `product-discovery` |
 | Idea, spec, or plan needs pressure testing | `pressure-test` |
-| Domain terms, contexts, invariants, or hard-to-reverse decisions are unclear | `domain-modeling` |
-| Goal is clear but no acceptance artifact or slices exist | `write-spec` |
-| Spec or PRD exists but primary review is missing | `spec-review` |
-| Acceptance artifact is reviewed, but implementation path is unclear | `write-plan` |
-| Non-trivial or multi-step plan exists but plan review is missing | `plan-review` |
-| Reviewed and approved plan has multiple slices | `execute-plan` |
+| Domain terms, contexts, invariants, hard-to-reverse decisions unclear | `domain-modeling` |
+| Goal clear but no acceptance artifact or slices | `write-spec` |
+| Spec/PRD exists but primary review missing | `spec-review` |
+| Acceptance artifact reviewed, implementation path unclear | `write-plan` |
+| Non-trivial/multi-step plan exists, plan review missing | `plan-review` |
+| Reviewed plan has multiple slices | `execute-plan` (includes Workspace Isolation guidance) |
 | Small behavior change or implementation task | `behavior-tdd` |
-| Bug, flaky test, or regression | `bug-diagnosis` |
+| Bug, flaky test, regression | `bug-diagnosis` |
 | Tests may not prove accepted behavior | `test-review` |
-| Architecture, DDD, SOLID, or file-size concern | `architecture-review` |
-| Completed slice, implementation diff, or test quality needs review | `implementation-review` |
-| Security, data-loss, destructive, auth, secrets, crypto, untrusted input, injection, path traversal, command construction, parser/deserialization, SSRF, or open redirect risk exists | `security-review` |
+| Architecture/DDD/SOLID/file-size concern | `architecture-review` |
+| Completed slice/diff/test quality needs review | `implementation-review` |
+| Security/data-loss/destructive/auth/secrets/crypto/untrusted-input risk | `security-review` |
 | Durable docs or handoff may be stale | `docs-review` |
-| Independent Codex review is required or requested | `second-review` |
-| Behavior, architecture, testing, security, or workflow changed | `docs-sync` |
-| Work is ready to hand off, commit, PR, or release | `ship-check` |
-| Commit, stacked branch, PR, or release action is approved | `ship-check` then commit/stack gate |
+| Independent second review required or requested | `second-review` |
+| Behavior/architecture/testing/security/workflow changed | `docs-sync` |
+| Work ready to hand off, commit, PR, release | `ship-check` |
+| Commit/stack/PR/release action approved | `ship-check` then commit/stack gate |
+| Memory candidates or retro insights surfaced from a review or ship-check | `retro-capture` |
 | User approved repeated autonomous progress | `bounded-loop` |
 
 ## Phase Loop
 
 After each phase:
 
-1. Record or update the durable artifact for that phase when the work is non-trivial.
-2. Update `docs/CURRENT.md` when the active phase, active acceptance artifact/source, active plan,
-blocker, completed slice, verification evidence, or next action materially changes. If the same
-session immediately continues, update it once at the end of the phase.
+1. Record or update the durable artifact for that phase when work is non-trivial.
+2. Update `docs/CURRENT.md` only when active phase, acceptance artifact/source, plan, blocker,
+   completed slice, verification evidence, or next action materially changes. Update once at end
+   of phase, not after every small step.
 3. Run the narrowest useful verification or explain why none applies.
-4. Decide one of: continue to the next skill, ask the user, clear context after handoff, or stop.
-5. Recommend exactly one next phase when the workflow has a clear next step. Ask a concise
-confirmation instead of making the user remember the next skill.
-6. Do not advance when approval is required for git setup, dependency execution, hooks,
-   deletion, commit/stack actions, history rewrite, broad scope expansion, or unresolved
+4. Decide one of: continue to next skill, ask the user, clear context after handoff, or stop.
+5. Recommend one next phase. If two paths are equally valid, present at most one alternative for
+   confirmation. Ask a concise confirmation rather than making the user remember the next skill.
+6. Do not advance when approval is required for git setup, dependency execution, hooks, deletion,
+   commit/stack actions, history rewrite, broad scope expansion, or unresolved
    product/domain/architecture decisions.
 
 ## Continuation Prompts
 
-Use these as defaults after finishing a phase:
+Defaults after finishing a phase:
 
 - After product discovery: "제품 방향이 정리됐습니다. 아직 불확실한 가정을 pressure-test할까요, 아니면 바로 acceptance artifact를
   정리할까요?"
@@ -188,7 +149,7 @@ Use these as defaults after finishing a phase:
 - After plan review: "계획 리뷰가 끝났습니다. 첫 vertical slice 구현을 시작할까요?"
 - After implementation review: "리뷰 결과를 반영했습니다. docs-sync와 ship-check로 마무리할까요?"
 
-If the user has already approved an end-to-end bounded goal, continue inside the approved scope and
+If the user already approved an end-to-end bounded goal, continue inside the approved scope and
 stop conditions instead of asking after every safe phase.
 
 ## Parallel Work
@@ -203,8 +164,6 @@ stop conditions instead of asking after every safe phase.
 
 ## Context Control
 
-Keep context small:
-
 - Load only the skill needed for the current phase.
 - Prefer artifact paths over chat summaries.
 - Write a handoff before clearing after discovery/spec, plan approval, several implementation
@@ -214,11 +173,5 @@ Keep context small:
 
 ## Output
 
-Return:
-
-- Context read
-- Workflow weight
-- Selected next skill
-- Current phase and next recommended phase
-- Required artifact or approval
-- Next safe action
+Return: context read, workflow weight, selected next skill, current and next recommended phase,
+required artifact or approval, next safe action.

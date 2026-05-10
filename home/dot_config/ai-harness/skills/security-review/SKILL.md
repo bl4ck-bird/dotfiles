@@ -19,6 +19,8 @@ Use this skill when work touches:
 - external integrations, webhooks, sync, concurrency, permissions, or sensitive data exposure
 - untrusted input, validation, injection, path traversal, command construction,
   parser/deserialization, SSRF, open redirects, or file uploads
+- new or replaced dependencies in auth/payment/crypto/network-protocol/native-code paths (audit
+  output, supply-chain reputation, post-install scripts)
 
 ## Checks
 

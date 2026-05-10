@@ -46,8 +46,8 @@ small:
 - Interfaces stay small and caller-focused.
 - Repeated conditionals, duplicated branching, or long functions are extracted only when the
   extraction clarifies a real concept.
-- Source files over 300 lines get a responsibility check; files over 600 lines need a documented
-  exception or split plan.
+- Apply the file/function size thresholds defined in `architecture-review` (File And Complexity
+  Thresholds) when refactoring touched files.
 
 Refactor only after tests are green, and rerun the focused verification after the refactor.
 
@@ -71,12 +71,8 @@ Avoid tests that:
 
 ## Bug Fixes
 
-For bugs:
-
-- Use `bug-diagnosis` first when the cause is not obvious.
-- Preserve or create a failing regression test.
-- Fix after the regression test fails correctly.
-- Rerun the original reproduction loop.
+For bugs, run `bug-diagnosis` first to reproduce, form hypotheses, and clean up instrumentation.
+Return here for the red-green-refactor cycle with a regression test that fails before the fix.
 
 ## Refactors
 

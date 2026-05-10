@@ -56,19 +56,8 @@ Use a full spec when product scope, domain language, API, data/storage, auth/sec
 sync, external integrations, or user workflow is still being decided. Do not create a spec only to
 restate an already clear task.
 
-The canonical Acceptance Brief fields are:
-
-- Goal
-- Accepted Behavior
-- Acceptance Criteria
-- Non-Goals / Stop Conditions
-- Touched Surfaces
-- Edge And Error Cases
-- Docs / Test Impact
-- Risk Level
-- Required Reviews
-- Second Review
-- AFK / HITL Boundary
+Use the canonical Acceptance Brief fields defined in `skills/write-spec/SKILL.md` (Light Acceptance
+Brief template). Do not re-list the fields here.
 
 ## Project Scaffold Gate
 
@@ -99,7 +88,7 @@ installs unless the user explicitly asks the agent to run them.
 - Use `second-review` when high-risk work needs independent review. For specs and plans, this is
   optional unless security, data loss, money, auth, crypto, deletion, or core architecture risk is
   high.
-- In Claude Code, prefer the Codex plugin for `second-review` when available.
+- Use the host agent's Codex integration for `second-review` when available.
 
 ## Workflow Continuation
 
@@ -111,18 +100,8 @@ After each non-trivial phase:
 2. Recommend exactly one next phase when the path is clear.
 3. Ask a concise confirmation question when approval is needed.
 
-Default continuation questions:
-
-- After product discovery: "제품 방향이 정리됐습니다. 아직 불확실한 가정을 pressure-test할까요, 아니면 바로 acceptance artifact를
-  정리할까요?"
-- After pressure-test: "주요 가정이 정리됐습니다. 도메인 모델링이 필요할까요, 아니면 acceptance artifact 작성으로 넘어갈까요?"
-- After domain modeling: "도메인 언어가 정리됐습니다. 이 내용으로 acceptance artifact와 vertical slice를 작성할까요?"
-- After write-spec: "Acceptance artifact가 준비됐습니다. full spec/PRD이거나 기준이 아직 흔들리면 spec-review가 필요합니다.
-  가벼운 accepted task라면 compact implementation plan으로 넘어가겠습니다."
-- After spec review: "Acceptance review가 끝났습니다. compact implementation plan을 작성할까요?"
-- After write-plan: "계획이 준비됐습니다. non-trivial 또는 multi-step이면 plan-review를 진행하겠습니다. 범위를 small path로
-  줄이려면 알려주세요."
-- After plan review: "계획 리뷰가 끝났습니다. 첫 vertical slice 구현을 시작할까요?"
+Default continuation prompts live in `skills/bb-workflow/SKILL.md`. The project may override here
+when wording needs to differ from the harness default.
 
 Do not auto-advance across setup, dependency execution, hook, delete, git-history,
 commit/stack, product, domain, architecture, data, or security decisions unless the

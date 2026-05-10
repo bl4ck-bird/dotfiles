@@ -15,7 +15,7 @@ Read what exists before judging:
 - `docs/ARCHITECTURE.md`
 - `docs/DOMAIN_MODEL.md`
 - `docs/DECISIONS/`
-- The relevant spec, plan, and diff
+- The relevant acceptance artifact (spec/PRD/issue/review finding/approved task), plan, and diff
 
 ## Review Focus
 
@@ -41,6 +41,19 @@ Check:
 - Infrastructure adapters do not leak persistence, network, or framework types into domain rules.
 - Repositories or ports represent real boundaries, not fake abstractions around one-line CRUD.
 
+### DDD Operational Checks (when domain-heavy)
+
+Run only when `CONTEXT.md` or `docs/DOMAIN_MODEL.md` exists and the diff touches domain code:
+
+- Bounded context boundaries: no cross-context imports of another context's aggregates or value
+  objects without an explicit translation layer.
+- Aggregate invariants: each documented invariant has at least one test through a public interface
+  or domain event.
+- Anti-corruption layer: external integrations translate at the boundary; external types do not
+  appear in domain code.
+- Ubiquitous language drift: grep code identifiers (class, function, table, event names) against
+  the `CONTEXT.md` glossary; flag synonyms or undefined terms.
+
 ## SOLID Checks
 
 Translate SOLID into concrete findings:
@@ -51,18 +64,37 @@ Translate SOLID into concrete findings:
 - ISP: broad interfaces should be split when callers use small subsets.
 - DIP: high-level domain/application code should not depend on framework or adapter details.
 
+## Code Hygiene Checks
+
+Always-applicable checks. Each finding should cite a file/line.
+
+- Comment hygiene: comments explain *why* (constraints, invariants, workarounds). Flag tutorial
+  comments, restated identifiers, "added for X" temporal notes, and large auto-generated docstrings
+  that drift from the code.
+- Silent failure: flag swallowed exceptions, broad `try/except` or `catch (...)` without re-raise,
+  default fallbacks that mask upstream failure, and `console.error`/log-and-continue on errors that
+  must reach the caller.
+- Type design (typed languages): types encode invariants where practical. Flag `any`/`unknown`
+  leakage past boundaries, stringly-typed states that should be enums or value objects, and public
+  interfaces that accept broader types than they need (ISP at the type level).
+
 ## File And Complexity Thresholds
 
-Use these as review thresholds, not mechanical rewrite commands:
+This section is the canonical definition of file/function size thresholds for the harness. Other
+skills, AGENTS.md, README, and project templates reference these values; do not redefine them
+elsewhere.
 
-- Source file over 300 lines: require responsibility review.
-- Source file over 600 lines: finding unless generated, vendored, migration, fixture, or documented
-  exception.
-- Function over 50-80 lines: consider extraction if it mixes concerns or has deep branching.
-- Three or more repeated conditionals on the same concept: consider a domain concept, strategy,
-  lookup table, or policy object.
+- **300 lines (source file)**: require responsibility review. Split when multiple reasons to
+  change are mixed.
+- **600 lines (source file)**: review finding unless the file is generated, vendored, a fixture,
+  a migration, a data table, or has a documented exception in `docs/ARCHITECTURE.md`.
+- **50-80 lines (function)**: consider extraction if it mixes concerns or has deep branching.
+- **3+ repeated conditionals on the same concept**: consider a domain concept, strategy, lookup
+  table, or policy object.
 - Long files are acceptable when they are data tables, generated code, test fixtures, or
   deliberately documented framework glue.
+
+Treat these as review thresholds, not mechanical rewrite commands.
 
 ## Agentic Maintainability
 

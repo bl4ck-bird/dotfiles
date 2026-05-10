@@ -49,13 +49,20 @@ Check: <command/file/log/test>
 Result: <confirmed/refuted/unknown>
 ```
 
+## Hand Off To `behavior-tdd`
+
+After reproduction is confirmed and the root cause is identified, return to `behavior-tdd` for the
+red-green-refactor cycle: regression test that fails before the fix, then the smallest change that
+makes it pass. Do not implement the fix inside this skill; this skill owns reproduction,
+hypothesis, and root cause.
+
 ## Output
 
 Report:
 
 - Reproduction path
 - Root cause
-- Fix summary
+- Fix summary (handed off to `behavior-tdd`)
 - Regression coverage
 - Verification commands and results
 - Residual risk

@@ -15,19 +15,8 @@ criteria are still being shaped.
 For non-trivial work that does not need a full spec, the acceptance source must still
 include the canonical fields.
 
-The canonical Acceptance Brief fields are:
-
-- Goal
-- Accepted Behavior
-- Acceptance Criteria
-- Non-Goals / Stop Conditions
-- Touched Surfaces
-- Edge And Error Cases
-- Docs / Test Impact
-- Risk Level
-- Required Reviews
-- Second Review
-- AFK / HITL Boundary
+Use the canonical Acceptance Brief fields defined in `skills/write-spec/SKILL.md` (Light Acceptance
+Brief template). Do not re-list the fields here.
 
 Name specs:
 
@@ -35,22 +24,8 @@ Name specs:
 YYYY-MM-DD-<feature>.md
 ```
 
-Each spec should include:
-
-- goal
-- problem
-- users
-- MVP scope
-- non-goals
-- domain terms
-- user stories
-- acceptance criteria
-- implementation decisions
-- testing decisions
-- docs impact
-- risks
-- open questions
-- vertical slices
+Each full spec follows the Full Spec Template defined in `skills/write-spec/SKILL.md`. Do not
+re-list the fields here.
 
 Prompt:
 

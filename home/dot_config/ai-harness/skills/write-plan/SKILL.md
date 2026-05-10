@@ -77,25 +77,16 @@ Every plan must include:
 **Acceptance Review:** <spec-review path / explicit accepted-risk record / why separate spec review is unnecessary>
 **Goal:** <one sentence>
 **Slice:** <vertical slice or issue id>
-**Review Needs:** <architecture/test/security/docs/Codex>
+**Review Needs:** <architecture/test/security/docs/second-review>
 
 ## Approved Request Anchor
 
-Required only when the acceptance source exists only in chat.
+Required only when the acceptance source exists only in chat. Include:
 
 - Date:
 - Request summary:
-- Accepted behavior:
 - Approved scope:
-- Acceptance criteria:
-- Non-goals / stop conditions:
-- Touched surfaces:
-- Edge and error cases:
-- Docs / test impact:
-- Risk level:
-- Required reviews:
-- Second review:
-- AFK / HITL boundary:
+- All canonical Acceptance Brief fields (see `write-spec` Light Acceptance Brief template).
 
 ## File Responsibility Map
 
@@ -148,21 +139,17 @@ Required for non-trivial work. Choose one:
 - Include focused review checkpoints only for the concerns the task actually touches.
 - Read `second-review` when deciding review needs. Follow its Required / Strongly Consider rules,
   including hard-to-inspect work or weak verification that could hide P0/P1 issues. Do not add
-  optional Codex review by default; record why it is required, strongly considered, or not needed
-  for this plan.
+  optional `second-review` by default; record why it is required, strongly considered, or not
+  needed for this plan.
 - Include `test-review` when tests are weak, heavily mocked, flaky, missing acceptance coverage, or
   central to the acceptance risk.
 
 ## File Size Planning
 
-If a touched source file is already over 300 lines or likely to exceed 300 lines, include a
-split/responsibility note.
-
-If a touched source file is over 600 lines, plan one of:
-
-- scoped extraction before feature work
-- explicitly documented exception
-- narrow edit with follow-up refactor issue
+Apply the file/function size thresholds defined in `architecture-review` (File And Complexity
+Thresholds). When a touched file is at or near the 300/600 threshold, the plan must include one
+of: scoped extraction before feature work, an explicitly documented exception, or a narrow edit
+with a follow-up refactor issue.
 
 ## Self-Review
 

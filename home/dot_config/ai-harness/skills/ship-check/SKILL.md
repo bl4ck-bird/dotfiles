@@ -49,23 +49,59 @@ If relevant checks already failed before this work, state that clearly and do no
 them to your change. If a check fails after your change, make one targeted fix when the
 cause is clear; otherwise stop and report the failure with evidence.
 
+## Finishing Options
+
+When tests pass and the slice is reviewed, present a structured choice rather than an open-ended
+"what next?". Standard options: merge locally / push and create PR / keep as-is / discard.
+Detached-HEAD environments drop the merge option.
+
+Judgment rules (host runs the commands):
+
+- **Merge**: only delete the feature branch and clean up the worktree *after* the merge
+  succeeds, not before.
+- **PR**: keep the worktree alive for review iteration.
+- **Discard**: require the user to confirm explicitly (typed token recommended) before deletion;
+  this is the only destructive option.
+
 ## Commit / Stack Gate
 
-Do not commit, push, create PRs, initialize a stack, or rewrite stack history unless the
-user requested it, project-local instructions require it, or an approved bounded goal
-includes that action.
+Do not commit, push, create PRs, or rewrite history unless the user requested it, project-local
+instructions require it, or an approved bounded goal includes that action.
 
 When commit or stack work is approved:
 
 1. Inspect `git status` and the diff before staging.
 2. Stage only files owned by the completed task or slice.
 3. Prefer one commit per completed vertical slice when history matters.
-4. For stacked work, keep each branch focused on one review concern and record stack order.
+4. For stacked branches, keep each branch focused on one review concern and record stack order
+   (parent → child) in the PR description.
 5. Run available pre-commit and commit-msg hooks.
-6. Report the commit hash or the reason the commit/stack action was blocked.
+6. Report the commit hash, PR URL, or the reason the action was blocked.
+
+If the host agent provides a commit or PR helper (Claude Code `commit-commands` plugin, Codex
+commit recipe, or a project script), prefer it because it usually wires the project's hooks.
+Otherwise run standard `git`/`gh` commands. The harness rule is the staging and gate behavior,
+not a specific tool name.
+
+## Worktree Cleanup Provenance
+
+Only clean up worktrees created by this harness (under `.worktrees/`, `worktrees/`, or a
+project-declared global path). Worktrees owned by host native tools or other agents must be left
+in place — the host owns their cleanup.
 
 If commit is not approved, report that the change is ready to commit and suggest a commit
 message.
+
+## Retro (optional)
+
+After substantial work, capture one to three short lines:
+
+- What worked
+- What surprised us
+- One rule worth keeping for future work
+
+Promote a rule into agent feedback memory only when it is non-obvious from the code and would help
+future sessions. Otherwise leave it in the review record.
 
 ## Output
 
@@ -78,6 +114,7 @@ Keep the final report short:
 - Docs updated or intentionally unchanged
 - Commit status and suggested message or commit hash
 - What remains risky or unverified
+- Memory candidates: route retro rules to `retro-capture` for memory persistence.
 
 ## Do Not Ship If
 

@@ -29,6 +29,25 @@ If any precondition is missing, pause execution and create or update the missing
 Use `bounded-loop` instead of this skill when the user asks the agent to continue autonomously
 toward a goal across repeated iterations. Do not run open-ended loops from `execute-plan`.
 
+## Workspace Isolation
+
+For multi-slice plans, broad refactors, or work that should not touch the user's tree, run in an
+isolated workspace. This skill defines the *judgment* only; the host agent runs the actual git
+commands.
+
+- **Detect first**: if the workspace is already isolated (linked worktree, host-managed sandbox),
+  skip creation. Treat git submodules as normal repos.
+- **Prefer native tools**: use the host's worktree facility when available; only fall back to
+  manual `git worktree add` when none exists.
+- **Project-local safety**: any project-local worktree directory must be `.gitignore`d before the
+  worktree is created.
+- **Cleanup ownership**: a worktree is removed only by whoever created it. Worktrees created via
+  this skill are cleaned up by `ship-check` Finishing Options. Never remove a worktree owned by
+  the host or another agent.
+- **Baseline first**: when a fresh workspace is created, ask the user before triggering project
+  setup or installs (per the harness "user-managed dependencies" default). If baseline tests
+  fail, distinguish pre-existing failures from regressions and ask before proceeding.
+
 ## Execution Loop
 
 For each task or slice:

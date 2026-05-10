@@ -37,11 +37,27 @@ Read:
 
 ## Output
 
-Lead with findings and end with:
+Lead with findings, then provide an explicit coverage matrix and end with the result.
+
+### Coverage Matrix (required)
+
+Map every acceptance criterion to its proof. Mark `MISSING` for gaps and `ACCEPTED` only when the
+acceptance source explicitly excludes the case.
+
+| Acceptance criterion | Proof (test file:line, command, or ACCEPTED reason) |
+| --- | --- |
+
+Also record:
+
+- Edge/error cases without coverage
+- Regression tests for any bug fix in the slice (must fail before the fix)
+
+### Result
 
 - Review result: pass, pass with follow-ups, or blocked
-- Acceptance criteria covered
 - Gaps or residual risk
 - Required fixes before `ship-check`
+- Memory candidates: route repeated test-design failures to `retro-capture` for memory
+  persistence.
 
 For substantial reviews, save the record in `docs/reviews/YYYY-MM-DD-<topic>-test-review.md`.
