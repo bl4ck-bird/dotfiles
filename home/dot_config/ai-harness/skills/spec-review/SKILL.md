@@ -27,8 +27,7 @@ Read:
 
 - Goal, problem, users, MVP, and non-goals are explicit.
 - Acceptance criteria are testable and not merely implementation notes.
-- Lightweight acceptance sources include every canonical Acceptance Brief field per `write-spec`
-  Light Acceptance Brief template.
+- Lightweight acceptance sources include every Acceptance Brief Field (see `write-spec`).
 - Domain terms match `CONTEXT.md` and domain docs.
 - Vertical slices deliver reviewable behavior, not horizontal layers.
 - AFK/HITL labels are realistic.

@@ -36,11 +36,11 @@ Report workflow weight, selected next skill, required artifact or approval, and 
   docs impact.
 - Non-trivial: use a reviewed acceptance artifact, compact plan, `execute-plan` for multi-slice
   work, TDD inside each behavior-changing slice, focused reviews, docs sync, and ship check.
-- Risky/substantial: core architecture, money, crypto, data loss, auth, deletion, broad refactor,
-  weak tests, five or more files, two or more modules, or 300/600-line file thresholds. Add the
-  relevant focused review. Require `second-review` for high-risk
-  security/data-loss/money/auth/crypto/deletion/core-architecture work when available; consider it
-  for large diffs or weak verification.
+- Risky/substantial: broad refactor, weak tests, five or more files, two or more modules, or
+  300/600-line file thresholds, or any High-Risk Surface (see `skills/second-review/SKILL.md`).
+  Add the relevant focused review. Require `second-review` when a High-Risk Surface is touched and
+  Codex (or another independent reviewer) is available; consider it for large diffs or weak
+  verification.
 
 ## Acceptance Artifacts
 

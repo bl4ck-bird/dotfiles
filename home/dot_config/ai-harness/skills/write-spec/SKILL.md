@@ -60,6 +60,9 @@ If terms are unstable, run `domain-modeling` before writing the artifact.
 
 ## Light Acceptance Brief
 
+Other docs and skills reference this section as "Acceptance Brief Fields (see `write-spec`)"
+instead of re-listing the fields. The harness-wide canonical field set lives here.
+
 Use this for non-trivial work when a full spec would only duplicate an already clear
 request. The source can live in an issue, review record, plan anchor, or short
 `docs/specs/` note, but it must include every field below:
@@ -182,9 +185,8 @@ product/domain/API/data/security/user-workflow decision is being made. Review:
 - missing testing or docs decisions
 
 Use `second-review` optionally for product direction, MVP boundary, core architecture, data/security
-behavior, or other risky surfaces. It is required only when the risk is high enough that a missed
-issue could cause security, data-loss, money, auth, crypto, deletion, or core architecture harm.
-Use the host agent's Codex integration when available.
+behavior, or other risky surfaces. It is required only when the change touches a High-Risk Surface
+(see `second-review`). Use the host agent's Codex integration when available.
 
 ## Output
 

@@ -7,16 +7,33 @@ description: Use when requesting or recording an independent Codex review of a s
 
 Run an independent review after the primary review.
 
+## High-Risk Surfaces (canonical)
+
+This list is the harness-wide canonical definition. Other docs and skills reference it as
+"High-Risk Surfaces (see `second-review`)" instead of re-listing the items.
+
+- security
+- data-loss
+- money
+- auth
+- crypto
+- deletion
+- core architecture
+
 ## Required When Available
 
 Use independent second review when any are true:
 
-- high-risk security, data-loss, money, auth, crypto, deletion, or core architecture changes
+- the change touches a High-Risk Surface
 - the user explicitly asks
 
 ## Strongly Consider
 
-Strongly consider, but do not automatically require, independent second review when any are true:
+Treat second review as **strongly recommended** (not automatic) only when **two or more** of the
+following triggers apply together, or one trigger touches a High-Risk Surface. A single trigger in
+isolation is **optional**, not strongly recommended.
+
+Triggers:
 
 - diff is large, multi-module, hard to inspect, or accepts a 300/600-line file risk
 - tests are weak, flaky, slow, expensive, or heavily mocked

@@ -3,6 +3,22 @@
 These are global defaults for side projects. Project-local `AGENTS.md`, `CLAUDE.md`, and docs
 override this file.
 
+## Glossary
+
+Use these terms consistently across skills, docs, plans, and reviews.
+
+- **Acceptance artifact**: the reviewed object that defines accepted behavior — a spec, PRD,
+  issue, review finding, or approved task. **Acceptance source** is its location/origin (e.g. an
+  issue link or `docs/specs/...` path), not a synonym for the artifact.
+- **Slice**: a vertical unit of behavior reviewable end to end. A **task** is a step inside a slice
+  (test → impl → refactor). One slice contains one or more tasks.
+- **Independent second review**: the prose form. **`second-review`** (with hyphen) refers to the
+  skill. "Second Review" capitalized is a heading style only.
+- **High-Risk Surfaces**: canonical list defined in `skills/second-review/SKILL.md`. Other docs
+  reference it instead of re-listing items.
+- **Acceptance Brief Fields**: canonical field set defined in `skills/write-spec/SKILL.md` (Light
+  Acceptance Brief).
+
 ## Operating Style
 
 - Explain work to the user in Korean unless the user asks for another language.
@@ -74,6 +90,11 @@ When instructions or tradeoffs conflict, prefer in this order:
 - Use a skill-first posture when the BB Harness applies. Prefer the relevant harness skill over
   ad-hoc process; skip a skill only when the task is clearly small/local or the skill would not
   materially protect the work, and record the skip reason.
+- **Auto-entry rule**: when a session opens a repo that contains `AGENTS.md`, `CLAUDE.md`, or
+  `docs/AGENT_WORKFLOW.md` referencing this harness, the first action before any non-trivial reply
+  is to verify the next phase via `bb-workflow` (or directly call the matching skill if the task
+  obviously maps to one). Skipping this is only valid for trivial questions and conversational
+  replies.
 - `bb-workflow` is the executable workflow router. Phase selection, routing tables, review routing,
   and continuation rules live there.
 - Pressure-test goals before implementation. Resolve overloaded domain terms. Use behavior TDD for
@@ -90,10 +111,10 @@ When instructions or tradeoffs conflict, prefer in this order:
   database/storage shape, auth/security, sync/concurrency, deletion, payments, or external
   integrations. Three or more changed files is a scope-review trigger, not automatic full workflow.
 - For non-trivial features, produce or identify a reviewed acceptance artifact before an
-  implementation plan. A lightweight artifact must include all canonical Acceptance Brief fields
-  (see `write-spec` Light Acceptance Brief template). Use a full spec in `docs/specs/` only when
-  product scope, domain language, API, data/storage, auth/security, deletion, sync, external
-  integrations, or user workflow is still being decided.
+  implementation plan. A lightweight artifact must include the Acceptance Brief Fields (see
+  `write-spec`). Use a full spec in `docs/specs/` only when product scope, domain language, API,
+  data/storage, auth/security, deletion, sync, external integrations, or user workflow is still
+  being decided.
 - Convert accepted behavior into vertical slices. Plans in `docs/plans/` stay compact (file
   responsibility map, TDD steps, verification commands, docs impact, commit/stack strategy,
   rollback notes, review checkpoints).

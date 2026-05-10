@@ -47,11 +47,11 @@ Read conditionally when relevant:
 Before writing the plan, confirm the acceptance artifact was reviewed at the right weight:
 
 - Full spec or PRD: `spec-review`, unless an explicit accepted-risk record exists.
-- Clear issue, review finding, or approved user task: record the acceptance source and
-  every canonical Acceptance Brief field. If the request only exists in chat, add an
-  `Approved Request Anchor` section with the canonical fields and date.
-- High-risk work: consider `second-review`; require it for high-risk security, data-loss, money,
-  auth, crypto, deletion, or core architecture changes.
+- Clear issue, review finding, or approved user task: record the acceptance source and the
+  Acceptance Brief Fields (see `write-spec`). If the request only exists in chat, add an
+  `Approved Request Anchor` section with those fields and date.
+- High-risk work: consider `second-review`; require it when the change touches a High-Risk Surface
+  (see `second-review`).
 
 If product goal, domain terms, or acceptance criteria are unclear, run `pressure-test` or
 `domain-modeling` before writing the plan.
@@ -86,7 +86,7 @@ Required only when the acceptance source exists only in chat. Include:
 - Date:
 - Request summary:
 - Approved scope:
-- All canonical Acceptance Brief fields (see `write-spec` Light Acceptance Brief template).
+- Acceptance Brief Fields (see `write-spec`).
 
 ## File Responsibility Map
 

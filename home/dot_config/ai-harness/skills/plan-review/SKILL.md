@@ -25,8 +25,8 @@ Read:
   unnecessary using Acceptance Brief criteria.
 - Accepted-risk exceptions include skipped gate, reason, risk, compensating check, user acceptance,
   and follow-up or expiry.
-- Chat-only acceptance sources are captured in an approved request anchor with every canonical
-  Acceptance Brief field per `write-spec` Light Acceptance Brief template.
+- Chat-only acceptance sources are captured in an approved request anchor with every Acceptance
+  Brief Field (see `write-spec`).
 - Every acceptance criterion maps to at least one task or explicit non-goal.
 - The plan links to the acceptance artifact instead of restating it at length.
 - File responsibility map is specific enough to constrain edits.
@@ -46,8 +46,7 @@ Read:
 - Use `security-review` for auth, secrets, crypto, deletion, sensitive data, or destructive
   operations.
 - Use `second-review` optionally for risky, broad, weakly tested, or security-sensitive plans.
-  Require it for high-risk security, data-loss, money, auth, crypto, deletion, or core architecture
-  plans.
+  Require it when the plan touches a High-Risk Surface (see `second-review`).
 
 ## Output
 

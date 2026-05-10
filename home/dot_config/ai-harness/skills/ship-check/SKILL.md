@@ -23,6 +23,16 @@ Before ship-check, substantial work should have:
 - `docs-sync` considered.
 - Commit, PR, release, or stacked-branch actions approved when they are part of the next step.
 
+## Tiny/Local Pass
+
+For Tiny/local changes (one bounded module, no product/domain/API/data/security decision changing,
+no High-Risk Surface touched), run only steps **1, 3, 9, 11** below. Mark the rest as
+"N/A — tiny/local scope" in the report. Do not run the full 11-step checklist for changes that the
+Workflow Weight table classifies as Tiny/local.
+
+If the change set later grows past the Tiny/local definition, escalate to the full checklist
+before continuing.
+
 ## Checklist
 
 1. Inspect `git status` and confirm the change set is scoped to the request.

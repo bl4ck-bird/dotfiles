@@ -43,13 +43,13 @@ domain, architecture, or safety decisions.
 | Tiny/local | One bounded module, no product/domain/API/data/security decision | Direct edit or `behavior-tdd` + `ship-check` |
 | Scope review | 3+ files, uncertain blast radius, unclear module boundary | Decide if small path still fits; record bounded scope |
 | Non-trivial | Product behavior, user workflow, domain language, public API, persistence, auth, sync, deletion, external integration | Reviewed acceptance artifact + compact plan + focused reviews + docs gates |
-| Risky/substantial | Module boundary or dependency-direction change, refactor crossing 2+ modules, money, crypto, data loss, auth, deletion, weak tests, 5+ files, 2+ modules, 300/600-line file thresholds | Required focused review + `second-review` for high-risk security/data-loss/money/auth/crypto/deletion or boundary/dependency-direction change |
+| Risky/substantial | Module boundary or dependency-direction change, refactor crossing 2+ modules, weak tests, 5+ files, 2+ modules, 300/600-line file thresholds, or any High-Risk Surface (see `second-review`) | Required focused review + `second-review` when a High-Risk Surface is touched, or for boundary/dependency-direction change |
 
 ## Acceptance Artifact
 
 Non-trivial work needs a reviewed acceptance artifact (spec, PRD, issue, review finding, or
-approved task) before implementation. The canonical Acceptance Brief fields and full template are
-in `write-spec`. Do not duplicate them here.
+approved task) before implementation. The Acceptance Brief Fields (see `write-spec`) are the
+canonical field set; do not duplicate them here.
 
 - Use a full `docs/specs/` spec when product scope, domain language, public API, data/storage,
   auth/security, deletion, sync, external integrations, or user workflow is still being decided.
@@ -73,8 +73,17 @@ surface.
 | Boundary, DDD, SOLID, file-size, over-abstraction signal | `architecture-review` |
 | Auth, secrets, crypto, deletion, sensitive data, untrusted input, injection, SSRF touched | `security-review` |
 | Durable docs touched or suspected drift | `docs-review` |
-| High-risk security/data-loss/money/auth/crypto/deletion/core-architecture | `second-review` (required) |
+| Any High-Risk Surface (see `second-review`) | `second-review` (required) |
 | Independent second review explicitly requested | `second-review` |
+
+### Review Chain Depth Cap
+
+A focused review may automatically recommend at most **one** follow-on review (e.g.
+`implementation-review` → `architecture-review`). A second hop (e.g. `architecture-review` →
+`security-review`) requires user confirmation. This stops review chains from inflating into
+"review of review of review" loops on small/medium work.
+
+`second-review` is exempt from the cap when its Required When Available criteria are met.
 
 ## Execution Model
 
