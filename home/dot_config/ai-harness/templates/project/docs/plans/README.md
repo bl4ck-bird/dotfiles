@@ -35,13 +35,14 @@ mapping, TDD steps, verification commands, docs impact, commit/stack strategy, r
 notes, and focused review checkpoints.
 ```
 
-Review prompt:
+Self-Review prompt:
 
 ```text
-Use plan-review on docs/plans/YYYY-MM-DD-<feature>.md.
-Confirm the acceptance source is reviewed at the right weight.
-Review file responsibility, TDD granularity, test-review needs,
-DDD/SOLID fit, file size risk, docs impact, and verification.
+Run write-plan Self-Review on docs/plans/YYYY-MM-DD-<feature>.md.
+Confirm the acceptance source has write-spec Self-Review completed.
+Check file responsibility map (SRP per file), TDD granularity, SOLID
+upstream (DIP / dependency direction), file-size impact at 300/600
+thresholds, docs impact, and verification commands.
 
 Accepted-risk exceptions may skip a normal gate only when explicitly
 approved by the user or recorded in an already approved plan.

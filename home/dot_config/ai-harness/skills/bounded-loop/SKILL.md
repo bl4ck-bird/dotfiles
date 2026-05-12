@@ -31,10 +31,12 @@ continuing.
 
 For each iteration:
 
-1. State the current goal, iteration number, allowed scope, allowed autonomous actions, and planned
-action.
+1. State the current goal, iteration number, allowed scope, allowed autonomous actions, and
+   planned action.
 2. Make the smallest useful change or investigation.
-3. Run the verification gate or explain why it cannot run.
+3. Run the verification gate or explain why it cannot run. Apply
+   `verification-before-completion` — fresh output read in this response, not a remembered
+   prior run.
 4. Run the relevant focused review when the change is risky, broad, or repeated.
 5. Decide: continue, stop successful, stop blocked, or ask the user.
 6. Update the plan, review record, or handoff note with evidence.
@@ -62,7 +64,7 @@ Ask before continuing when:
 
 - Fix all findings from an approved review within a bounded file set.
 - Continue implementing an approved plan slice until the slice passes its checks.
-- Iterate on docs until `docs-review` finds no material drift.
+- Iterate on docs until `code-quality-review` (durable docs drift section) finds no material drift, or until `docs-sync` confirms alignment.
 - Investigate a failing test with a maximum number of hypotheses.
 
 ## Bad Uses

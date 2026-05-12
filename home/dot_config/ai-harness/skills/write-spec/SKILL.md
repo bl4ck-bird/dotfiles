@@ -100,23 +100,24 @@ request. The source can live in an issue, review record, plan anchor, or short
 ## AFK / HITL Boundary
 ```
 
-## Edit-On-Review Mode
+## Edit-On-Findings Mode
 
-When `write-spec` is invoked because `spec-review` returned `Blocked` or P0/P1 findings, update
-the existing artifact at the same path. Do not create a new spec file or restart from scratch.
-Address each finding, preserve sections the review did not flag, and re-submit the changed
-artifact to `spec-review`. See `bb-workflow` Review Iteration Pattern.
+When the spec is revised because `spec-compliance-review` found drift between implementation
+and acceptance, or because the user changed scope, update the existing artifact at the same
+path. Do not create a new spec file or restart from scratch. Address each finding, preserve
+sections that did not change, and re-run Self-Review on the changed artifact. See
+`using-bb-harness` Review Iteration Pattern.
 
 ## Application Rules
 
-- Light acceptance source (issue, PRD section, review finding, approved user task) must include
-  every field above. Skip `spec-review` only when no product/domain/API/data/security/user-workflow
-  decision is being made.
-- Full spec mode (use the Full Spec Template below plus `spec-review`) is required when product
-  scope, domain language, public API, data/storage, auth/security, deletion, sync, external
-  integrations, or user workflow is still being decided.
-- When the request lives only in chat, the implementation plan must capture every field in an
-  "Approved Request Anchor" section.
+- Light acceptance source (issue, PRD section, review finding, approved user task) must
+  include every field above. Self-Review (Product Clarity + Domain Alignment) is always
+  required; `second-review` is only required when triggers in Self-Review apply.
+- Full spec mode is required when product scope, domain language, public API,
+  data/storage, auth/security, deletion, sync, external integrations, or user workflow is
+  still being decided. Run full Self-Review on the result.
+- When the request lives only in chat, the implementation plan must capture every field in
+  an "Approved Request Anchor" section.
 - Other skills/docs link to this template; field changes happen only here.
 
 ## Full Spec Template
@@ -178,22 +179,57 @@ Prefer:
 - "User can create the first workspace with validation and persistence."
 - "User can see reconciliation mismatch details and retry the import."
 
-## Review
+## Self-Review
 
-Before writing a durable implementation plan, run `spec-review` when a full spec or PRD
-exists, or when acceptance criteria are still being shaped. A light Acceptance Brief can
-skip separate `spec-review` only when it has every canonical field and no
-product/domain/API/data/security/user-workflow decision is being made. Review:
+Before declaring the artifact ready, walk this checklist yourself. The harness no longer runs
+a separate `spec-review` skill — domain and acceptance correctness is owned here, then
+re-verified by `spec-compliance-review` after implementation.
 
-- product goal and MVP fit
-- domain language
-- acceptance criteria
-- vertical slice quality
-- missing testing or docs decisions
+### Product Clarity
 
-Use `second-review` optionally for product direction, MVP boundary, core architecture, data/security
-behavior, or other risky surfaces. It is required only when the change touches a High-Risk Surface
-(see `second-review`). Use the host agent's Codex integration when available.
+- Goal, problem, users, MVP, non-goals explicit (or, for a Light Acceptance Brief, every
+  canonical field present).
+- Acceptance criteria are testable through a public interface or user-visible flow, not
+  implementation notes.
+- Vertical slices deliver reviewable behavior, not horizontal layers ("build DB", "build
+  API").
+- AFK / HITL labels realistic.
+- Testing and docs impact named.
+
+### Domain Alignment (DDD upstream check)
+
+When `CONTEXT.md` or `docs/DOMAIN_MODEL.md` exists:
+
+- Every domain term in the spec matches the `CONTEXT.md` glossary. New terms are defined
+  and added to `CONTEXT.md` as part of the acceptance work, not silently introduced.
+- Aggregate boundaries in the spec match `docs/DOMAIN_MODEL.md`. The spec does not cross a
+  bounded context without naming the translation layer.
+- Documented invariants the spec touches are listed with how each will be proven (test or
+  domain event). Invariants without proof are open questions, not acceptance criteria.
+- The spec uses `entity` vs `value object` vs `aggregate` vocabulary correctly when it
+  introduces or changes one.
+
+For purely UI / CRUD / glue work where domain complexity is low, mark this section
+`N/A — non-domain change` and skip.
+
+### Independent Review
+
+Two options when the author wants a second pair of eyes:
+
+- **`spec-document-reviewer-prompt.md`** (in this directory) — dispatch a same-host
+  subagent that re-reads the spec and project context independently. Use when:
+  - Domain language is being introduced or renamed.
+  - High-Risk Surface (see `second-review`) touched.
+  - Product direction, MVP boundary, or core architecture changes.
+  - Self-Review passed but the author is uncertain.
+- **`second-review`** (Codex by default) — a different-model, fully-independent
+  double-check. Required when the spec touches a High-Risk Surface; otherwise
+  optional. Heavier than the same-host reviewer.
+
+Neither is mandatory — Self-Review alone is the default. Pick the one (or both)
+whose value justifies the time.
+
+Otherwise, the next gate is `spec-compliance-review` after implementation.
 
 ## Output
 

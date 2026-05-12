@@ -34,11 +34,37 @@ Use this skill when work touches:
 
 ## Output
 
-Lead with findings and classify risk:
+Lead with findings, ordered by severity.
 
-- blocks implementation
-- blocks shipping
-- acceptable with documented risk
-- follow-up only
+### Severity
 
-For substantial reviews, save the record in `docs/reviews/YYYY-MM-DD-<topic>-security-review.md`.
+- **Critical (Must Fix)**: exploitable vulnerability, secret leakage, auth bypass, data
+  loss risk, destructive operation without approval, crypto / key handling defect.
+- **Important (Should Fix)**: weak validation, missing authorization at the right
+  boundary, sensitive data in logs / errors / telemetry, missing denial / failure test for
+  a security-relevant path.
+- **Minor (Nice To Have)**: defense-in-depth opportunity, hardening suggestion, naming
+  clarity for a security-relevant identifier.
+
+### Result
+
+- **Ready to merge: Yes** — no Critical or Important findings remain.
+- **Ready to merge: With fixes** — Critical / Important findings the implementer can fix;
+  reviewer re-runs after fixes.
+- **Ready to merge: No** — fundamental security flaw requires the plan or acceptance to be
+  revised.
+
+### Iteration Rule
+
+If the result is **With fixes**, the implementer applies the Critical / Important findings
+and the same review re-runs on the changed diff. Stop after **two cycles** — escalate to
+the user. See `using-bb-harness` Review Iteration Pattern.
+
+### Trigger Source
+
+This review is normally dispatched as a follow-on from `code-quality-review` when a
+security-sensitive surface is touched. It can also be called directly when a planned slice
+is known to be security-heavy from the outset.
+
+For substantial reviews, save the record in
+`docs/reviews/YYYY-MM-DD-<topic>-security-review.md`.

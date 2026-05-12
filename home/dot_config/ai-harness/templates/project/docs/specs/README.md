@@ -36,10 +36,12 @@ Use docs/specs/YYYY-MM-DD-<feature>.md only if a full spec is needed.
 Split it into vertical slices with AFK/HITL labels.
 ```
 
-Review prompt:
+Self-Review prompt:
 
 ```text
-Use spec-review on docs/specs/YYYY-MM-DD-<feature>.md.
-Review product goal, MVP boundary, acceptance criteria, vertical slices,
-domain language, testing decisions, docs impact, and open risks.
+Run write-spec Self-Review on docs/specs/YYYY-MM-DD-<feature>.md.
+Check product goal, MVP boundary, acceptance criteria, vertical slices,
+domain alignment (terms match CONTEXT.md, aggregates respect bounded
+contexts, invariants have proof paths), testing decisions, and docs
+impact. Request second-review (Codex) only when triggers apply.
 ```

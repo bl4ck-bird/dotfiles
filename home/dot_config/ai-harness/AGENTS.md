@@ -90,12 +90,13 @@ When instructions or tradeoffs conflict, prefer in this order:
 - Use a skill-first posture when the BB Harness applies. Prefer the relevant harness skill over
   ad-hoc process; skip a skill only when the task is clearly small/local or the skill would not
   materially protect the work, and record the skip reason.
-- **Auto-entry rule**: when a session opens a repo that contains `AGENTS.md`, `CLAUDE.md`, or
-  `docs/AGENT_WORKFLOW.md` referencing this harness, the first action before any non-trivial reply
-  is to verify the next phase via `bb-workflow` (or directly call the matching skill if the task
-  obviously maps to one). Skipping this is only valid for trivial questions and conversational
-  replies.
-- `bb-workflow` is the executable workflow router. Phase selection, routing tables, review routing,
+- **Universal bootstrap**: at every session start, invoke `using-bb-harness` before
+  non-trivial work. The skill performs a cheap marker check (`AGENTS.md`, `CLAUDE.md`,
+  or `docs/AGENT_WORKFLOW.md` referencing BB Harness or BB skill names). If markers
+  are present, it routes to the right phase. If absent, it self-disables in one line
+  and the agent proceeds with standard behavior. Trivial questions and pure-conversation
+  replies may skip the bootstrap entirely.
+- `using-bb-harness` is the executable workflow router. Phase selection, routing tables, review routing,
   and continuation rules live there.
 - Pressure-test goals before implementation. Resolve overloaded domain terms. Use behavior TDD for
   changes (one failing public-interface test → minimal code → refactor). Use systematic debugging
@@ -119,7 +120,7 @@ When instructions or tradeoffs conflict, prefer in this order:
   responsibility map, TDD steps, verification commands, docs impact, commit/stack strategy,
   rollback notes, review checkpoints).
 - Call a review skill only when the touched surface matches its triggers. The review chain is
-  defined in `bb-workflow` Review Routing.
+  defined in `using-bb-harness` Review Routing.
 - Accepted-risk exceptions may skip a normal gate only when explicitly approved by the user or
   recorded in an already approved plan. Record the skipped gate, reason, risk, compensating check,
   user acceptance, and follow-up or expiry.
@@ -140,8 +141,9 @@ When instructions or tradeoffs conflict, prefer in this order:
 
 ## Quality Gates
 
-- File and complexity thresholds are defined in `skills/architecture-review/SKILL.md` (File And
-  Complexity Thresholds). Treat that section as the single source of truth.
+- File and complexity thresholds are defined in `skills/code-quality-review/SKILL.md` (File
+  And Complexity Thresholds). Treat that section as the single source of truth. DDD
+  operational checks and SOLID checks share the same SSOT.
 - Apply SOLID as operational checks:
   - Single Responsibility: each module has one primary reason to change.
   - Open/Closed: extension points exist only where variation is real.
@@ -154,11 +156,12 @@ When instructions or tradeoffs conflict, prefer in this order:
 - Do not introduce ceremonial DDD layers for CRUD screens or simple glue code.
 - Tests should verify public behavior and domain invariants. Avoid tests coupled to private helpers,
   incidental mocks, or file layout.
-- Use `test-review` or a reviewer subagent when verification is weak, test design is central to
-  acceptance, or substantial work could pass without proving behavior.
-- High-risk changes need two reviews before shipping: the relevant focused primary review and
-  `second-review`, preferably Codex. Broad but lower-risk changes may use `second-review`
-  optionally.
+- Test design quality is reviewed inside `code-quality-review` (Coverage Matrix section). A
+  dedicated test review is no longer a separate skill — the matrix lives with code quality.
+- High-risk changes need two reviews before shipping: the implementation-time chain
+  (`spec-compliance-review` then `code-quality-review`, plus `security-review` when
+  triggered) and an independent `second-review` (Codex by default). Broad but lower-risk
+  changes may use `second-review` optionally.
 
 ## Session Hygiene
 

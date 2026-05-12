@@ -44,14 +44,15 @@ Read conditionally when relevant:
 - `docs/TESTING_STRATEGY.md`: verification commands, test levels, or test strategy may change.
 - Relevant durable decisions when decisions are hard to reverse or surprising.
 
-Before writing the plan, confirm the acceptance artifact was reviewed at the right weight:
+Before writing the plan, confirm the acceptance artifact was prepared at the right weight:
 
-- Full spec or PRD: `spec-review`, unless an explicit accepted-risk record exists.
+- Full spec or PRD: `write-spec` Self-Review completed (Product Clarity + Domain Alignment),
+  unless an explicit accepted-risk record exists.
 - Clear issue, review finding, or approved user task: record the acceptance source and the
   Acceptance Brief Fields (see `write-spec`). If the request only exists in chat, add an
   `Approved Request Anchor` section with those fields and date.
-- High-risk work: consider `second-review`; require it when the change touches a High-Risk Surface
-  (see `second-review`).
+- High-risk work: consider `second-review`; require it when the change touches a High-Risk
+  Surface (see `second-review`).
 
 If product goal, domain terms, or acceptance criteria are unclear, run `pressure-test` or
 `domain-modeling` before writing the plan.
@@ -74,10 +75,10 @@ Every plan must include:
 # <Feature> Implementation Plan
 
 **Acceptance Source:** <spec/issue/review/user-approved task>
-**Acceptance Review:** <spec-review path / explicit accepted-risk record / why separate spec review is unnecessary>
+**Acceptance Self-Review:** <write-spec Self-Review note in the artifact / explicit accepted-risk record / why a separate Self-Review is unnecessary>
 **Goal:** <one sentence>
 **Slice:** <vertical slice or issue id>
-**Review Needs:** <architecture/test/security/docs/second-review>
+**Review Needs:** <code-quality-review (default after spec-compliance) / security-review when security surface touched / second-review when High-Risk Surface or boundary change>
 
 ## Approved Request Anchor
 
@@ -123,50 +124,104 @@ Required for non-trivial work. Choose one:
 ## Open Risks
 ```
 
-## Edit-On-Review Mode
+## Edit-On-Findings Mode
 
-When `write-plan` is invoked because `plan-review` returned `Blocked` or P0/P1 findings, update
-the existing plan at the same path. Do not create a new plan file or restart from scratch.
-Address each finding, preserve tasks the review did not flag, and re-submit the changed plan to
-`plan-review`. See `bb-workflow` Review Iteration Pattern.
+When the plan is revised because `spec-compliance-review` or `code-quality-review` found a
+plan-level flaw (wrong file boundary, missing task, weak verification), or because the
+user changed scope, update the existing plan at the same path. Do not create a new plan
+file or restart from scratch. Address each finding, preserve tasks not flagged, and re-run
+Plan Self-Review on the changed plan. See `using-bb-harness` Review Iteration Pattern.
 
 ## Planning Rules
 
 - Keep plans compact. Link to the acceptance artifact instead of restating it.
 - Map files before tasks. File boundaries shape the plan.
-- Use vertical slices. Avoid horizontal phases like "build DB", "build API", "build UI" unless the
-  slice is purely infrastructure.
+- Use vertical slices. Avoid horizontal phases like "build DB", "build API", "build UI"
+  unless the slice is purely infrastructure.
 - Each task should be independently verifiable.
 - For behavior changes, include TDD steps. Do not plan "write tests later".
 - Include exact commands where known.
 - Include expected failure and expected pass signals.
-- Include docs impact for domain, architecture, testing, security, and user-facing behavior.
-- Include commit/stack strategy, but do not authorize commit, push, PR, or stack operations
-  unless the user or project-local instructions already approved them.
-- Include focused review checkpoints only for the concerns the task actually touches.
-- Decide `second-review` need per its Required / Strongly Consider rules. Do not add it by default;
-  record why it is required, strongly considered, or not needed for this plan.
-- Include `test-review` when tests are weak, heavily mocked, flaky, missing acceptance coverage, or
-  central to the acceptance risk.
+- Include docs impact for domain, architecture, testing, security, and user-facing
+  behavior.
+- Include commit/stack strategy, but do not authorize commit, push, PR, or stack
+  operations unless the user or project-local instructions already approved them.
+- Default review per implemented task: `spec-compliance-review` → `code-quality-review`.
+  Plan only the *additional* reviews relevant to the task — `security-review` when the
+  task touches a security surface, `second-review` when its Required / Strongly Consider
+  rules apply.
 
 ## File Size Planning
 
-Apply the file/function size thresholds defined in `architecture-review` (File And Complexity
-Thresholds). When a touched file is at or near the 300/600 threshold, the plan must include one
-of: scoped extraction before feature work, an explicitly documented exception, or a narrow edit
-with a follow-up refactor issue.
+Apply the file/function size thresholds defined in `code-quality-review` (File And
+Complexity Thresholds). When a touched file is at or near the 300/600 threshold, the plan
+must include one of: scoped extraction before feature work, an explicitly documented
+exception, or a narrow edit with a follow-up refactor issue.
 
 ## Self-Review
 
-Before presenting the plan:
+Before presenting the plan, walk this checklist yourself. The harness no longer runs a
+separate `plan-review` skill — plan correctness is owned here, then re-verified by
+`spec-compliance-review` + `code-quality-review` after implementation.
 
-- Check every acceptance requirement maps to a task.
-- Check every task has verification.
-- Check no placeholder language remains.
-- Check new names match `CONTEXT.md`.
-- Check the plan does not introduce speculative abstractions.
-- Check the plan does not copy large sections from the acceptance artifact.
-- Check a human could inspect the plan without chat history.
+### Plan Hygiene
+
+- Every acceptance requirement maps to a task or explicit non-goal.
+- Every task has exact verification commands and expected RED / GREEN signals for TDD
+  steps.
+- No placeholder language ("TBD", "later", "appropriate error handling").
+- New identifier names match `CONTEXT.md`.
+- The plan does not copy large sections from the acceptance artifact — it links.
+- A human can inspect the plan without chat history.
+
+### Architecture Soundness (SOLID upstream check)
+
+When the plan touches more than glue / CRUD code:
+
+- **SRP**: each file in the File Responsibility Map has one primary reason to change. If
+  a file is listed for two unrelated concerns, split or revisit.
+- **DIP**: domain or application code in the plan does not depend on framework, ORM,
+  HTTP client, or filesystem types. If it must, name the port/adapter explicitly.
+- **Dependency direction**: imports flow inward (UI / infra → application → domain). Plan
+  does not introduce a domain file that imports an infrastructure file.
+- **File-size impact**: estimate per touched file. If a file already at or near the 300 /
+  600-line threshold (see `code-quality-review` File And Complexity Thresholds), the plan
+  includes scoped extraction, a documented exception, or a follow-up refactor task.
+- **Speculative abstraction**: the plan does not introduce ports, interfaces, factories,
+  or strategy patterns for variation that does not yet exist.
+- **Cross-cutting concerns**: logging, auth, persistence, caching are placed at consistent
+  boundaries, not sprinkled across domain code.
+
+For glue, config, docs, or scaffold-only plans, mark this section `N/A — non-architectural
+change` and skip.
+
+### Domain Alignment
+
+Same checks as `write-spec` Self-Review Domain Alignment apply here when the plan touches
+domain code. Do not re-list invariants resolved in the spec; do check the plan respects
+them.
+
+### Independent Review
+
+Two options when the author wants a second pair of eyes:
+
+- **`plan-document-reviewer-prompt.md`** (in this directory) — dispatch a same-host
+  subagent that re-reads the plan, acceptance artifact, and project docs
+  independently. Use when:
+  - Plan crosses module boundaries or changes dependency direction.
+  - Many tasks or large file responsibility map.
+  - High-Risk Surface (see `second-review`) touched.
+  - Self-Review passed but the author is uncertain about file mapping or
+    verification commands.
+- **`second-review`** (Codex by default) — different-model, fully-independent
+  double-check. Required when the plan touches a High-Risk Surface; otherwise
+  optional. Heavier than the same-host reviewer.
+
+Neither is mandatory — Self-Review alone is the default. Pick the one (or both)
+whose value justifies the time.
+
+Otherwise, the next gates are `spec-compliance-review` and `code-quality-review` after
+each implemented slice.
 
 ## Output
 

@@ -10,7 +10,7 @@ records project-local usage, commands, and overrides.
 
 When using this harness, prefer the relevant workflow skill over ad-hoc process.
 
-- Start or resume with `bb-workflow` when the phase is unclear.
+- Start or resume with `using-bb-harness` when the phase is unclear.
 - Use direct matching skills for discovery, pressure-test, domain modeling, acceptance artifacts,
   reviews, plans, execution, docs sync, and ship checks.
 - Use the smallest useful set of skills for the workflow weight.
@@ -21,7 +21,7 @@ When using this harness, prefer the relevant workflow skill over ad-hoc process.
 Use this prompt:
 
 ```text
-Use bb-workflow.
+Use using-bb-harness.
 Task: <describe task>.
 Read AGENTS.md, CONTEXT.md, docs/CURRENT.md, docs/AGENT_WORKFLOW.md, current acceptance artifacts, plans, and reviews relevant to this task, and data/security docs when relevant.
 Report workflow weight, selected next skill, required artifact or approval, and next safe action before editing.
@@ -29,12 +29,12 @@ Report workflow weight, selected next skill, required artifact or approval, and 
 
 ## Workflow Weight
 
-- Tiny/local: use direct edit or `behavior-tdd` plus `ship-check`.
+- Tiny/local: use direct edit or `test-driven-development` plus `ship-check`.
 - Scope review: three or more files, uncertain blast radius, or unclear module boundary. Decide
   whether the small path still fits. If keeping the small path, record why it is bounded, the
   files/modules involved, why no product/API/data/security decision is changing, verification, and
   docs impact.
-- Non-trivial: use a reviewed acceptance artifact, compact plan, `execute-plan` for multi-slice
+- Non-trivial: use a reviewed acceptance artifact, compact plan, `subagent-driven-development` for multi-slice
   work, TDD inside each behavior-changing slice, focused reviews, docs sync, and ship check.
 - Risky/substantial: broad refactor, weak tests, five or more files, two or more modules, or
   300/600-line file thresholds, or any High-Risk Surface (see `skills/second-review/SKILL.md`).
@@ -79,16 +79,21 @@ installs unless the user explicitly asks the agent to run them.
 
 ## Review Routing
 
-- Use `spec-review` for full specs, PRDs, or unclear acceptance criteria.
-- Use `plan-review` for non-trivial or multi-step implementation plans.
-- Use `implementation-review` after substantial slices or review-fix passes.
-- Use `test-review` for weak, missing, flaky, heavily mocked, or acceptance-critical tests.
-- Use `architecture-review`, `security-review`, or `docs-review` only when the work touches that
-  concern.
-- Use `second-review` when high-risk work needs independent review. For specs and plans, this is
-  optional unless security, data loss, money, auth, crypto, deletion, or core architecture risk is
-  high.
-- Use the host agent's Codex integration for `second-review` when available.
+- Spec correctness lives in `write-spec` Self-Review (Product Clarity + Domain Alignment).
+- Plan correctness lives in `write-plan` Self-Review (Plan Hygiene + Architecture
+  Soundness).
+- For each implemented task, run `spec-compliance-review` (binary ✅/❌) first, then
+  `code-quality-review` (Ready to merge? Yes / No / With fixes). Both run as fresh
+  reviewer subagents from `subagent-driven-development`.
+- `code-quality-review` is the SSOT for DDD operational checks, SOLID, file size, the
+  Coverage Matrix, and durable docs drift.
+- Use `security-review` as a follow-on when the diff touches auth, secrets, crypto,
+  deletion, untrusted input, sensitive data, or a destructive operation.
+- Use `second-review` when High-Risk Surface is touched, boundary or dependency direction
+  changes, or the user requests an independent double-check. Codex by default; record a
+  fallback when unavailable.
+- Apply `receiving-review` whenever a reviewer returns findings — verify before
+  implementing, push back if wrong, apply one item at a time.
 
 ## Workflow Continuation
 
@@ -100,7 +105,7 @@ After each non-trivial phase:
 2. Recommend exactly one next phase when the path is clear.
 3. Ask a concise confirmation question when approval is needed.
 
-Default continuation prompts live in `skills/bb-workflow/SKILL.md`. The project may override here
+Default continuation prompts live in `skills/using-bb-harness/SKILL.md`. The project may override here
 when wording needs to differ from the harness default.
 
 Do not auto-advance across setup, dependency execution, hook, delete, git-history,

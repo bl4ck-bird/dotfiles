@@ -12,16 +12,22 @@ or shipping it.
 
 Before ship-check, substantial work should have:
 
-- Acceptance artifact with acceptance criteria: spec, PRD, issue, review finding, or approved task.
-- Primary spec review for full specs/PRDs, or a recorded reason why separate spec review was
-  unnecessary.
+- Acceptance artifact with acceptance criteria: spec, PRD, issue, review finding, or approved
+  task. The artifact's own Self-Review (see `write-spec` / `write-plan`) completed.
 - Implementation plan or clear small-task rationale.
 - TDD or regression coverage where behavior changed.
-- Test review completed or explicitly not needed when verification was weak, mocked, flaky, broad,
-  or acceptance-critical.
-- Focused review findings resolved or explicitly accepted.
+- `spec-compliance-review` returned ✅ Spec compliant for each implemented slice.
+- `code-quality-review` returned Ready to merge: Yes (or With fixes followed by applied
+  fixes and a re-run that returned Yes).
+- `security-review` run when a security-sensitive surface was touched, or explicitly noted
+  as not triggered.
+- `second-review` run when a High-Risk Surface was touched or the user requested an
+  independent double-check, or fallback recorded per `second-review` Fallback Record.
+- `receiving-review` applied when fixes were taken from any reviewer (one item at a time,
+  YAGNI checked).
 - `docs-sync` considered.
-- Commit, PR, release, or stacked-branch actions approved when they are part of the next step.
+- Commit, PR, release, or stacked-branch actions approved when they are part of the next
+  step.
 
 ## Tiny/Local Pass
 
@@ -38,13 +44,15 @@ before continuing.
 1. Inspect `git status` and confirm the change set is scoped to the request.
 2. Read the relevant diff and ensure no unrelated user changes were reverted.
 3. Run the narrowest meaningful tests, type checks, linters, or build checks available.
+   Apply `verification-before-completion` — claims of "green" require fresh output read in
+   this response, not a remembered prior run.
 4. Confirm docs sync was considered for changed behavior, architecture, tests, and security.
 5. Confirm `docs/CURRENT.md` reflects the final current phase, blocker status, last verification,
 and next action when substantial work changed state.
-6. Confirm `implementation-review`, `test-review`, `architecture-review`, `docs-review`, and
-`security-review` were run or explicitly not needed.
-7. Run or request `second-review` for required high-risk changes, or note why optional independent
-review is not needed.
+6. Confirm `spec-compliance-review` and `code-quality-review` were run with passing results,
+   and `security-review` was run or explicitly noted as not triggered.
+7. Run or request `second-review` for required High-Risk Surface changes, or note why
+   optional independent double-check is not needed.
 8. Confirm no source file crossed the 300/600 line thresholds without review.
 9. Confirm validation was not gamed by weakening assertions, narrowing coverage, skipping relevant
 checks, or changing tests to match broken behavior.
@@ -92,9 +100,10 @@ recipe, or project script) when available. Otherwise run standard `git`/`gh` com
 
 ## Worktree Cleanup Provenance
 
-Only clean up worktrees created by this harness (under `.worktrees/`, `worktrees/`, or a
-project-declared global path). Worktrees owned by host native tools or other agents must be left
-in place — the host owns their cleanup.
+Cleanup ownership and procedure live in `using-git-worktrees` Cleanup. Summary: only
+remove worktrees this harness created (under `.worktrees/` or `worktrees/`). Worktrees
+owned by host native tools or other agents must be left in place. Always `cd` to the main
+repo root before `git worktree remove`. Order: merge → cleanup worktree → delete branch.
 
 If commit is not approved, report that the change is ready to commit and suggest a commit
 message.
@@ -129,6 +138,6 @@ Keep the final report short:
 
 - Required checks fail.
 - The implementation does not match the accepted behavior.
-- A P0/P1 review finding is unresolved.
+- A Critical or Important review finding is unresolved.
 - Validation was weakened or skipped to make the result look green.
 - The final answer would need to hide uncertainty.

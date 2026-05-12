@@ -23,12 +23,32 @@ duplicate skill rules; it links to them.
 - Use TDD and project hooks for repeatable verification.
 - Use independent review when risk justifies it, not as default ceremony.
 
+## Adapts To The Project
+
+BB Harness is general-purpose. Domain / DDD / security depth is **opt-in by file
+presence**, not enforced everywhere:
+
+- Projects with `CONTEXT.md` or `docs/DOMAIN_MODEL.md`: `code-quality-review` runs DDD
+  Operational Checks; `write-spec` / `write-plan` Self-Review verifies domain alignment.
+- Projects **without** those docs: those checks self-skip. The harness still works —
+  it just behaves like a general TDD / review workflow.
+- Security depth (`security-review`, `second-review`) triggers only when the diff
+  actually touches a security-sensitive surface or a High-Risk Surface.
+- Scaffold profiles (`minimal` → `product` → `data-security` → `full`) let a project
+  pick how much durable-doc skeleton it wants.
+
+So a small CLI tool with no domain layer uses BB as TDD + spec-compliance +
+code-quality + ship. A domain-heavy app uses the same skills *plus* DDD checks. Same
+skill set, different gates fire.
+
 ## Layout
 
 - `AGENTS.md`: shared global defaults for Codex-compatible agents.
-- `skills/`: executable workflow skills. `bb-workflow` is the router.
-- `claude-agents/`: Claude Code reviewer subagent definitions (thin dispatchers that delegate to
-  the matching `skills/<name>-review/SKILL.md`).
+- `skills/`: executable workflow skills. `using-bb-harness` is the bootstrap + router.
+- `claude-agents/`: Claude Code reviewer subagent definitions (thin dispatchers that
+  delegate to the matching `skills/<name>-review/SKILL.md`). Four reviewers:
+  `spec-compliance-reviewer`, `code-quality-reviewer`, `security-reviewer`,
+  `second-reviewer`. `receiving-review` is implementer-side behavior, not a subagent.
 - `hooks/`: conservative hook scripts. They are not wired globally by default.
 - `templates/project/`: starter project instructions and durable docs.
 
@@ -37,12 +57,15 @@ duplicate skill rules; it links to them.
 Chezmoi installs `~/.config/ai-harness` as the source of truth, then links agent-facing locations
 back to it:
 
-- `~/.agents/AGENTS.md`
-- `~/.codex/AGENTS.md`
-- `~/.claude/CLAUDE.md`
-- `~/.agents/skills/<skill-name>`
-- `~/.claude/skills`
-- `~/.claude/agents/<agent-name>.md`
+- `~/.agents/AGENTS.md` → `~/.config/ai-harness/AGENTS.md`
+- `~/.codex/AGENTS.md` → `~/.config/ai-harness/AGENTS.md`
+- `~/.claude/CLAUDE.md` → `~/.config/ai-harness/AGENTS.md`
+  *(yes, the same source file serves Claude Code's global CLAUDE.md, Codex's
+  AGENTS.md, and `~/.agents/AGENTS.md` — a single set of agent instructions across
+  every Codex-compatible host)*
+- `~/.agents/skills/<skill-name>` → `~/.config/ai-harness/skills/<skill-name>`
+- `~/.claude/skills` → `~/.config/ai-harness/skills`
+- `~/.claude/agents/<agent-name>.md` → `~/.config/ai-harness/claude-agents/<agent-name>.md`
 
 Claude Code and Codex see the same workflow source. Tool-specific runtime settings still live under
 their native config directories.
@@ -65,10 +88,10 @@ Adopted patterns (Hexagonal, CQRS, Event Sourcing, etc.) belong in `docs/ARCHITE
 `docs/DECISIONS/` of the project that adopts them, not in a global skill. Skills only encode
 review/process steps that are useful across most projects.
 
-DDD operational checks are kept inline in `architecture-review` because (a) BB Harness already
-treats DDD as a first-class concern and (b) the inline summary stays under 6 lines. They become a
-sub-skill only if that block grows past ~15 lines or if a domain-only project explicitly needs to
-load them lazily.
+DDD operational checks, SOLID checks, file/complexity thresholds, the Coverage Matrix, and
+durable docs drift checks are SSOT-owned by `skills/code-quality-review/SKILL.md`. Upstream
+checks (domain alignment, SOLID at plan time) are inlined into `write-spec` Self-Review and
+`write-plan` Self-Review so unresolved decisions surface before implementation, not after.
 
 ### Phrasing Conventions
 
@@ -79,8 +102,8 @@ load them lazily.
   the default integration inside `skills/second-review/SKILL.md`; other docs say "host agent's
   Codex integration when available."
 - File and complexity thresholds (300/600 lines, 50-80-line functions, repeated-conditional
-  triggers) are defined in `skills/architecture-review/SKILL.md` (File And Complexity Thresholds).
-  Other docs reference that section rather than redefining numbers.
+  triggers) are defined in `skills/code-quality-review/SKILL.md` (File And Complexity
+  Thresholds). Other docs reference that section rather than redefining numbers.
 
 ## Skill-First Posture
 
@@ -89,7 +112,7 @@ their process in chat.
 
 Skill-first does not mean "load every skill." It means:
 
-- Start or resume with `bb-workflow` when the phase is unclear.
+- Start or resume with `using-bb-harness` when the phase is unclear.
 - Use a direct matching skill when the task clearly maps to one.
 - Move from phase to phase through skills instead of improvising.
 - Skip a relevant skill only when the task is clearly small/local or the skill would not materially
@@ -105,7 +128,7 @@ BB Harness borrows deliberately from a few workflows:
 - Superpowers: design before code, plan-backed execution, TDD, review, and finish checks.
 - gstack: Think, Plan, Build, Review, Test, Ship, and Retro as an ordered delivery loop.
 - Stacked PR practice: when history matters, commit and branch by logical review layer (see
-  `execute-plan` Workspace Isolation and `ship-check` Finishing Options).
+  `subagent-driven-development` Workspace Isolation and `ship-check` Finishing Options).
 - Claude feature/review plugins: use focused reviewers and parallel specialists only when risk
   justifies them.
 
@@ -115,18 +138,20 @@ workflow that still protects correctness, evidence, safety, and project consiste
 Default non-trivial flow:
 
 ```text
-bb-workflow
+using-bb-harness
 -> product-discovery when goal, users, MVP, or non-goals are unclear
 -> pressure-test when assumptions are unclear or risky
 -> domain-modeling when domain language or boundaries matter
--> acceptance artifact: spec, PRD, issue, review finding, or approved task
--> spec-review when a spec/PRD exists or acceptance criteria need shaping
--> compact implementation plan
--> required plan-review for non-trivial or multi-step plans
--> execute-plan for reviewed multi-slice plans (with workspace isolation when needed)
--> behavior-tdd for small/local work or each implementation slice
--> implementation-review and focused reviews as needed
--> second-review when high risk or independently requested
+-> write-spec (with Self-Review: Product Clarity + Domain Alignment)
+-> write-plan (with Self-Review: Plan Hygiene + Architecture Soundness)
+-> subagent-driven-development as controller
+   for each task:
+     implementer subagent (test-driven-development inside)
+     -> spec-compliance-review subagent (binary ✅/❌)
+     -> code-quality-review subagent (Yes / With fixes / No)
+     -> security-review subagent when triggered
+     -> second-review (Codex) when High-Risk Surface or independent double-check
+     -> receiving-review applied between any reviewer feedback and the next fix
 -> docs-sync
 -> ship-check
 -> commit/stack gate when explicitly approved or required
@@ -136,40 +161,40 @@ For acceptance, spec, and plan ownership rules see `skills/write-spec/SKILL.md` 
 and `skills/write-plan/SKILL.md`. The canonical Acceptance Brief fields live in `write-spec` and
 are not re-listed elsewhere.
 
-For workflow weight 4-tier definition see `skills/bb-workflow/SKILL.md` (Workflow Weight table).
+For workflow weight 4-tier definition see `skills/using-bb-harness/SKILL.md` (Workflow Weight table).
 
 ## Skill Map
 
-Mirror of `skills/bb-workflow/SKILL.md` Routing table for human orientation. The skill is the
+Mirror of `skills/using-bb-harness/SKILL.md` Routing table for human orientation. The skill is the
 source of truth; this table tracks it.
 
 | Situation | Skill |
 | --- | --- |
-| Choose workflow weight and next phase | `bb-workflow` |
+| Choose workflow weight and next phase | `using-bb-harness` |
 | Start or refresh project instructions | `project-scaffold` |
 | Product direction is unclear | `product-discovery` |
 | Assumptions need challenge | `pressure-test` |
 | Domain language or boundaries matter | `domain-modeling` |
-| Create an acceptance artifact and slices | `write-spec` |
-| Review a spec, PRD, or acceptance artifact | `spec-review` |
-| Create a compact implementation plan | `write-plan` |
-| Review implementation plan before execution | `plan-review` |
-| Execute reviewed multi-slice plan (with workspace isolation) | `execute-plan` |
-| Implement behavior through red-green-refactor | `behavior-tdd` |
+| Create an acceptance artifact and slices (includes Self-Review) | `write-spec` |
+| Create a compact implementation plan (includes Self-Review) | `write-plan` |
+| Execute reviewed multi-task plan, host supports subagents | `subagent-driven-development` |
+| Execute reviewed plan inline (host without subagents, or 1-3 small tasks) | `executing-plans-inline` |
+| Set up isolated worktree before execution | `using-git-worktrees` |
+| Implement behavior through red-green-refactor | `test-driven-development` |
+| Verify completion claims with fresh evidence | `verification-before-completion` |
 | Diagnose a bug or regression | `bug-diagnosis` |
-| Review whether tests prove acceptance behavior | `test-review` |
-| Review architecture, DDD, SOLID, file size | `architecture-review` |
-| Review implementation diff or completed slice | `implementation-review` |
+| Verify implementation matches acceptance (binary) | `spec-compliance-review` |
+| Review code quality, DDD/SOLID, file size, tests, docs drift, production readiness | `code-quality-review` |
 | Review auth, secrets, crypto, deletion, untrusted input, data loss | `security-review` |
-| Review durable docs and drift | `docs-review` |
-| Request or record independent second review | `second-review` |
+| Independent double-check (Codex by default) | `second-review` |
+| Process reviewer feedback (verify, push back, apply one at a time) | `receiving-review` |
 | Sync docs after behavior or workflow changes | `docs-sync` |
 | Final handoff, verification, and residual risk check | `ship-check` |
 | Continue bounded autonomous iterations | `bounded-loop` |
 
 ## Review Routing
 
-Detailed routing lives in `skills/bb-workflow/SKILL.md` (Review Routing) and each individual
+Detailed routing lives in `skills/using-bb-harness/SKILL.md` (Review Routing) and each individual
 review skill. Use the lightest review that protects the work; do not run broad reviews because a
 review skill exists.
 
@@ -182,20 +207,20 @@ Detailed gate behavior lives in `skills/ship-check/SKILL.md` (Commit / Stack Gat
 default is: commit/PR/stack actions only run with explicit user approval, project-local
 instructions, or an approved bounded goal.
 
-For stacked workflows see `skills/execute-plan/SKILL.md` (Workspace Isolation) and
+For stacked workflows see `skills/subagent-driven-development/SKILL.md` (Workspace Isolation) and
 `skills/ship-check/SKILL.md` (Finishing Options + Worktree Cleanup Provenance).
 
 ## Verification
 
-Behavior changes use `behavior-tdd` (red-green-refactor with one failing public-interface test
-first). Bug investigations start with `bug-diagnosis`, then return to `behavior-tdd` for the fix.
+Behavior changes use `test-driven-development` (red-green-refactor with one failing public-interface test
+first). Bug investigations start with `bug-diagnosis`, then return to `test-driven-development` for the fix.
 
 Prefer automated project checks (focused tests, full tests when risk justifies, typecheck, lint,
 build, project hooks) over manual/browser QA. Manual checks are reserved for behavior that
 automated checks cannot cover well.
 
 Production behavior changes may skip TDD only with explicit user approval and a recorded
-residual-risk reason. See `skills/behavior-tdd/SKILL.md` for full rules.
+residual-risk reason. See `skills/test-driven-development/SKILL.md` for full rules.
 
 ## Scaffold Profiles
 
@@ -210,7 +235,7 @@ residual-risk reason. See `skills/behavior-tdd/SKILL.md` for full rules.
 Dependency installation is user-managed by default. Agents may suggest commands and assumptions, but
 should not execute installs unless explicitly asked. For dependency add/replace/upgrade decisions,
 project lefthook hooks should run language-appropriate audit tools (npm audit / pip-audit /
-cargo audit / govulncheck) and `plan-review` records the rationale.
+cargo audit / govulncheck) and `write-plan` Self-Review records the rationale.
 
 ## Durable Docs
 
@@ -221,7 +246,7 @@ Project docs have separate ownership:
 - `docs/CURRENT.md`: current phase, active acceptance artifact/source, blocker, last verification,
   and next action.
 - `docs/AGENT_WORKFLOW.md`: project-local overrides to global workflow; no duplication of
-  `bb-workflow` rules.
+  `using-bb-harness` rules.
 - `docs/ROADMAP.md`: product goal, MVP, milestones, parking lot.
 - `docs/ARCHITECTURE.md`: boundaries, layers, dependency rules, tradeoffs.
 - `docs/DOMAIN_MODEL.md`: domain terms, invariants, workflows, entities, value objects.
@@ -255,7 +280,7 @@ promote globally only after they are quiet enough for daily use.
 New project:
 
 ```text
-Use bb-workflow.
+Use using-bb-harness.
 Project state: new project.
 Goal: <short product idea>.
 Decide the workflow weight, next phase, scaffold needs, and approvals before editing.
@@ -264,7 +289,7 @@ Decide the workflow weight, next phase, scaffold needs, and approvals before edi
 Existing project:
 
 ```text
-Use bb-workflow.
+Use using-bb-harness.
 Task: <describe task>.
 Read project instructions, current docs, tests, and relevant code. Report workflow weight, selected next skill, required artifact or approval, and next safe action before editing.
 ```
@@ -272,7 +297,7 @@ Read project instructions, current docs, tests, and relevant code. Report workfl
 Small behavior change:
 
 ```text
-Use behavior-tdd and ship-check for this small behavior change.
+Use test-driven-development and ship-check for this small behavior change.
 Run docs-sync only if behavior, architecture, testing, or user-facing behavior changes.
 Change: <describe change>.
 ```
@@ -280,9 +305,9 @@ Change: <describe change>.
 Non-trivial feature:
 
 ```text
-Use bb-workflow first.
+Use using-bb-harness first.
 Feature: <describe feature>.
-Use the relevant skills for acceptance artifact, review, compact plan, execute-plan for multi-slice work, behavior-tdd inside behavior-changing slices, docs sync, and ship check. Keep the workflow weight proportional to risk.
+Use the relevant skills for acceptance artifact, review, compact plan, subagent-driven-development for multi-slice work, test-driven-development inside behavior-changing slices, docs sync, and ship check. Keep the workflow weight proportional to risk.
 ```
 
 Bounded autonomous loop:

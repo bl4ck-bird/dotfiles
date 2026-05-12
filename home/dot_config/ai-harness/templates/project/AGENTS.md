@@ -71,7 +71,7 @@ unknown until confirmed.
 
 - Prefer vertical slices over horizontal technical phases.
 - Behavior tests should exercise public interfaces, user-visible flows, or stable domain boundaries.
-- File and complexity thresholds follow `skills/architecture-review/SKILL.md` (File And Complexity
+- File and complexity thresholds follow `skills/code-quality-review/SKILL.md` (File And Complexity
   Thresholds). Do not redefine the numbers here.
 - Use SOLID as concrete checks for responsibility, dependency direction, and interface size.
 - Use DDD only where domain complexity justifies it.
@@ -79,7 +79,7 @@ unknown until confirmed.
 
 ## Development Workflow
 
-Use `skills/bb-workflow/SKILL.md` as the routing source. Phase selection follows the workflow
+Use `skills/using-bb-harness/SKILL.md` as the routing source. Phase selection follows the workflow
 weight defined there.
 
 Project-specific overrides (add only when the project diverges from the harness default):

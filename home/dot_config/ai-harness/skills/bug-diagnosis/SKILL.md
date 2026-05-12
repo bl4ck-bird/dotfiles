@@ -37,11 +37,37 @@ until it is debuggable rather than chasing a single clean repro.
 
 - Do not patch from intuition when a reproduction loop is available.
 - Do not broaden scope into refactoring until the bug is reproduced and understood.
-- Do not change tests to match broken behavior unless the expected behavior was wrong and the user
-  agrees.
+- Do not change tests to match broken behavior unless the expected behavior was wrong and
+  the user agrees.
 - If reproduction is impossible, explain why and list the evidence used instead.
-- Security, money, data-loss, auth, crypto, and concurrency bugs require a stronger regression test
-  or explicit residual risk note.
+- Security, money, data-loss, auth, crypto, and concurrency bugs require a stronger
+  regression test or explicit residual risk note.
+- Apply `verification-before-completion` after the fix — re-run the reproduction in this
+  response and read the passing output before claiming the bug is fixed.
+
+## Companion Techniques
+
+When the bug is non-trivial, draw on these BB Harness companion files:
+
+- **`root-cause-tracing.md`** — bug appears deep in the call stack. Trace backward from
+  the immediate failure to the original trigger before changing code. Includes stack-trace
+  instrumentation pattern and "find the polluter" guidance.
+- **`defense-in-depth.md`** — when invalid data flowed through multiple layers. Add
+  validation at entry / business / environment / debug layers so the bug becomes
+  structurally impossible, not just fixed. Run after the root cause is identified.
+- **`condition-based-waiting.md`** — when the bug is a flaky test or async race. Convert
+  arbitrary `sleep` / `setTimeout` waits into condition-based polls so the test waits
+  for the actual state, not a guess about timing.
+- **`test-pollution.md`** — when a test leaves files / state behind, or tests pass alone
+  but fail in suite. Includes investigation process, common polluter mechanisms, and
+  `find-polluter.sh` bisection script.
+- **`debugging-pressure-scenarios.md`** — load when you sense the urge to skip the
+  workflow under time, exhaustion, sunk-cost, or social pressure. Three training
+  scenarios (production outage, flaky test at 8 pm, senior engineer pushing a fix)
+  with the right answer and the failure mode of each shortcut.
+
+Read the companion file when its trigger fits. Do not load all three by default —
+`bug-diagnosis` SKILL.md is the entry point; the companions are loaded on demand.
 
 ## Hypothesis Format
 
@@ -54,9 +80,9 @@ Check: <command/file/log/test>
 Result: <confirmed/refuted/unknown>
 ```
 
-## Hand Off To `behavior-tdd`
+## Hand Off To `test-driven-development`
 
-After reproduction is confirmed and the root cause is identified, return to `behavior-tdd` for the
+After reproduction is confirmed and the root cause is identified, return to `test-driven-development` for the
 red-green-refactor cycle: regression test that fails before the fix, then the smallest change that
 makes it pass. Do not implement the fix inside this skill; this skill owns reproduction,
 hypothesis, and root cause.
@@ -67,7 +93,7 @@ Report:
 
 - Reproduction path
 - Root cause
-- Fix summary (handed off to `behavior-tdd`)
+- Fix summary (handed off to `test-driven-development`)
 - Regression coverage
 - Verification commands and results
 - Residual risk

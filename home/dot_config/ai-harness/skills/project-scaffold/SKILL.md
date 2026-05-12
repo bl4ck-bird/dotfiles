@@ -87,35 +87,20 @@ skipped.
 
 ## Lefthook / Pre-Commit Hooks
 
-When the project uses lefthook (or another git hook runner), include hooks for the concerns the
-harness cannot enforce from skills alone. Propose; do not install.
+Load `lefthook-recipes.md` in this directory when the project uses (or is considering)
+a git-hook runner. The companion file owns:
 
-### Dependency Audit Hooks
+- Dependency audit hook recipes per language (`npm audit`, `pip-audit`, `cargo audit`,
+  `govulncheck`, `bundler-audit`).
+- Commit-msg rationale enforcement for dependency changes.
+- Other hook targets (lint, typecheck, secret scan, full-suite pre-push).
+- What belongs in hooks vs what belongs in skills.
 
-Trigger when manifest files change in staged commits. Run language-appropriate audit tools and
-fail the commit on findings the project rejects.
+Skip the companion when the project has no hook runner and is not adopting one.
 
-| Manifest changed | Recommended audit |
-| --- | --- |
-| `package.json`, `package-lock.json`, `pnpm-lock.yaml`, `yarn.lock` | `npm audit` / `pnpm audit` / `yarn npm audit` |
-| `requirements.txt`, `pyproject.toml`, `poetry.lock`, `uv.lock` | `pip-audit` / `safety check` |
-| `Cargo.toml`, `Cargo.lock` | `cargo audit` |
-| `go.mod`, `go.sum` | `govulncheck ./...` |
-| `Gemfile`, `Gemfile.lock` | `bundler-audit` |
-
-Recommended commit-msg behavior: when a commit touches a manifest file, require the message body
-to mention dependency rationale (added / replaced / upgraded reason, alternatives considered when
-relevant). Lefthook can enforce this with a small commit-msg script. The harness rule is
-*trigger* automation by hook; the *judgment* (alternatives, license, removal cost) lives in
-`plan-review` and `security-review` for high-risk deps.
-
-### Other Hook Targets
-
-- Pre-commit: lint, typecheck, focused test, secret scan (if available).
-- Commit-msg: project conventional-commit format if used.
-- Pre-push: full test suite (when fast enough).
-
-Hook implementation specifics belong in `lefthook.yml`, not in this skill.
+Harness principle (regardless): **trigger automation by hook; judgment lives in
+skills.** Hooks do not replace `write-plan` Self-Review for dependency adds or
+`security-review` for high-risk deps.
 
 ## Defaults
 
@@ -158,11 +143,12 @@ Use pressure-test and domain-modeling before writing the first acceptance artifa
 ```
 
 ```text
-Use write-spec when an acceptance artifact is needed. Run spec-review for full specs,
-PRDs, or unclear acceptance criteria. Then use compact write-plan, required plan-review
-for non-trivial or multi-slice work, execute-plan with behavior-tdd inside each slice,
-implementation-review, test-review when verification is weak or acceptance-critical,
-docs-sync, ship-check, and an approved commit/stack gate only when needed.
+Use write-spec when an acceptance artifact is needed. Self-Review covers product
+clarity and domain alignment. Then use compact write-plan with Self-Review for
+plan hygiene and architecture soundness. Run subagent-driven-development for multi-task plans —
+each task uses test-driven-development, then spec-compliance-review, then code-quality-review
+(security-review and second-review as triggered). Finish with docs-sync, ship-check,
+and an approved commit/stack gate only when needed.
 ```
 
 Use templates from `~/.config/ai-harness/templates/project/` when creating new files.
