@@ -1,11 +1,19 @@
 ---
 name: domain-modeling
-description: Use when aligning product plans, acceptance artifacts, code, or tests with DDD vocabulary, bounded contexts, invariants, CONTEXT.md, CONTEXT-MAP.md, or durable decisions.
+description: Use when domain terms are unclear, overloaded, or drifting; when introducing or renaming aggregates, value objects, or bounded contexts; or when CONTEXT.md / CONTEXT-MAP.md / docs/DOMAIN_MODEL.md need updates before a spec or plan touches domain code.
 ---
 
 # Domain Modeling
 
 Keep agent plans aligned with the product's language and boundaries.
+
+Called from `write-spec` Self-Review when domain terms are unstable, and from
+`write-plan` Self-Review when the plan touches domain code with unclear boundaries.
+Can be invoked directly when introducing or renaming aggregates, value objects, or
+bounded contexts.
+
+`code-quality-review/ddd-operational-checks.md` validates the resulting code; this
+skill *establishes* the model that those checks validate against.
 
 ## Read First
 

@@ -53,7 +53,8 @@ and next action when substantial work changed state.
    and `security-review` was run or explicitly noted as not triggered.
 7. Run or request `second-review` for required High-Risk Surface changes, or note why
    optional independent double-check is not needed.
-8. Confirm no source file crossed the 300/600 line thresholds without review.
+8. Confirm no source file crossed the file-size thresholds defined in
+   `code-quality-review` (File And Complexity Thresholds) without review.
 9. Confirm validation was not gamed by weakening assertions, narrowing coverage, skipping relevant
 checks, or changing tests to match broken behavior.
 10. Decide commit status: not requested, ready to commit, committed, or blocked.

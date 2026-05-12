@@ -243,12 +243,17 @@ Never:
 
 ## Subagents For Independent Tracks
 
-Outside the per-task loop, subagents are also used for:
+Outside the per-task plan-execution loop, subagents are also used for:
 
 - Investigating a bounded codebase question while the main agent works elsewhere.
 - Running an architecture, test, security, or docs deep-dive that
   `code-quality-review` did not need to cover.
 - A requested independent `second-review`.
+
+For **2+ genuinely independent investigations that can run concurrently** (different
+bugs, different subsystems, different research questions), use
+`dispatching-parallel-agents` — its use case is *parallel* and *read-only or
+disjoint*, distinct from this skill's *sequential* plan-execution loop.
 
 Bad subagent tasks:
 

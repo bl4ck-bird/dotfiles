@@ -40,3 +40,7 @@ Output format:
 
 Stop after two cycles in the same review — escalate to the main agent. See
 `using-bb-harness` Review Iteration Pattern.
+
+Apply `~/.claude/skills/verification-before-completion/SKILL.md` — when assessing a
+security claim ("input is validated", "secrets are redacted", "auth check runs"),
+verify by reading the code path, not by trusting the implementer's description.

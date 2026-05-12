@@ -7,6 +7,12 @@ description: Use when project documentation may need updates after code, archite
 
 Keep durable docs aligned with the project state.
 
+Triggered from `ship-check` Preconditions when behavior, architecture, testing,
+security, or user-facing behavior changed. May also be invoked directly when the user
+notes drift between docs and code. `code-quality-review` durable-docs-drift checks
+overlap with this skill — that review flags drift *during code review*, while this
+skill *resolves* drift after acceptance.
+
 ## Check
 
 Review changed files, identify the durable concerns they touched, and decide whether any of these

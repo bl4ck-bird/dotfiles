@@ -160,9 +160,9 @@ exception, or a narrow edit with a follow-up refactor issue.
 
 ## Self-Review
 
-Before presenting the plan, walk this checklist yourself. The harness no longer runs a
-separate `plan-review` skill — plan correctness is owned here, then re-verified by
-`spec-compliance-review` + `code-quality-review` after implementation.
+Before presenting the plan, walk this checklist yourself. Plan correctness is owned
+here, then re-verified by `spec-compliance-review` + `code-quality-review` after
+implementation.
 
 ### Plan Hygiene
 

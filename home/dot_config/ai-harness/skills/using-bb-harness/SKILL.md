@@ -73,9 +73,9 @@ product, domain, architecture, or safety decisions.
 ## Acceptance Artifact
 
 Non-trivial work needs a reviewed acceptance artifact (spec, PRD, issue, review finding, or
-approved task) before implementation. Use `write-spec` for new specs (its Self-Review
-replaces the former `spec-review` skill). The Acceptance Brief Fields (see `write-spec`)
-are the canonical field set.
+approved task) before implementation. Use `write-spec` for new specs — its Self-Review
+section owns product clarity and domain alignment. The Acceptance Brief Fields (see
+`write-spec`) are the canonical field set.
 
 - Use a full `docs/specs/` spec when product scope, domain language, public API,
   data / storage, auth / security, deletion, sync, external integrations, or user workflow
@@ -114,7 +114,7 @@ definitions live in two companion files in this directory:
   automatic follow-on), Scope Guard, "plan needs revision" handoff, receiving-feedback
   ordering. **Hard stop after 2 cycles** is here.
 - `severity-definitions.md` — Critical / Important / Minor with concrete examples,
-  Untouched-Code Rule, "do not promote" guidance, P0-P3 legacy mapping.
+  Untouched-Code Rule, "do not promote" guidance.
 
 Other review skills and `claude-agents/*-reviewer.md` reference these companions as
 the SSOT. Do not duplicate the definitions in calling skills.

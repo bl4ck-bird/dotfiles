@@ -44,6 +44,9 @@ until it is debuggable rather than chasing a single clean repro.
   regression test or explicit residual risk note.
 - Apply `verification-before-completion` after the fix — re-run the reproduction in this
   response and read the passing output before claiming the bug is fixed.
+- When the bug spans 2+ independent test files / subsystems with different root
+  causes (multi-domain investigation), use `dispatching-parallel-agents` to investigate
+  the domains concurrently. Apply this workflow per agent and integrate findings.
 
 ## Companion Techniques
 

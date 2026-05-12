@@ -46,3 +46,7 @@ Result: ❌ Issues found
 
 Stop after two cycles in the same task — escalate to the main agent rather than running a
 third cycle. See `using-bb-harness` Review Iteration Pattern.
+
+Apply `~/.claude/skills/verification-before-completion/SKILL.md` — when the implementer's
+report claims a command was run, run it yourself and read the output before approving.
+Reports are claims, not evidence.

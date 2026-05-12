@@ -1,6 +1,6 @@
 ---
 name: dispatching-parallel-agents
-description: Use when there are 2+ genuinely independent investigations, bug repros, or read-only research tasks that can run concurrently without shared state. Different use case from subagent-driven-development (which dispatches sequentially per plan task).
+description: Use when 2+ genuinely independent investigations, bug repros, or read-only research tasks can run concurrently without shared state — for breadth, not for plan execution. Plan-task execution stays in subagent-driven-development.
 ---
 
 # Dispatching Parallel Agents

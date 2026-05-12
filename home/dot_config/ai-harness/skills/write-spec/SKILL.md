@@ -181,9 +181,9 @@ Prefer:
 
 ## Self-Review
 
-Before declaring the artifact ready, walk this checklist yourself. The harness no longer runs
-a separate `spec-review` skill — domain and acceptance correctness is owned here, then
-re-verified by `spec-compliance-review` after implementation.
+Before declaring the artifact ready, walk this checklist yourself. Domain and acceptance
+correctness is owned here, then re-verified by `spec-compliance-review` after
+implementation.
 
 ### Product Clarity
 

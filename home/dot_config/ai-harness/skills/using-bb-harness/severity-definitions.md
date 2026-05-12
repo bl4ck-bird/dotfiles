@@ -66,21 +66,6 @@ Symptoms of severity inflation:
 When you catch yourself escalating, demote. The hard-stop-after-two-cycles rule
 exists in part to catch this.
 
-## Mapping From P0-P3 (Legacy)
-
-Earlier harness versions used P0-P3. The mapping:
-
-| Legacy | Current |
-| --- | --- |
-| P0 | Critical |
-| P1 | Important |
-| P2 | Minor (tracked) |
-| P3 | Minor (not tracked) |
-
-P2 and P3 are not separately distinguished in the current vocabulary because the
-distinction added no review-time decision — both mean "does not block, list it,
-move on."
-
 ## Cross-Reference
 
 - `using-bb-harness` Review Result Contract (in `review-rules.md`) uses these

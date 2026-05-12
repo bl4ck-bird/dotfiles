@@ -63,3 +63,7 @@ Output format:
 
 Stop after two cycles in the same task — escalate to the main agent. See `using-bb-harness`
 Review Iteration Pattern.
+
+Apply `~/.claude/skills/verification-before-completion/SKILL.md` — re-run the verification
+commands the implementer claims to have run, and read the output before approving. Coverage
+Matrix entries must cite real test paths or commands you confirmed exist.
