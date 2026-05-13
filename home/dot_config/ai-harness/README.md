@@ -183,6 +183,7 @@ source of truth; this table tracks it.
 | Implement behavior through red-green-refactor | `test-driven-development` |
 | Verify completion claims with fresh evidence | `verification-before-completion` |
 | Diagnose a bug or regression | `bug-diagnosis` |
+| 2+ independent investigations / bug repros / read-only research concurrently | `dispatching-parallel-agents` |
 | Verify implementation matches acceptance (binary) | `spec-compliance-review` |
 | Review code quality, DDD/SOLID, file size, tests, docs drift, production readiness | `code-quality-review` |
 | Review auth, secrets, crypto, deletion, untrusted input, data loss | `security-review` |

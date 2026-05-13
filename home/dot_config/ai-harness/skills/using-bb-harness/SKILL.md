@@ -162,6 +162,7 @@ Choose the next phase, not the entire lifecycle:
 | Isolated worktree needed before execution | `using-git-worktrees` |
 | 2+ independent investigations / bug repros / read-only research that can run concurrently | `dispatching-parallel-agents` |
 | Bug, flaky test, regression | `bug-diagnosis` |
+| Verifying a completion claim ("done", "fixed", "passes") with fresh evidence | `verification-before-completion` |
 | Verifying implementation matches acceptance | `spec-compliance-review` |
 | Reviewing implementation quality / architecture / tests / docs | `code-quality-review` |
 | Security / data-loss / destructive / auth / secrets / crypto / untrusted-input risk | `security-review` |
