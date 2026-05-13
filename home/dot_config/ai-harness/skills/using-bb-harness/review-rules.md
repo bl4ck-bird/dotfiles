@@ -40,20 +40,23 @@ Minor findings do not block. List them but do not require tracking.
 All review skills use this gate. Authoring skills must apply it when reading review
 results.
 
-- **Blocked** — any unresolved Critical / Important finding, missing required
-  evidence, or acceptance mismatch.
-- **Pass with follow-ups** — only Minor findings remain. Every follow-up is tracked
-  in an issue, plan task, or accepted-risk record. No accepted behavior is changed.
-- **Pass** — no material findings remain.
-- **Hard stop after 2 cycles** — see Review Iteration Pattern above.
+The vocabulary is **`Ready to merge?`** with three answers:
 
-The contract maps to the user-facing `Ready to merge?` answer:
+- **Yes** — no Critical or Important findings remain. Minor findings may be listed;
+  tracking them as plan tasks or accepted-risk notes is encouraged but not required.
+- **With fixes** — Critical or Important findings remain that the implementer can
+  apply directly. Implementer fixes via `receiving-review`; reviewer re-runs on the
+  changed diff.
+- **No** — fundamental problem requires the plan or acceptance artifact to be
+  revised, not just the code. Escalate to the user; do not loop on review-fix.
 
-| Review Result | Ready to merge? |
-| --- | --- |
-| Pass | Yes |
-| Pass with follow-ups | With fixes (if any follow-up requires action) or Yes |
-| Blocked | No |
+`spec-compliance-review` uses a binary form of the same gate: ✅ Spec compliant maps
+to `Ready to merge: Yes`, ❌ Issues found maps to `Ready to merge: With fixes`.
+
+**Hard stop after 2 cycles** — see Review Iteration Pattern above. After two
+cycles in the same channel without convergence, the result becomes effectively
+`No` until the user chooses a path (reduce scope, accept current state, revise
+artifact).
 
 ## Review Chain Depth Cap
 

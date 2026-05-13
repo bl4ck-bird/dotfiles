@@ -69,11 +69,9 @@ exists in part to catch this.
 ## Cross-Reference
 
 - `using-bb-harness` Review Result Contract (in `review-rules.md`) uses these
-  definitions to map findings → Pass / Pass with follow-ups / Blocked.
+  definitions to gate the `Ready to merge?` answer.
 - `code-quality-review` Severity section quotes this file.
-- `security-review` Severity section maps blocks-implementation /
-  blocks-shipping / acceptable-with-risk / follow-up onto Critical / Important /
-  Minor.
+- `security-review` Severity section uses Critical / Important / Minor directly.
 - Each `claude-agents/*-reviewer.md` instructs the reviewer to apply these
   definitions.
 

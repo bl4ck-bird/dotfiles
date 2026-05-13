@@ -10,11 +10,12 @@ records project-local usage, commands, and overrides.
 
 When using this harness, prefer the relevant workflow skill over ad-hoc process.
 
-- Start or resume with `using-bb-harness` when the phase is unclear.
-- Use direct matching skills for discovery, pressure-test, domain modeling, acceptance artifacts,
-  reviews, plans, execution, docs sync, and ship checks.
+- Start every session with `using-bb-harness` (universal bootstrap, self-disables when
+  this repo's markers are absent).
+- Use direct matching skills when the task obviously maps to one.
 - Use the smallest useful set of skills for the workflow weight.
-- If a relevant skill is skipped for a small/local task, record why in the final report or plan.
+- If a relevant skill is skipped for a small/local task, record why in the final report
+  or plan.
 
 ## Session Start
 
@@ -23,24 +24,67 @@ Use this prompt:
 ```text
 Use using-bb-harness.
 Task: <describe task>.
-Read AGENTS.md, CONTEXT.md, docs/CURRENT.md, docs/AGENT_WORKFLOW.md, current acceptance artifacts, plans, and reviews relevant to this task, and data/security docs when relevant.
-Report workflow weight, selected next skill, required artifact or approval, and next safe action before editing.
+Read AGENTS.md, CONTEXT.md, docs/CURRENT.md, docs/AGENT_WORKFLOW.md, current
+acceptance artifacts, plans, and reviews relevant to this task, and data/security
+docs when relevant.
+Report workflow weight, selected next skill, required artifact or approval, and
+next safe action before editing.
 ```
 
 ## Workflow Weight
 
-- Tiny/local: use direct edit or `test-driven-development` plus `ship-check`.
-- Scope review: three or more files, uncertain blast radius, or unclear module boundary. Decide
-  whether the small path still fits. If keeping the small path, record why it is bounded, the
-  files/modules involved, why no product/API/data/security decision is changing, verification, and
-  docs impact.
-- Non-trivial: use a reviewed acceptance artifact, compact plan, `subagent-driven-development` for multi-slice
-  work, TDD inside each behavior-changing slice, focused reviews, docs sync, and ship check.
-- Risky/substantial: broad refactor, weak tests, five or more files, two or more modules, or
-  300/600-line file thresholds, or any High-Risk Surface (see `skills/second-review/SKILL.md`).
-  Add the relevant focused review. Require `second-review` when a High-Risk Surface is touched and
-  Codex (or another independent reviewer) is available; consider it for large diffs or weak
-  verification.
+- **Tiny/local**: direct edit or `test-driven-development` plus `ship-check`.
+- **Scope review**: 3+ files, uncertain blast radius, or unclear module boundary. Decide
+  whether the small path still fits. Record bounded scope.
+- **Non-trivial**: reviewed acceptance artifact (`write-spec` Self-Review) + compact
+  plan (`write-plan` Self-Review) + `subagent-driven-development` (or
+  `executing-plans-inline` when subagent dispatch is unavailable) + per-task
+  `test-driven-development` + `spec-compliance-review` + `code-quality-review` +
+  `docs-sync` + `ship-check`.
+- **Risky/substantial**: above + `security-review` when triggered, `second-review`
+  for High-Risk Surface or boundary/dependency-direction change. File-size
+  thresholds defined in `code-quality-review` (File And Complexity Thresholds).
+
+## Default Non-Trivial Flow
+
+```text
+product-discovery → pressure-test → domain-modeling      (discovery, as needed)
+  ↓
+write-spec      (with Self-Review: Product Clarity + Domain Alignment)
+  ↓
+write-plan      (with Self-Review: Plan Hygiene + Architecture Soundness)
+  ↓
+using-git-worktrees                                       (isolated workspace)
+  ↓
+subagent-driven-development   OR   executing-plans-inline
+  for each task:
+    test-driven-development
+    spec-compliance-review        (binary ✅/❌)
+    code-quality-review           (Ready to merge? Yes/No/With fixes)
+    security-review               (when triggered)
+    second-review                 (High-Risk Surface or double-check)
+    receiving-review              (between reviewer feedback and fix)
+  ↓
+verification-before-completion                            (every completion claim)
+  ↓
+docs-sync
+  ↓
+ship-check
+  ↓
+commit / stack / PR / release    (only when explicitly approved)
+```
+
+Adjacent skills:
+
+- `bug-diagnosis` for bugs / flaky tests / regressions (with companion files when
+  needed: `root-cause-tracing`, `defense-in-depth`, `condition-based-waiting`,
+  `test-pollution`, `debugging-pressure-scenarios`).
+- `dispatching-parallel-agents` for 2+ independent concurrent investigations
+  (distinct from `subagent-driven-development`'s sequential plan execution).
+- `bounded-loop` for user-approved autonomous repetition (only after goal, scope,
+  allowed actions, iteration budget, verification gate, and stop conditions are
+  explicit).
+- `project-scaffold` for adding or refreshing harness scaffold in this project.
 
 ## Acceptance Artifacts
 

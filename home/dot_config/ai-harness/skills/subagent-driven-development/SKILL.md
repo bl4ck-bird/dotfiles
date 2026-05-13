@@ -227,19 +227,10 @@ implementer said it's stuck, something needs to change.
 
 ## Worker / Reviewer Anti-Patterns
 
-Never:
-
-- Start implementation on `main` / `master` without explicit user consent.
-- Dispatch multiple implementer subagents in parallel for the same task (write
-  conflicts).
-- Make a worker read the plan file when you can paste the full task text.
-- Skip a review pass to finish faster.
-- Treat implementer self-review as the same thing as `spec-compliance-review`.
-- Run `code-quality-review` before `spec-compliance-review` passes.
-- Move to the next task while either review has open Critical / Important findings.
-- Let a reviewer finding propose broad rewrites or new dependencies as required fixes
-  (see `using-bb-harness` Review Scope Guard).
-- Delegate unresolved product / domain / architecture decisions to a worker.
+Full catalog in `worker-anti-patterns.md` — controller-side, worker-side,
+reviewer-side, and cross-cutting patterns. Top hits: no parallel implementer for the
+same task, no skipping a review, no severity inflation, no auto-chained second
+follow-on, no silent scope expansion, no trust of worker reports without verification.
 
 ## Subagents For Independent Tracks
 
