@@ -2,21 +2,21 @@
 
 Document status: ready.
 
-Specs capture resolved product context for one feature or change. They are temporary working
-artifacts, not replacements for durable docs.
+Specs capture resolved product context for one feature or change. Temporary working artifacts, not
+replacements for durable docs.
 
 Do not create a spec just to restate an already clear task. A clear issue, review finding, or
-approved user request may be enough when the Acceptance Brief fields, acceptance criteria, and risk
-are explicit.
+approved user request may be enough when Acceptance Brief fields, acceptance criteria, and risk are
+explicit.
 
 Run primary spec review before durable planning when a full spec or PRD exists, or when acceptance
 criteria are still being shaped.
 
-For non-trivial work that does not need a full spec, the acceptance source must still
-include the canonical fields.
+For non-trivial work that does not need a full spec, the acceptance source must still include the
+canonical fields.
 
-Use the canonical Acceptance Brief fields defined in `skills/write-spec/SKILL.md` (Light Acceptance
-Brief template). Do not re-list the fields here.
+Use the canonical Acceptance Brief fields from `skills/write-spec/SKILL.md` (Light Acceptance Brief
+template). Do not re-list fields here.
 
 Name specs:
 
@@ -24,8 +24,8 @@ Name specs:
 YYYY-MM-DD-<feature>.md
 ```
 
-Each full spec follows the Full Spec Template defined in `skills/write-spec/SKILL.md`. Do not
-re-list the fields here.
+Each full spec follows the Full Spec Template in `skills/write-spec/SKILL.md`. Do not re-list fields
+here.
 
 Prompt:
 

@@ -145,6 +145,7 @@ Catalog: `testing-anti-patterns.md`.
 | "Need to explore first" | Fine. Throw the exploration away. Start with TDD. |
 | "Test hard = design unclear" | Listen to the test. Hard to test = hard to use. |
 | "TDD will slow me down" | TDD is faster than debugging in production. |
+| "Manual test faster" | Manual does not prove edge cases. You will re-test every change. |
 | "Existing code has no tests" | You are touching it. Add tests for the part you touch. |
 | "Spirit not ritual" | Tests-after answer "what does this do?" Tests-first answer "what should this do?" Different artifact. |
 
@@ -155,6 +156,7 @@ Catalog: `testing-anti-patterns.md`.
 - Test passes immediately on first run.
 - Cannot explain why the test failed at RED.
 - Tests added "later".
+- Rationalizing "just this once".
 - Skipping `verification-before-completion` at RED or GREEN.
 
 ## Bug Fixes

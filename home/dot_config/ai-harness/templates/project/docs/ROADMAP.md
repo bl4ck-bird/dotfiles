@@ -37,13 +37,13 @@ Non-goals:
 
 ## Later
 
-Future surfaces, integrations, and expansion paths:
+Future surfaces, integrations, expansion paths:
 
 - TODO
 
 ## Open Questions
 
-Track decisions that block architecture or implementation:
+Decisions that block architecture or implementation:
 
 - TODO
 

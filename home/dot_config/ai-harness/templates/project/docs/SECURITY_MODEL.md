@@ -34,7 +34,7 @@ destructive-operation rules.
 
 - TODO
 - Baseline rule: deletes, irreversible migrations, destructive scripts, and history rewrites require
-  explicit approval. When data may be lost, record the backup or rollback path first.
+  explicit approval. When data may be lost, record backup/rollback path first.
 
 ## Security Review Triggers
 

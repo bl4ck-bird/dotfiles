@@ -5,14 +5,14 @@ rules apply immediately.
 
 ## TDD Rule
 
-For behavior changes, write one failing behavior test first, confirm the expected failure, implement
-the smallest change, then refactor after green. Production behavior changes may skip TDD only with
-explicit user approval and a recorded residual-risk reason.
+For behavior changes: write one failing behavior test first, confirm expected failure, implement
+smallest change, refactor after green. Production behavior changes skip TDD only with explicit user
+approval and recorded residual-risk reason.
 
 Reasonable exceptions:
 
-- generated code, pure documentation, or mechanical config without a test harness; record the reason
-  in the final report
+- generated code, pure documentation, or mechanical config without a test harness; record reason in
+  final report
 - throwaway prototype
 - emergency fix with documented residual risk
 
@@ -35,9 +35,9 @@ Reasonable exceptions:
 
 ## Hook Policy
 
-Prefer automated project hooks for repeatable checks. When the project uses lefthook, wire only
-commands that are already known and stable for the stack, such as focused tests, typecheck, lint,
-format check, or secret/file guards.
+Prefer automated project hooks for repeatable checks. When using lefthook, wire only commands
+already known and stable for the stack (focused tests, typecheck, lint, format check, secret/file
+guards).
 
 Do not add or enable lefthook commands that require missing dependencies, slow services,
 credentials, or unconfirmed package-manager behavior. Keep manual/browser QA as a documented
@@ -48,8 +48,8 @@ exception for behavior that automated tests and hooks cannot cover well.
 - Prefer behavior-focused tests.
 - Avoid tests that only duplicate implementation details.
 - Cover risky edge cases, data boundaries, and error handling.
-- Test names should use project domain language from `CONTEXT.md` when relevant.
-- Regression tests should fail before the fix and pass after the fix.
+- Test names use project domain language from `CONTEXT.md` when relevant.
+- Regression tests fail before the fix and pass after the fix.
 - Avoid mocking away the behavior under test.
 
 ## What To Test
@@ -77,6 +77,6 @@ Before shipping:
 - Do tests prove acceptance criteria?
 - Are critical edge cases covered?
 - Are tests stable and reasonably fast?
-- Are project hooks covering the checks that should run before an approved commit?
+- Are project hooks covering checks that should run before an approved commit?
 - Does the suite protect against the bug or regression being fixed?
 - Are there remaining manual checks or untested risks?

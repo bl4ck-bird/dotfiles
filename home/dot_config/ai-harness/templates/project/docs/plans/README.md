@@ -2,8 +2,8 @@
 
 Document status: ready.
 
-Implementation plans translate reviewed acceptance artifacts into file-mapped, testable work. Keep
-them compact; link to the acceptance artifact instead of restating it.
+Plans translate reviewed acceptance artifacts into file-mapped, testable work. Keep them compact;
+link to the acceptance artifact instead of restating it.
 
 Name plans:
 
@@ -11,7 +11,7 @@ Name plans:
 YYYY-MM-DD-<feature-or-slice>.md
 ```
 
-Each plan should include:
+Each plan includes:
 
 - linked acceptance source: spec, PRD, issue, review finding, or approved task
 - acceptance review path, explicit accepted-risk record, or reason a separate spec review is

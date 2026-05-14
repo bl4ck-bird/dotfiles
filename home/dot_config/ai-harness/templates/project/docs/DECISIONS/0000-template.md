@@ -8,7 +8,7 @@ Status: Proposed
 
 ## Context
 
-Describe the decision pressure, constraints, domain terms, and options considered.
+Decision pressure, constraints, domain terms, options considered.
 
 ## Decision
 
@@ -16,7 +16,7 @@ State the chosen direction.
 
 ## Consequences
 
-List tradeoffs, risks, follow-up work, and what future agents should preserve.
+Tradeoffs, risks, follow-up work, what future agents should preserve.
 
 ## Alternatives Considered
 
@@ -26,7 +26,7 @@ List tradeoffs, risks, follow-up work, and what future agents should preserve.
 
 ## Reversal Cost
 
-Explain how hard this is to reverse and what migration would be required.
+How hard this is to reverse and what migration would be required.
 
 ## Links
 

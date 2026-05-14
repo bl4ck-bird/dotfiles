@@ -26,7 +26,7 @@ Rules that must stay true regardless of UI, storage, or transport:
 
 ## Boundaries
 
-Define what belongs in the domain and what belongs outside it.
+What belongs in the domain vs outside it.
 
 - Domain owns: TODO
 - Application owns: TODO

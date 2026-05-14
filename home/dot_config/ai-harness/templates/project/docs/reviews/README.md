@@ -11,7 +11,7 @@ YYYY-MM-DD-<topic>-<review-type>.md
 YYYY-MM-DD-<topic>-handoff.md
 ```
 
-Review records should include:
+Review records include:
 
 - artifact reviewed
 - reviewer type
@@ -19,7 +19,7 @@ Review records should include:
 - fixes applied or accepted risk
 - verification after fixes
 
-Handoffs should include:
+Handoffs include:
 
 - current goal
 - docs to read

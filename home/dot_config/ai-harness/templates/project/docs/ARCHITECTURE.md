@@ -22,7 +22,7 @@ TODO: Describe system boundaries, primary runtime surfaces, deployment shape, an
   explicitly documents an exception.
 - Application may orchestrate domain behavior and ports.
 - Infrastructure implements ports and adapts external systems.
-- UI/interface code calls application use cases and should not own domain invariants.
+- UI/interface code calls application use cases; does not own domain invariants.
 
 ## Module Responsibility Rules
 
@@ -63,13 +63,12 @@ Avoid ceremonial DDD for simple CRUD or thin glue code.
 
 ## Related Models
 
-- Data storage, migrations, retention, deletion, and recovery live in `docs/DATA_MODEL.md`.
-- Secrets, auth, permissions, trust boundaries, and sensitive data handling live in
-  `docs/SECURITY_MODEL.md`.
+- Data storage, migrations, retention, deletion, recovery → `docs/DATA_MODEL.md`.
+- Secrets, auth, permissions, trust boundaries, sensitive data handling → `docs/SECURITY_MODEL.md`.
 
 ## Tradeoffs
 
-Record intentional constraints and decisions that future agents should preserve. Use formal decision
+Record intentional constraints and decisions future agents should preserve. Use formal decision
 records only for hard-to-reverse, surprising tradeoffs from real options; otherwise keep normal
 durable decisions in the relevant docs.
 
