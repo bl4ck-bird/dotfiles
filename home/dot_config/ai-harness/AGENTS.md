@@ -18,6 +18,12 @@ Use these terms consistently across skills, docs, plans, and reviews.
   reference it instead of re-listing items.
 - **Acceptance Brief Fields**: canonical field set defined in `skills/write-spec/SKILL.md` (Light
   Acceptance Brief).
+- **Controller**: the main agent session driving `subagent-driven-development` or
+  `executing-plans-inline` — extracts tasks, dispatches workers/reviewers, verifies output, does
+  not pause between tasks unless a Required User Checkpoint applies.
+- **Worker** / **Implementer**: synonyms for the subagent that executes a single task under the
+  controller. `Implementer` is the role name in plans and review prompts; `Worker` is the
+  shorthand used in anti-pattern docs and informal references. Both refer to the same role.
 
 ## Operating Style
 

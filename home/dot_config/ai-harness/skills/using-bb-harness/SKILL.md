@@ -102,7 +102,7 @@ Quick recap:
 
 ## Branch Policy
 
-Code-modifying work must not start on a protected base branch. Default protected set: `main`, `master`, `develop`, `trunk`, plus any branch the repo's `AGENTS.md` / `CLAUDE.md` names as base.
+**Never start implementation on a protected base branch** without explicit user consent. Default protected set: `main`, `master`, `develop`, `trunk`, plus any branch the repo's `AGENTS.md` / `CLAUDE.md` names as base.
 
 - **Before the first code edit** in a session, check `git branch --show-current`. On a protected branch → invoke `using-git-worktrees` and create a feature branch / worktree first. This applies regardless of Workflow Weight — Tiny/local is not an excuse to commit directly to a protected branch.
 - **Exceptions** require explicit user consent in this session ("yes, edit main directly", "this is a hotfix on main"). Record the exception briefly in the response. Project-local instructions that authorize direct base-branch work also count as consent.

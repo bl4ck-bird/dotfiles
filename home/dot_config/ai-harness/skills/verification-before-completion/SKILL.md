@@ -19,19 +19,7 @@ Not run in this message? Cannot claim it passes. "Should pass", "looks right", "
 
 ## The Gate
 
-Before any statement implying success — "done", "fixed", "passes", "ready", "complete", "works", synonym:
-
-```text
-1. IDENTIFY: which command proves this claim?
-2. RUN:      execute the full command (fresh, complete, in this response).
-3. READ:     full output, exit code, failure count.
-4. VERIFY:   does the output confirm the claim?
-   - If NO: state actual status with evidence. Do not claim success.
-   - If YES: state the claim *with* the evidence.
-5. ONLY THEN: make the claim.
-
-Skipping any step = lying, not verifying.
-```
+Before any statement implying success ("done", "fixed", "passes", "ready", "complete", "works", or synonym): **identify the proving command → run it fresh in this response → read full output and exit code → verify it confirms the claim → only then state the claim with that evidence**. Skipping any step = lying, not verifying.
 
 ## When To Apply
 

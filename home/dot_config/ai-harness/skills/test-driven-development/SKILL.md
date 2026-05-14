@@ -25,7 +25,9 @@ Thinking "skip TDD just this once"? That is rationalization, not pragmatism.
 
 ## Branch Precondition
 
-Before the RED step (and before any production code edit), check the current branch. **Never start implementation on a protected base branch** (`main`, `master`, `develop`, `trunk`, or any branch named as base in the repo's `AGENTS.md` / `CLAUDE.md`) without explicit user consent in this session. On a protected branch → invoke `using-git-worktrees` first and create a feature branch / worktree. Applies regardless of Workflow Weight — even Tiny/local fixes follow this rule. See `using-bb-harness` Branch Policy for the full rule.
+Before the RED step (and before any production code edit), check the current branch. **Never start implementation on a protected base branch** (`main`, `master`, `develop`, `trunk`, or any branch named as base in the repo's `AGENTS.md` / `CLAUDE.md`) without explicit user consent in this session. On a protected branch → invoke `using-git-worktrees` first and create a feature branch / worktree. Applies regardless of Workflow Weight — even Tiny/local fixes follow this rule.
+
+**Why here**: the RED test is the first artifact committed in a TDD cycle. Authoring it on a protected branch means either an unreviewable direct push or a messy mid-cycle branch rewrite. Branch first, then RED. Full rule: `using-bb-harness` Branch Policy.
 
 ## The Iron Law
 
