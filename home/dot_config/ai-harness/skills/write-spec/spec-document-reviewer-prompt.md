@@ -77,11 +77,9 @@ Task tool (general-purpose, or spec-document-reviewer when defined):
 
     **Acceptance Brief Fields** (Light Acceptance Brief specs only)
 
-    Every canonical field present:
-    Goal, Accepted Behavior, Acceptance Criteria, Non-Goals / Stop Conditions,
-    Touched Surfaces (Product / API / Data-storage / Security-privacy / UI /
-    Docs / Tests), Edge And Error Cases, Docs / Test Impact, Risk Level,
-    Required Reviews, Second Review, AFK / HITL Boundary.
+    Every canonical field present. Canonical field set lives in
+    `~/.claude/skills/write-spec/SKILL.md` § Light Acceptance Brief — load that
+    file before checking; do not rely on memory of the field list.
 
     ## Scope Discipline
 
