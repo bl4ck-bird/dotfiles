@@ -33,8 +33,8 @@ If change set grows past Tiny/local definition, escalate to full checklist befor
 1. Inspect `git status` and confirm change set is scoped to request.
 2. Read relevant diff and ensure no unrelated user changes were reverted.
 3. Run narrowest meaningful tests, type checks, linters, or build checks. Apply `verification-before-completion` — "green" claims require fresh output read in this response, not remembered prior run.
-4. Confirm docs sync was considered for changed behavior, architecture, tests, security.
-5. Confirm `docs/CURRENT.md` reflects final current phase, blocker status, last verification, next action when substantial work changed state.
+4. Run `docs-sync` if behavior, architecture, tests, security, or user-facing behavior changed — or note "no durable docs touched". Skip the run only when the change set demonstrably touches no durable concern.
+5. Confirm `docs-sync` produced an up-to-date `docs/CURRENT.md` (fields and update triggers defined in `docs-sync` Handoffs).
 6. Confirm `spec-compliance-review` and `code-quality-review` were run with passing results, and `security-review` was run or explicitly noted as not triggered.
 7. Run or request `second-review` for required High-Risk Surface changes, or note why optional independent double-check is not needed.
 8. Confirm no source file crossed file-size thresholds from `code-quality-review` (File And Complexity Thresholds) without review.
