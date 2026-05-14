@@ -109,3 +109,25 @@ Keep final report short:
 - Critical or Important review finding unresolved.
 - Validation weakened or skipped to make result look green.
 - Final answer would need to hide uncertainty.
+
+## Rollback And Incident Response
+
+When a shipped change breaks production, downstream tests, or accepted behavior:
+
+1. **Stop forward work.** Do not stack a fix on top — revert first, debug after.
+2. **Pick the revert path** by blast radius:
+   - Single commit on main, no dependent work → `git revert <sha>` (creates a revert commit; history-safe).
+   - Multiple commits, intertwined → revert the merge with `git revert -m 1 <merge-sha>`.
+   - Pre-merge (PR not yet merged) → close PR or push a fix; do not force-push shared branches.
+   - Deployed artifact (container/binary/release) → redeploy previous artifact first, then revert source.
+3. **Verify rollback closed the symptom.** Re-run the failing check that triggered the incident. Apply `verification-before-completion` — read the output, not the deployer's word.
+4. **Open a regression test that reproduces the failure** before re-attempting the change. Per `bug-diagnosis` workflow, no second attempt without a failing test.
+5. **Record the incident** in `docs/reviews/YYYY-MM-DD-<topic>-incident.md`:
+   - What shipped, what broke, blast radius, who was affected
+   - Detection signal and lead time
+   - Revert commands run + verification evidence
+   - Root cause (or hypothesis if unconfirmed)
+   - Follow-up: test added, durable doc updated, decision recorded
+6. **Update `docs/CURRENT.md`** with the incident and the recovery state.
+
+Do not delete the broken commit (history-rewrite). Do not silently re-roll the same change without addressing the root cause and adding regression coverage. Project-specific deploy commands and revert procedures belong in `docs/AGENT_WORKFLOW.md`.

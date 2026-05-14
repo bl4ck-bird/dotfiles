@@ -46,6 +46,8 @@ Severity: Critical / Important / Minor. Scope guard: stay inside the supplied ar
 - User should still seek Codex review before shipping: yes / no
 ```
 
+Stop after two cycles in the same review — escalate to the main agent (`using-bb-harness` Review Iteration Pattern).
+
 Apply `~/.claude/skills/verification-before-completion/SKILL.md` — re-run primary review's "passes" claims. The point of independent double-check is to catch what the primary reviewer's trust in the implementer's report let through.
 
 Record substantial outputs in `docs/reviews/YYYY-MM-DD-<topic>-second-review.md` per the parent skill.

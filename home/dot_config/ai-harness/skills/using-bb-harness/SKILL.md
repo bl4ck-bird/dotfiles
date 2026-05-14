@@ -49,7 +49,7 @@ If key context missing, ask or propose minimal recovery step. Do not invent prod
 | Tiny / local | One bounded module, ≤ 50 LoC, no product / domain / API / data / security decision, no new test target | Direct edit or `test-driven-development` + `ship-check` |
 | Scope review | 3+ files, uncertain blast radius, unclear module boundary | Decide if small path still fits; record bounded scope |
 | Non-trivial | Product behavior, user workflow, domain language, public API, persistence, auth, sync, deletion, external integration | Reviewed acceptance artifact (via `write-spec` Self-Review) + compact plan (via `write-plan` Self-Review) + per-task `spec-compliance-review` + `code-quality-review` + docs gates |
-| Risky / substantial | Module boundary or dependency-direction change, refactor crossing 2+ modules, weak tests, 5+ files, 2+ modules, 300 / 600-line file thresholds, or any High-Risk Surface (see `second-review`) | Above + `security-review` when triggered + `second-review` required for High-Risk Surface or boundary / dependency-direction change |
+| Risky / substantial | Module boundary or dependency-direction change, refactor crossing 2+ modules, weak tests, 5+ files, 2+ modules, 300/600-line file thresholds, or any High-Risk Surface (see `second-review`) | Above + `security-review` when triggered + `second-review` required for High-Risk Surface or boundary / dependency-direction change |
 
 ## Acceptance Artifact
 
@@ -68,7 +68,7 @@ Harness uses **five** review channels. Upstream ones (spec/plan correctness) liv
 | Spec Self-Review | `write-spec` | Before declaring an acceptance artifact ready. Domain alignment, vertical slice quality. |
 | Plan Self-Review | `write-plan` | Before presenting a plan. SOLID, file boundary, file-size impact. |
 | `spec-compliance-review` | reviewer subagent | After each implemented slice. Binary ✅ / ❌. |
-| `code-quality-review` | reviewer subagent | After spec-compliance passes. Code quality, DDD / SOLID, file-size, tests, durable docs drift. Ready to merge? Yes / No / With fixes. |
+| `code-quality-review` | reviewer subagent | After spec-compliance passes. Code quality, DDD / SOLID, file-size, tests, durable docs drift. Ready to merge? Yes / With fixes / No. |
 | `security-review` | reviewer subagent | Follow-on from `code-quality-review` when security surface touched, or directly when slice is known security-heavy. |
 | `second-review` | Codex (default) | High-Risk Surface, explicit double-check request, or boundary / dependency-direction change. |
 | `receiving-review` | authoring skill | Whenever a reviewer returns findings, before applying fixes. |
@@ -90,7 +90,7 @@ Quick recap:
 - code-quality / security / second: Ready to merge **Yes / With fixes / No**.
 - Hard stop after **2** review-fix cycles per channel — escalate, no auto third cycle.
 - Findings outside touched surface default to **Minor** unless change makes them unsafe.
-- At most **1** automatic follow-on review per channel; `second-review` exempt when Required-When-Available criteria met.
+- At most **1** automatic follow-on review per channel; `second-review` exempt when Required When Available criteria met.
 
 ## Execution Model
 

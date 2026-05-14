@@ -1,6 +1,6 @@
 ---
 name: code-quality-reviewer
-description: Use when reviewing implementation quality after `spec-compliance-review` passes — covers code quality, architecture (DDD/SOLID), file size, testing, durable docs drift, and production readiness. Returns Ready to merge? Yes / No / With fixes.
+description: Use when reviewing implementation quality after `spec-compliance-review` passes — covers code quality, architecture (DDD/SOLID), file size, testing, durable docs drift, and production readiness. Returns Ready to merge? Yes / With fixes / No.
 tools: Read, Grep, Glob
 ---
 

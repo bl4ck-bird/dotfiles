@@ -46,6 +46,15 @@ All review skills use this gate. Vocabulary: **`Ready to merge?`** with three an
 **Hard stop after 2 cycles** — see above. After two cycles without convergence the result is
 effectively `No` until the user picks a path.
 
+### Pre-Implementation Verdicts
+
+`write-spec` and `write-plan` reviewer prompts emit parallel three-state verdicts on artifacts (not on merge):
+
+- `Ready to plan: Yes / With fixes / No` (spec reviewer)
+- `Ready to execute: Yes / With fixes / No` (plan reviewer)
+
+Same three-state semantics as `Ready to merge?` — Yes/With fixes/No, hard-stop after 2 cycles, Critical/Important/Minor severity. The difference is the artifact under review (spec or plan, not diff) and the next gate (plan or implementation, not merge). Treat all rules in this file as applying to these verdicts as well.
+
 ## Review Chain Depth Cap
 
 A focused review may automatically recommend **at most one** follow-on review.

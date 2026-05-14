@@ -193,7 +193,7 @@ independent investigations: `dispatching-parallel-agents` (distinct use case fro
   review chain is defined in `using-bb-harness` (Review Channels) and
   `using-bb-harness/review-rules.md`.
 - Severity vocabulary is Critical / Important / Minor; the contract is "Ready to
-  merge? Yes / No / With fixes" (binary ✅/❌ for `spec-compliance-review`). Hard
+  merge? Yes / With fixes / No" (binary ✅/❌ for `spec-compliance-review`). Hard
   stop after 2 review-fix cycles per channel — see
   `using-bb-harness/severity-definitions.md` and `review-rules.md`.
 - Accepted-risk exceptions may skip a normal gate only when explicitly approved by

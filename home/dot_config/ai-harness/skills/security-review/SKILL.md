@@ -32,6 +32,10 @@ Work touches:
 - Tests or manual checks cover denial, invalid input, failure behavior when practical.
 - `docs/SECURITY_MODEL.md` updated when durable security behavior changes.
 
+## Scope Discipline
+
+Required fixes stay inside the supplied diff. Out-of-scope hardening ideas are Minor unless they expose a Critical defect in the touched path. Do not propose broad security rewrites, new dependencies, or unrelated cleanup as required fixes.
+
 ## Output
 
 Lead with findings, ordered by severity.

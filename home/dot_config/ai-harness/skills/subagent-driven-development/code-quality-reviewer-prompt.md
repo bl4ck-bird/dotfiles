@@ -63,7 +63,7 @@ Task tool (code-quality-reviewer if available, else general-purpose):
       bounded context boundaries, anti-corruption layer, entity vs value object,
       application vs domain services, repositories / ports.
     - SOLID: SRP, OCP, LSP, ISP, DIP.
-    - File and complexity thresholds: 300 / 600 lines, 50-80 line functions, 3+
+    - File and complexity thresholds: 300/600 lines, 50-80 line functions, 3+
       repeated conditionals.
     - Boundary clarity: domain / application / infrastructure / UI.
     - No framework leakage into domain code.

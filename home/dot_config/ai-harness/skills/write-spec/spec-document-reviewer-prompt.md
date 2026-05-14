@@ -111,11 +111,11 @@ Task tool (general-purpose, or spec-document-reviewer when defined):
 
     ## Findings
 
-    ### Critical (Must Fix Before Plan)
+    ### Critical (Must Fix)
     - Section "<heading>" line <n> — <what is wrong> — <why it matters> —
       <suggested change>
 
-    ### Important (Should Fix Before Plan)
+    ### Important (Should Fix)
     - Section "<heading>" line <n> — <what is wrong> — <why it matters> —
       <suggested change>
 

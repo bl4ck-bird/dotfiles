@@ -1,6 +1,6 @@
 ---
 name: test-driven-development
-description: Use when implementing any feature, bug fix, behavior change, or refactor — write the failing test first, watch it fail for the right reason, then write the minimal code to pass.
+description: Use when implementing any feature, behavior change, or refactor — write the failing test first, watch it fail for the right reason, then write the minimal code to pass. For bug fixes, run `bug-diagnosis` first to reproduce; then return here for the regression test and fix.
 ---
 
 # Test-Driven Development (TDD)

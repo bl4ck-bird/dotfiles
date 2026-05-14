@@ -80,7 +80,7 @@ Task tool (general-purpose, or plan-document-reviewer when defined):
       client, or filesystem types. If it must, plan names the port / adapter.
     - Dependency direction: imports flow inward (UI / infra → application →
       domain). Plan does not introduce a domain file importing infrastructure.
-    - File-size impact: files at or near 300 / 600-line threshold (see
+    - File-size impact: files at or near 300/600-line threshold (see
       code-quality-review File And Complexity Thresholds) have one of: scoped
       extraction before feature work, documented exception, or follow-up
       refactor task.
@@ -146,11 +146,11 @@ Task tool (general-purpose, or plan-document-reviewer when defined):
 
     ## Findings
 
-    ### Critical (Must Fix Before Execute)
+    ### Critical (Must Fix)
     - Plan section "<heading>" task <n> — <what is wrong> — <why it matters> —
       <suggested change>
 
-    ### Important (Should Fix Before Execute)
+    ### Important (Should Fix)
     - Plan section "<heading>" task <n> — <what is wrong> — <why it matters> —
       <suggested change>
 

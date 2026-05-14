@@ -57,7 +57,7 @@ subagent-driven-development   OR   executing-plans-inline
   for each task:
     test-driven-development
     spec-compliance-review        (binary ✅/❌)
-    code-quality-review           (Ready to merge? Yes/No/With fixes)
+    code-quality-review           (Ready to merge? Yes / With fixes / No)
     security-review               (when triggered)
     second-review                 (High-Risk Surface or double-check)
     receiving-review              (between reviewer feedback and fix)
@@ -121,7 +121,7 @@ explicitly asked.
 - Spec correctness: `write-spec` Self-Review (Product Clarity + Domain Alignment).
 - Plan correctness: `write-plan` Self-Review (Plan Hygiene + Architecture Soundness).
 - Per task: `spec-compliance-review` (binary ✅/❌) first, then `code-quality-review` (Ready to
-  merge? Yes / No / With fixes). Both run as fresh reviewer subagents from
+  merge? Yes / With fixes / No). Both run as fresh reviewer subagents from
   `subagent-driven-development`.
 - `code-quality-review` is SSOT for DDD operational checks, SOLID, file size, Coverage Matrix, and
   durable docs drift.
