@@ -35,7 +35,7 @@ dock:
       bundle_id: "com.panic.Transmit"
       url: "file:///Applications/Transmit.app/"
     - label: "카카오톡"
-      bundle_id: "869223134"
+      bundle_id: "com.kakao.KakaoTalkMac"
       url: "file:///Applications/KakaoTalk.app/"
   common_middle:
     - label: "Discord"
@@ -50,7 +50,7 @@ dock:
       url: "file:///Applications/Ghostty.app/"
   personal_dev:
     - label: "OrbStack"
-      bundle_id: "dev.orbstack.orbstack"
+      bundle_id: "dev.kdrag0n.MacVirt"
       url: "file:///Applications/OrbStack.app/"
   common_dev_end:
     - label: "Obsidian"
