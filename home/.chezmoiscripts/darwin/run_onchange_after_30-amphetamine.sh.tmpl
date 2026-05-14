@@ -2,7 +2,7 @@
 
 set -eufo pipefail
 
-source "{{ .chezmoi.sourceDir }}/.scripts/utils.sh"
+{{ template "utils.sh" . }}
 
 print_color_box_center "$COLOR_YELLOW" 40 "Amphetamine.app Settings"
 

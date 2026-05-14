@@ -1,5 +1,3 @@
-#!/bin/bash
-
 export PATH="$HOME/.local/bin:$PATH"
 
 COLOR_RED='\033[0;31m'

@@ -1,6 +1,6 @@
 #!/bin/bash
 
-source "{{ .chezmoi.sourceDir }}/.scripts/utils.sh"
+{{ template "utils.sh" . }}
 
 print_color_box_title  "$COLOR_YELLOW" 70 "\
 CHEZMOI" "Username:         {{ .chezmoi.username }}
