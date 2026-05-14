@@ -23,7 +23,7 @@ homebrew_shellenv
 {{- end -}}
 
 {{/* Install */}}
-CURRENT_HASH="{{ (print $brews $casks $mas)| sha256sum }}"
+CURRENT_HASH="{{ toJson (list $brews $casks $mas) | sha256sum }}"
 HASH_STORE="$HOME/.cache/chezmoi/brew-bundle.hash"
 mkdir -p "$(dirname "$HASH_STORE")"
 
