@@ -1,6 +1,6 @@
 ---
 name: bug-diagnosis
-description: Use when fixing bugs, flaky tests, production-like failures, unexpected behavior, or regressions before changing implementation code.
+description: Use when fixing bugs, flaky tests, production-like failures, unexpected behavior, or regressions before changing implementation code. After reproduction, hand off to `test-driven-development` for the regression test and fix.
 ---
 
 # Bug Diagnosis

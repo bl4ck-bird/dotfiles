@@ -9,6 +9,7 @@ Name reviews:
 ```text
 YYYY-MM-DD-<topic>-<review-type>.md
 YYYY-MM-DD-<topic>-handoff.md
+YYYY-MM-DD-<topic>-incident.md
 ```
 
 Review records include:
@@ -18,6 +19,8 @@ Review records include:
 - findings
 - fixes applied or accepted risk
 - verification after fixes
+
+Incident records (post-ship rollback) follow `ship-check` Rollback And Incident Response — what shipped, what broke, blast radius, detection signal, revert commands, verification, root cause or hypothesis, follow-up (test added, durable doc updated, decision recorded).
 
 Handoffs include:
 
