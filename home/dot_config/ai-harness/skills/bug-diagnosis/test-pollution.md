@@ -95,8 +95,9 @@ operation, identify the original trigger (empty parameter, missing teardown, etc
 ### Empty / Default cwd
 
 ```typescript
-// ❌ Bug — empty cwd → process.cwd() → source tree
+// ❌ Bug
 await execFileAsync('git', ['init'], { cwd: projectDir });  // projectDir = ''
+// Empty cwd → process.cwd() → source tree
 ```
 
 Fix: validate `cwd` at the public API boundary (Layer 1). Environment guard: refuse `git
@@ -106,9 +107,12 @@ init` outside `tmpdir` during tests (Layer 3).
 
 ```typescript
 // ❌ Bug
-const ctx = setupTest();              // returns { tempDir: '' }
+const ctx = setupTest();              // returns { tempDir: '' } before beforeEach
 beforeEach(() => { ctx.tempDir = makeTempDir(); });
-test('thing', () => { somethingThatNeeds(ctx.tempDir); });  // first access uses ''
+
+test('thing', () => {
+  somethingThatNeeds(ctx.tempDir);    // first access uses '' → process.cwd()
+});
 ```
 
 Fix: convert fixture to a getter that throws if accessed before initialization.
@@ -116,10 +120,10 @@ Fix: convert fixture to a getter that throws if accessed before initialization.
 ### Cleanup Only On Success
 
 ```typescript
-// ❌ Bug — throw bypasses cleanup
+// ❌ Bug
 test('does thing', async () => {
   const session = await createSession();
-  await doRiskyThing(session);
+  await doRiskyThing(session);  // throws → cleanup never runs
   await cleanupSession(session);
 });
 ```
@@ -129,8 +133,10 @@ Fix: `afterEach` / `try`-`finally`, not inline.
 ### External Process Spawned, Never Killed
 
 ```typescript
-// ❌ Bug — server still running after test
+// ❌ Bug
 const server = spawn('node', ['server.js']);
+// ...test body...
+// server still running after the test
 ```
 
 Fix: track PID, kill in `afterEach`. Layer 3 guard: in CI, refuse to spawn long-running

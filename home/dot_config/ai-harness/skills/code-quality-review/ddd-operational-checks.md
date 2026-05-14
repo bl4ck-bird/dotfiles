@@ -33,7 +33,9 @@ regardless of project type.
 How to check:
 
 ```bash
+# Grep the diff for domain identifiers
 git diff --name-only <base>..<head> | xargs grep -n -E '(class|function|interface|type) [A-Z]'
+# Cross-reference with CONTEXT.md glossary
 grep -nE '^- [*`]?[A-Z][A-Za-z]+' CONTEXT.md
 ```
 

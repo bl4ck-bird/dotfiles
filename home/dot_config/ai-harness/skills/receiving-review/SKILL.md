@@ -94,6 +94,8 @@ No apologies, gratitude, or long explanations.
 
 ## Order Of Application
 
+For multi-finding reviews, apply in this order:
+
 1. **Critical** — bugs, security, data loss, broken accepted behavior.
 2. **Important** — architecture, missing tests, error handling.
 3. **Minor** — style, docs polish.

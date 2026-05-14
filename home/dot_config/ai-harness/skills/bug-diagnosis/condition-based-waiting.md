@@ -24,10 +24,12 @@ it takes.
 // ❌ Before: guessing at timing
 await new Promise(r => setTimeout(r, 50));
 const result = getResult();
+expect(result).toBeDefined();
 
 // ✅ After: waiting for the condition
 await waitFor(() => getResult() !== undefined);
 const result = getResult();
+expect(result).toBeDefined();
 ```
 
 ## Quick Patterns
