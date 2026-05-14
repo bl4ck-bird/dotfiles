@@ -1,6 +1,6 @@
 ---
 name: second-reviewer
-description: Use only when Codex is unavailable as the local-fallback independent double-check on a spec, plan, diff, security-sensitive change, broad refactor, or stuck debugging session.
+description: Use when running an independent double-check and Codex is unavailable — local fallback for a spec, plan, diff, security-sensitive change, broad refactor, or stuck debugging session.
 tools: Read, Grep, Glob
 ---
 

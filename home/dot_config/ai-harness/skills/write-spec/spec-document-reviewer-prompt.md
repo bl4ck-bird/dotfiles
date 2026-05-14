@@ -24,9 +24,17 @@ Task tool (general-purpose, or spec-document-reviewer when defined):
 
     ## Spec Under Review
 
-    {Path to spec / Light Acceptance Brief, e.g. docs/specs/YYYY-MM-DD-feature.md}
+    {SPEC_PATH}
 
     Read it in full.
+
+    ## Author Focus (optional)
+
+    {AUTHOR_FOCUS — areas the author wants extra attention on, or "none"}
+
+    ## Suspected Weak Spots (optional)
+
+    {WEAK_SPOTS — sections the author is uncertain about, or "none"}
 
     ## Project Context
 
@@ -39,6 +47,7 @@ Task tool (general-purpose, or spec-document-reviewer when defined):
     - docs/DOMAIN_MODEL.md (when domain terms or invariants are relevant)
     - docs/DATA_MODEL.md (when persistence, migration, retention are relevant)
     - docs/SECURITY_MODEL.md (when auth, secrets, deletion, sensitive data are relevant)
+    - {EXTRA_CONTEXT_PATHS — project-specific durable docs to also read, or "none"}
 
     ## What To Check
 
@@ -137,6 +146,17 @@ Task tool (general-purpose, or spec-document-reviewer when defined):
     - Review a spec you didn't actually read fully.
     - Be vague ("clarify the requirements").
 ```
+
+## Placeholders
+
+- `{SPEC_PATH}` — path to the spec under review (e.g.
+  `docs/specs/2026-05-14-feature.md`).
+- `{AUTHOR_FOCUS}` — short note from the author about what to look at hardest.
+  Pass `"none"` when there is nothing extra.
+- `{WEAK_SPOTS}` — sections the author is uncertain about. Pass `"none"` when
+  the author has no specific concern.
+- `{EXTRA_CONTEXT_PATHS}` — additional project-specific durable docs the
+  reviewer should read beyond the default list. Pass `"none"` when none apply.
 
 ## When To Dispatch
 

@@ -121,6 +121,11 @@ Promote a rule into the host agent's memory system only when it is non-obvious f
 would help future sessions; the host agent (e.g. Claude global `auto memory`) owns format and
 classification. Otherwise leave the line in the review record.
 
+When the user has the `retro-capture` skill installed, that skill picks up these
+memory candidates and routes them through the host agent's persistent memory.
+`retro-capture` is external to BB Harness, so this skill names but does not require
+it — the Retro lines stand on their own in the review record either way.
+
 ## Output
 
 Keep the final report short:

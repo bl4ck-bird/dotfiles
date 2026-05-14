@@ -1,6 +1,6 @@
 ---
 name: spec-compliance-reviewer
-description: Use to verify implementation matches the acceptance artifact — nothing missing, nothing extra, no misunderstanding. Binary result.
+description: Use when verifying implementation matches the acceptance artifact — nothing missing, nothing extra, no misunderstanding. Binary result.
 tools: Read, Grep, Glob
 ---
 

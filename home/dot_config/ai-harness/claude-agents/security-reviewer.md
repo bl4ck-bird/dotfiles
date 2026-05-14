@@ -1,6 +1,6 @@
 ---
 name: security-reviewer
-description: Use to review auth, secrets, crypto, permissions, deletion, untrusted input, data exposure, and other security-sensitive changes.
+description: Use when reviewing auth, secrets, crypto, permissions, deletion, untrusted input, data exposure, and other security-sensitive changes.
 tools: Read, Grep, Glob
 ---
 

@@ -24,15 +24,24 @@ Task tool (general-purpose, or plan-document-reviewer when defined):
 
     ## Plan Under Review
 
-    {Path to plan, e.g. docs/plans/YYYY-MM-DD-feature.md}
+    {PLAN_PATH}
 
     Read it in full.
 
     ## Acceptance Artifact
 
-    {Path to spec / Light Acceptance Brief / issue}
+    {ACCEPTANCE_PATH}
 
     Read it. Verify the plan's Acceptance Source line matches.
+
+    ## Author Focus (optional)
+
+    {AUTHOR_FOCUS — areas the author wants extra attention on, or "none"}
+
+    ## Suspected Weak Spots (optional)
+
+    {WEAK_SPOTS — sections the author is uncertain about (file map, verification
+    commands, risk list), or "none"}
 
     ## Project Context
 
@@ -47,6 +56,7 @@ Task tool (general-purpose, or plan-document-reviewer when defined):
     - docs/DATA_MODEL.md (when persistence / migration / retention matter)
     - docs/SECURITY_MODEL.md (when auth / secrets / deletion / sensitive data matter)
     - docs/TESTING_STRATEGY.md (when verification expectations matter)
+    - {EXTRA_CONTEXT_PATHS — project-specific durable docs to also read, or "none"}
 
     ## What To Check
 
@@ -180,6 +190,20 @@ Task tool (general-purpose, or plan-document-reviewer when defined):
     - Review a plan you didn't actually read fully.
     - Be vague ("improve error handling").
 ```
+
+## Placeholders
+
+- `{PLAN_PATH}` — path to the plan under review (e.g.
+  `docs/plans/2026-05-14-feature.md`).
+- `{ACCEPTANCE_PATH}` — path to the spec / Light Acceptance Brief / issue that
+  the plan implements.
+- `{AUTHOR_FOCUS}` — short note from the plan author about what to look at
+  hardest. Pass `"none"` when there is nothing extra.
+- `{WEAK_SPOTS}` — sections of the plan the author is uncertain about (file
+  responsibility map, verification commands, risk list). Pass `"none"` when the
+  author has no specific concern.
+- `{EXTRA_CONTEXT_PATHS}` — additional project-specific durable docs the
+  reviewer should read beyond the default list. Pass `"none"` when none apply.
 
 ## When To Dispatch
 
