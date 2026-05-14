@@ -57,6 +57,8 @@ Prefer in order:
 
 Codex is default. Record any fallback.
 
+When the primary agent itself is Codex (or Gemini), no automatic other-model second-review path exists yet — skip with a Fallback Record.
+
 Reviewer reads artifacts, not chat:
 
 - `AGENTS.md`, `CONTEXT.md`, `docs/CURRENT.md`, `docs/AGENT_WORKFLOW.md`
