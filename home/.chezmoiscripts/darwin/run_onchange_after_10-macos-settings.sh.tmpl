@@ -20,7 +20,6 @@ echo_color "$COLOR_BLUE" "macOS Settings: Starting..."
 sudo pmset -c sleep 0
 sudo pmset -c disksleep 0
 sudo pmset -c displaysleep 10
-sudo pmset -c proximitywake 0 # 주변 기기에 의한 불필요한 깨어남 방지
 
 # 배터리 사용 시 (-b: Battery)
 # 전력 보존을 위해 표준 잠자기 설정 유지 (시스템 15분, 디스크 10분, 디스플레이 5분)
@@ -131,8 +130,8 @@ defaults write com.apple.menuextra.clock ShowSeconds -bool true
 ## 메뉴 막대 제어 항목
 ### Siri: 🔴
 defaults -currentHost write com.apple.controlcenter Siri -int 8
-### Spotlight: 🔴 (TODO: 이걸로 처리가 되지 않음)
-defaults -currentHost write com.apple.controlcenter Spotlight -int 8
+### Spotlight: 🔴 (TODO: macOS 14+에서 이 키로 처리 안 됨 — 토글 메커니즘 변경 추정)
+# defaults -currentHost write com.apple.controlcenter Spotlight -int 8
 ### Wi-Fi: 🔴
 defaults -currentHost write com.apple.controlcenter WiFi -int 8
 ### Bluetooth: 🔴
