@@ -70,6 +70,17 @@ DDD operational checks, SOLID, file/complexity thresholds, Coverage Matrix, and 
 - The independent reviewer is `second-review` in cross-references; Codex is named only inside `skills/second-review/SKILL.md` as the default integration.
 - File/complexity thresholds defined in `skills/code-quality-review/SKILL.md` (File And Complexity Thresholds). Other docs reference, not redefine.
 
+## Reviewer Pair Pattern (maintenance)
+
+Two reviewer types exist in parallel for `code-quality-review` and `spec-compliance-review`:
+
+| File | Role |
+| --- | --- |
+| `skills/subagent-driven-development/<name>-reviewer-prompt.md` | Canonical reviewer prompt — used by all hosts via `general-purpose` fallback. Self-contained. |
+| `claude-agents/<name>-reviewer.md` | Claude Code named-subagent definition — Claude-only, lives at `~/.claude/agents/` via symlink. Condensed mirror of the canonical prompt. |
+
+When updating reviewer rules (severity, scope guard, output format, follow-on logic, etc.), update **both** files. Other hosts (Codex, Gemini) ignore `claude-agents/` entirely — sdd templates are sufficient for them. `security-reviewer` and `second-reviewer` exist only in `claude-agents/` because their sdd dispatch is handled by `code-quality-reviewer-prompt.md` follow-on logic.
+
 ## Skill-First Posture
 
 When BB Harness is in use, skills are the workflow surface. Skill-first ≠ "load every skill":

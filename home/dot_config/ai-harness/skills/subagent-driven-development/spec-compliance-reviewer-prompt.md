@@ -1,7 +1,5 @@
 # Spec Compliance Reviewer Subagent Prompt Template
 
-<!-- Maintainer note: this template is the canonical reviewer prompt used by all hosts via `general-purpose` fallback. Claude Code also has a named-subagent counterpart at `claude-agents/spec-compliance-reviewer.md` (Claude-only). When updating rule content here, also update that file. Other hosts (Codex, Gemini, etc.) ignore claude-agents/ entirely. -->
-
 Dispatch from `subagent-driven-development` to verify the implementer built exactly what was requested — nothing missing, nothing extra, no misunderstanding. Binary result.
 
 Dispatch **before** `code-quality-reviewer-prompt.md`. Quality review runs only after spec compliance passes.
