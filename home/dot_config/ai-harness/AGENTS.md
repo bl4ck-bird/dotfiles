@@ -131,6 +131,10 @@ this section names the typical flow so the global instructions stay self-suffici
 - Ask before changing behavior, API/UX, naming, persistence, auth, dependencies, config,
   compatibility, product scope, or domain language unless the approved plan already
   covers it.
+- Prefer one targeted question. When asking multiple, each must be answerable
+  independently; if answers have decision dependencies or the list is too long for
+  precise batch selection, split into sequential questions in order of impact.
+- For sequential questions, prefix each with a progress indicator (e.g. `(3/11)`).
 
 ### Workflow Weight
 
