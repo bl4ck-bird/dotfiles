@@ -1,0 +1,22 @@
+{
+  "security": {
+    "auth": {
+      "selectedType": "oauth-personal"
+    }
+  },
+  "general": {
+    "plan": {
+      "modelRouting": true
+    },
+    "checkpointing": {
+      "enabled": true
+    }
+  },
+  "ui": {
+    "hideBanner": true,
+    "showLineNumbers": true,
+    "dynamicWindowTitle": true,
+    "errorVerbosity": "full",
+    "inlineThinkingMode": "off"
+  }
+}

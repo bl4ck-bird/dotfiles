@@ -34,17 +34,18 @@ Small CLI = TDD + spec-compliance + code-quality + ship. Domain-heavy app = same
 - `skills/` — executable workflow skills. `using-bb-harness` is bootstrap + router.
 - `claude-agents/` — Claude Code reviewer subagents (thin dispatchers delegating to `skills/<name>-review/SKILL.md`). Four reviewers: `spec-compliance-reviewer`, `code-quality-reviewer`, `security-reviewer`, `second-reviewer`. `receiving-review` is implementer-side behavior, not a subagent.
 - `hooks/` — conservative hook scripts. Not wired globally by default.
-- `templates/project/` — starter project instructions and durable docs.
+- `templates/project/` — starter project instructions and durable docs. The single `project/` nest leaves room for future template categories (e.g. `library/`, `service/`, `skill/`) without restructuring.
 
 ## Link Strategy
 
 Chezmoi installs `~/.config/ai-harness` as the source of truth, then links agent-facing locations back:
 
-- `~/.agents/AGENTS.md` → `~/.config/ai-harness/AGENTS.md`
 - `~/.codex/AGENTS.md` → `~/.config/ai-harness/AGENTS.md`
-- `~/.claude/CLAUDE.md` → `~/.config/ai-harness/AGENTS.md`  *(one file serves all three)*
-- `~/.agents/skills/<skill>` → `~/.config/ai-harness/skills/<skill>`
+- `~/.claude/CLAUDE.md` → `~/.config/ai-harness/AGENTS.md`
+- `~/.gemini/GEMINI.md` → `~/.config/ai-harness/AGENTS.md`  *(one file serves all three)*
+- `~/.codex/skills` → `~/.config/ai-harness/skills`
 - `~/.claude/skills` → `~/.config/ai-harness/skills`
+- `~/.gemini/skills` → `~/.config/ai-harness/skills`
 - `~/.claude/agents/<agent>.md` → `~/.config/ai-harness/claude-agents/<agent>.md`
 
 Tool-specific runtime settings stay under their native config directories.
