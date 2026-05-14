@@ -70,7 +70,7 @@ Harness uses **five** review channels. Upstream ones (spec/plan correctness) liv
 | `spec-compliance-review` | reviewer subagent | After each implemented slice. Binary ✅ / ❌. |
 | `code-quality-review` | reviewer subagent | After spec-compliance passes. Code quality, DDD / SOLID, file-size, tests, durable docs drift. Ready to merge? Yes / With fixes / No. |
 | `security-review` | reviewer subagent | Follow-on from `code-quality-review` when security surface touched, or directly when slice is known security-heavy. |
-| `second-review` | Codex (default) | High-Risk Surface, explicit double-check request, or boundary / dependency-direction change. |
+| `second-review` | different-model agent | High-Risk Surface, explicit double-check request, or boundary / dependency-direction change. |
 | `receiving-review` | authoring skill | Whenever a reviewer returns findings, before applying fixes. |
 
 `docs-sync` and `ship-check` are workflow gates, not reviews.

@@ -49,15 +49,11 @@ Self-Review.
 
 Prefer in order:
 
-1. Host agent's Codex integration (Claude Code Codex plugin, in-tool Codex command,
-   project-specific Codex helper).
-2. Separate clean Codex app session or Codex CLI in same repo.
-3. Claude subagent with `second-reviewer` agent definition — *only* when Codex unavailable.
-4. Human / manual review using same output format.
+1. Plugin-based invocation in the primary agent (e.g., Codex plugin in Claude Code).
+2. Separate terminal running another agent's CLI on the same repo, with this skill as the guide.
+3. Human / manual review using the same output format.
 
-Codex is default. Record any fallback.
-
-When the primary agent itself is Codex (or Gemini), no automatic other-model second-review path exists yet — skip with a Fallback Record.
+Different-model reviewer is the goal. Record any fallback.
 
 Reviewer reads artifacts, not chat:
 

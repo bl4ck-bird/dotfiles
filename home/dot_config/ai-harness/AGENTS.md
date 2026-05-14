@@ -241,7 +241,7 @@ independent investigations: `dispatching-parallel-agents` (distinct use case fro
   dedicated test review is no longer a separate skill — the matrix lives with code quality.
 - High-risk changes need two reviews before shipping: the implementation-time chain
   (`spec-compliance-review` then `code-quality-review`, plus `security-review` when
-  triggered) and an independent `second-review` (Codex by default). Broad but lower-risk
+  triggered) and an independent `second-review` (different-model reviewer by default). Broad but lower-risk
   changes may use `second-review` optionally.
 
 ## Session Hygiene

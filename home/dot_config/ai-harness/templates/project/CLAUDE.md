@@ -46,15 +46,17 @@ Smaller paths:
 
 ## Reviewer Subagents
 
-Four reviewer subagents wired (in `~/.claude/agents/`):
+Three reviewer subagents wired (in `~/.claude/agents/`):
 
 - `spec-compliance-reviewer` — binary check after each implementation slice.
 - `code-quality-reviewer` — DDD/SOLID/file-size/Coverage Matrix/docs-drift after spec-compliance
   passes.
 - `security-reviewer` — when diff touches auth, secrets, crypto, deletion, untrusted input,
   sensitive data, or destructive operations.
-- `second-reviewer` — Codex fallback only; Codex is default integration for independent
-  double-check via `second-review`.
+
+`second-review` has no Claude subagent — it requires a different-model reviewer. Use the host's
+plugin to another agent (e.g., Codex plugin in Claude Code), or run another agent's CLI in a
+separate terminal. See `skills/second-review`.
 
 Inspect worker output via `spec-compliance-review` → `code-quality-review`; add `security-review`
 and `second-review` when triggered. Apply `receiving-review` to each reviewer's findings before

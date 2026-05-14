@@ -30,9 +30,9 @@ Small CLI = TDD + spec-compliance + code-quality + ship. Domain-heavy app = same
 
 ## Layout
 
-- `AGENTS.md` — shared global defaults for Codex-compatible agents.
+- `AGENTS.md` — shared global defaults for coding agents (Claude, Codex, Gemini).
 - `skills/` — executable workflow skills. `using-bb-harness` is bootstrap + router.
-- `claude-agents/` — Claude Code reviewer subagents (thin dispatchers delegating to `skills/<name>-review/SKILL.md`). Four reviewers: `spec-compliance-reviewer`, `code-quality-reviewer`, `security-reviewer`, `second-reviewer`. `receiving-review` is implementer-side behavior, not a subagent.
+- `claude-agents/` — Claude Code reviewer subagents (thin dispatchers delegating to `skills/<name>-review/SKILL.md`). Three reviewers: `spec-compliance-reviewer`, `code-quality-reviewer`, `security-reviewer`. `second-review` has no Claude subagent — it requires a different-model reviewer (see `skills/second-review`). `receiving-review` is implementer-side behavior, not a subagent.
 - `hooks/` — conservative hook scripts. Not wired globally by default.
 - `templates/project/` — starter project instructions and durable docs. The single `project/` nest leaves room for future template categories (e.g. `library/`, `service/`, `skill/`) without restructuring.
 
@@ -48,7 +48,7 @@ Chezmoi installs `~/.config/ai-harness` as the source of truth, then links agent
 - `~/.gemini/skills` → `~/.config/ai-harness/skills`
 - `~/.claude/agents/<agent>.md` → `~/.config/ai-harness/claude-agents/<agent>.md`
 
-Tool-specific runtime settings stay under their native config directories.
+Tool-specific runtime settings stay under their native config directories — Codex uses chezmoi `create_private_` (tool-owned after first create), Claude/Gemini use `private_` (chezmoi-synced).
 
 ## Skill Separation Criteria
 
@@ -80,7 +80,7 @@ Two reviewer types exist in parallel for `code-quality-review` and `spec-complia
 | `skills/subagent-driven-development/<name>-reviewer-prompt.md` | Canonical reviewer prompt — used by all hosts via `general-purpose` fallback. Self-contained. |
 | `claude-agents/<name>-reviewer.md` | Claude Code named-subagent definition — Claude-only, lives at `~/.claude/agents/` via symlink. Condensed mirror of the canonical prompt. |
 
-When updating reviewer rules (severity, scope guard, output format, follow-on logic, etc.), update **both** files. Other hosts (Codex, Gemini) ignore `claude-agents/` entirely — sdd templates are sufficient for them. `security-reviewer` and `second-reviewer` exist only in `claude-agents/` because their sdd dispatch is handled by `code-quality-reviewer-prompt.md` follow-on logic.
+When updating reviewer rules (severity, scope guard, output format, follow-on logic, etc.), update **both** files. Other hosts (Codex, Gemini) ignore `claude-agents/` entirely — sdd templates are sufficient for them. `security-reviewer` exists only in `claude-agents/` because its sdd dispatch is handled by `code-quality-reviewer-prompt.md` follow-on logic.
 
 ## Skill-First Posture
 
