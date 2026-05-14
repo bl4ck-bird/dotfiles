@@ -1,6 +1,6 @@
 ---
 name: pressure-test
-description: Use when a product idea, feature, architecture, spec, or plan needs pressure-testing before documentation or implementation.
+description: Use when a product idea, feature, architecture, spec, or plan needs pressure-testing before documentation or implementation. Assumes goal/direction is set — run product-discovery first if MVP or non-goals are unclear.
 ---
 
 # Pressure Test

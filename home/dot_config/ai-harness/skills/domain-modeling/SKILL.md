@@ -1,6 +1,6 @@
 ---
 name: domain-modeling
-description: Use when domain terms are unclear, overloaded, or drifting; when introducing or renaming aggregates, value objects, or bounded contexts; or when CONTEXT.md / CONTEXT-MAP.md / docs/DOMAIN_MODEL.md need updates before a spec or plan touches domain code.
+description: Use when domain terms are unclear, overloaded, or drifting; when introducing or renaming aggregates, value objects, or bounded contexts; or when CONTEXT.md / CONTEXT-MAP.md / docs/DOMAIN_MODEL.md need updates before a spec or plan touches domain code. Domain-language axis is independent of product-direction; runs alongside product-discovery or pressure-test as needed.
 ---
 
 # Domain Modeling

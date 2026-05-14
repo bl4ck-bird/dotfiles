@@ -1,6 +1,6 @@
 ---
 name: product-discovery
-description: Use when brainstorming, starting a new product, side project, major feature, MVP, roadmap, or product direction before writing specs or code.
+description: Use when brainstorming, starting a new product, side project, major feature, MVP, roadmap, or product direction before writing specs or code. First phase when goal/MVP/non-goals are unsettled; precedes pressure-test and write-spec.
 ---
 
 # Brainstorming / Product Discovery

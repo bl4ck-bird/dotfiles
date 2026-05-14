@@ -1,6 +1,6 @@
 ---
 name: write-spec
-description: Use when converting resolved product context, PRDs, feature ideas, issues, or review findings into an acceptance artifact, acceptance criteria, and vertical implementation slices.
+description: Use when converting resolved product context, PRDs, feature ideas, issues, or review findings into an acceptance artifact, acceptance criteria, and vertical implementation slices. Direction must already be settled — run product-discovery / domain-modeling first if not.
 ---
 
 # Write Spec
