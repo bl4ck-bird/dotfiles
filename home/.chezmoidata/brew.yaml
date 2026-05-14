@@ -1,0 +1,62 @@
+brew:
+  brews:
+    gnu_tools:
+      - coreutils
+      - gnu-tar
+      - gnu-sed
+      - gawk
+      - make
+    cli_tools:
+      - duti
+      - mas
+      - zoxide
+      - eza
+      - bat
+      - fd
+      - jaq
+      - yq
+      - ripgrep
+      - xh
+      - fzf
+      - tmux
+      - sheldon
+      - starship
+      - neovim
+    dev:
+      - mise
+      - gh
+      - typos-cli
+      - gitleaks
+  casks:
+    common:
+      - keka
+      - iina
+      - microsoft-edge
+      - 1password
+      - istat-menus
+      - moom
+      - ghostty
+      - obsidian
+      - slack
+    dev:
+      - visual-studio-code
+      - antigravity
+      - orbstack
+    personal:
+      - 1password-cli
+      - transmission
+      - discord
+      - transmit
+      - yacreader
+    logitech:
+      - logi-options+
+  mas:
+    common:
+      Amphetamine: "937984704"
+      "1Password for Safari": "1569813296"
+      "Tampermonkey Classic": "1482490089"
+      Wappalyzer: "1520333300"
+      유니콘: "1231935892"
+    personal:
+      카카오톡: "869223134"
+      "Windows App": "1295203466"

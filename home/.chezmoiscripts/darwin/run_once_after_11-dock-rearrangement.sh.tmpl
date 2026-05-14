@@ -40,35 +40,35 @@ add_to_dock() {
 # Finder 빼고 전체 제거
 defaults write com.apple.dock persistent-apps -array '()'
 
-add_to_dock "iPhone 미러링" "com.apple.ScreenContinuity" "file:///System/Applications/iPhone%20Mirroring.app/"
-add_to_dock "Safari" "com.apple.Safari" "file:///System/Volumes/Preboot/Cryptexes/App/System/Applications/Safari.app/"
-add_to_dock "Microsoft Edge" "com.microsoft.edgemac" "file:///Applications/Microsoft%20Edge.app/"
-add_to_dock "FaceTime" "com.apple.FaceTime" "file:///System/Applications/FaceTime.app/"
-add_to_dock "메시지" "com.apple.MobileSMS" "file:///System/Applications/Messages.app/"
-add_to_dock "음악" "com.apple.Music" "file:///System/Applications/Music.app/"
-add_to_dock "TV" "com.apple.TV" "file:///System/Applications/TV.app/"
-add_to_dock "Mail" "com.apple.mail" "file:///System/Applications/Mail.app/"
+{{- range .dock.common_top }}
+add_to_dock "{{ .label }}" "{{ .bundle_id }}" "{{ .url }}"
+{{- end }}
 
 # --- 중단: 생산성 및 개인 유틸리티 ---
 {{- if .is_personal }}
-add_to_dock "Windows App" "com.microsoft.rdc.macos" "file:///Applications/Windows%20App.app/"
-add_to_dock "Transmission" "org.m0k.transmission" "file:///Applications/Transmission.app/"
-add_to_dock "Transmit" "com.panic.Transmit" "file:///Applications/Transmit.app/"
-add_to_dock "카카오톡" "869223134" "file:///Applications/KakaoTalk.app/"
+{{- range .dock.personal_middle }}
+add_to_dock "{{ .label }}" "{{ .bundle_id }}" "{{ .url }}"
+{{- end }}
 {{- end }}
 
-add_to_dock "Discord" "com.hnc.Discord" "file:///Applications/Discord.app/"
-add_to_dock "Slack" "com.tinyspeck.slackmacgap" "file:///Applications/Slack.app/"
+{{- range .dock.common_middle }}
+add_to_dock "{{ .label }}" "{{ .bundle_id }}" "{{ .url }}"
+{{- end }}
 
 # --- 하단: 개발 및 코어 도구 ---
-add_to_dock "Ghostty" "com.mitchellh.ghostty" "file:///Applications/Ghostty.app/"
-
-{{- if .is_personal }}
-add_to_dock "OrbStack" "dev.orbstack.orbstack" "file:///Applications/OrbStack.app/"
+{{- range .dock.common_dev }}
+add_to_dock "{{ .label }}" "{{ .bundle_id }}" "{{ .url }}"
 {{- end }}
 
-add_to_dock "Obsidian" "md.obsidian" "file:///Applications/Obsidian.app/"
-add_to_dock "Visual Studio Code" "com.microsoft.VSCode" "file:///Applications/Visual%20Studio%20Code.app/"
+{{- if .is_personal }}
+{{- range .dock.personal_dev }}
+add_to_dock "{{ .label }}" "{{ .bundle_id }}" "{{ .url }}"
+{{- end }}
+{{- end }}
+
+{{- range .dock.common_dev_end }}
+add_to_dock "{{ .label }}" "{{ .bundle_id }}" "{{ .url }}"
+{{- end }}
 
 defaults read com.apple.dock > /dev/null
 killall Dock > /dev/null 2>&1 || true
