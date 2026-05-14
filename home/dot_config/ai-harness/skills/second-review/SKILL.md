@@ -105,6 +105,15 @@ User accepted proceeding: <yes/no>
 Do not approve Critical-risk work without explicit user acceptance when independent review is
 unavailable.
 
+## Scope Discipline
+
+Stay inside the supplied artifact / diff. Same artifacts as the primary review, fresh eyes — do not expand scope or audit untouched code.
+
+- Findings cite file:line in the diff or section:line in the artifact.
+- No proposing new product behavior, new dependencies, or broad rewrites as required fixes.
+- Out-of-scope hardening or improvements are Minor unless they expose a Critical defect in the touched path.
+- YAGNI applies. Speculative future-proofing is Minor at best.
+
 ## Output
 
 ```text
@@ -112,9 +121,9 @@ unavailable.
 - <specific observation>
 
 ## Findings missed by primary review
-### Critical
-### Important
-### Minor
+### Critical (Must Fix)
+### Important (Should Fix)
+### Minor (Nice To Have)
 
 ## Findings primary review caught (acknowledged)
 - <brief; do not re-litigate>

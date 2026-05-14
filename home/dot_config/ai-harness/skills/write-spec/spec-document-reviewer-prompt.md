@@ -126,6 +126,8 @@ Task tool (general-purpose, or spec-document-reviewer when defined):
     - Recommended second-review (Codex): yes / no, with reason
     ```
 
+    Stop after two cycles in the same review — escalate to user (`using-bb-harness/review-rules.md` Review Iteration Pattern + Pre-Implementation Verdicts).
+
     ## Critical Rules
 
     DO:

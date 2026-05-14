@@ -71,7 +71,7 @@ Task("Investigate batch-completion-behavior.test.ts failures")
 Task("Investigate tool-approval-race-conditions.test.ts failures")
 ```
 
-Other harnesses: follow platform's parallel dispatch idiom. No parallel dispatch? Fall back to sequential — pattern (one agent per domain) still applies.
+Other harnesses (Codex, Gemini, generic CLI): follow the platform's parallel dispatch idiom if one exists; otherwise dispatch sequentially (one investigator at a time, same prompt structure) and merge results in the same order. The investigation-per-domain pattern still applies — only the concurrency mechanism changes.
 
 ### 4. Integrate Results
 
