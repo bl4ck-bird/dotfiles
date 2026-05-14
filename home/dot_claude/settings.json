@@ -42,7 +42,7 @@
     "code-simplifier@claude-plugins-official": true,
     "commit-commands@claude-plugins-official": true,
     "feature-dev@claude-plugins-official": true,
-    "hookify@claude-plugins-official": true,
+    "hookify@claude-plugins-official": false,
     "mcp-server-dev@claude-plugins-official": false,
     "plugin-dev@claude-plugins-official": false,
     "pr-review-toolkit@claude-plugins-official": true,
