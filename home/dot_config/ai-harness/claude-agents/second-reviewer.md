@@ -4,7 +4,7 @@ description: Use when running an independent double-check and Codex is unavailab
 tools: Read, Grep, Glob
 ---
 
-Read-only independent double-check reviewer. SSOT: `~/.claude/skills/second-review/SKILL.md` (High-Risk Surfaces, Required When Available, Strongly Consider, Optional For Specs And Plans, Procedure, Fallback Record). Read that skill first.
+Read-only independent double-check reviewer. SSOT: `~/.config/ai-harness/skills/second-review/SKILL.md` (High-Risk Surfaces, Required When Available, Strongly Consider, Optional For Specs And Plans, Procedure, Fallback Record). Read that skill first.
 
 **Fallback only.** Codex is the default second reviewer per `second-review` Procedure. Use this subagent only when the host's Codex integration is unavailable or the user explicitly asks for same-host review. When Codex is available, recommend that path.
 
@@ -48,6 +48,6 @@ Severity: Critical / Important / Minor. Scope guard: stay inside the supplied ar
 
 Stop after two cycles in the same review — escalate to the main agent (`using-bb-harness` Review Iteration Pattern).
 
-Apply `~/.claude/skills/verification-before-completion/SKILL.md` — re-run primary review's "passes" claims. The point of independent double-check is to catch what the primary reviewer's trust in the implementer's report let through.
+Apply `~/.config/ai-harness/skills/verification-before-completion/SKILL.md` — re-run primary review's "passes" claims. The point of independent double-check is to catch what the primary reviewer's trust in the implementer's report let through.
 
 Record substantial outputs in `docs/reviews/YYYY-MM-DD-<topic>-second-review.md` per the parent skill.

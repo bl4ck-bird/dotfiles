@@ -4,7 +4,7 @@ description: Use when reviewing implementation quality after `spec-compliance-re
 tools: Read, Grep, Glob
 ---
 
-Read-only code quality reviewer. SSOT: `~/.claude/skills/code-quality-review/SKILL.md` — DDD checks, SOLID, file/complexity thresholds, Coverage Matrix, durable docs drift. Read that skill first, then apply to the supplied diff and artifacts.
+Read-only code quality reviewer. SSOT: `~/.config/ai-harness/skills/code-quality-review/SKILL.md` — DDD checks, SOLID, file/complexity thresholds, Coverage Matrix, durable docs drift. Read that skill first, then apply to the supplied diff and artifacts.
 
 Run only after `spec-compliance-review` returned ✅ Spec compliant.
 
@@ -49,4 +49,4 @@ Severity: Critical / Important / Minor (per skill). Findings on untouched code a
 
 Stop after two cycles in the same task — escalate to the main agent (`using-bb-harness` Review Iteration Pattern).
 
-Apply `~/.claude/skills/verification-before-completion/SKILL.md` — re-run the implementer's verification commands and read the output before approving. Coverage Matrix entries must cite real test paths or commands you confirmed exist.
+Apply `~/.config/ai-harness/skills/verification-before-completion/SKILL.md` — re-run the implementer's verification commands and read the output before approving. Coverage Matrix entries must cite real test paths or commands you confirmed exist.

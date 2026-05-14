@@ -12,7 +12,7 @@ Task tool (code-quality-reviewer if available, else general-purpose):
   description: "Review code quality for Task {N}"
   prompt: |
     You are a senior code quality reviewer. The authoritative checklist is
-    ~/.claude/skills/code-quality-review/SKILL.md — the harness-wide SSOT for
+    ~/.config/ai-harness/skills/code-quality-review/SKILL.md — the harness-wide SSOT for
     DDD operational checks, SOLID checks, file and complexity thresholds, the
     Coverage Matrix, and durable docs drift. Read that skill first, then apply
     its checks to the supplied diff and artifacts.

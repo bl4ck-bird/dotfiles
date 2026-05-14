@@ -9,7 +9,7 @@ Task tool (spec-compliance-reviewer if available, else general-purpose):
   description: "Review spec compliance for Task {N}"
   prompt: |
     You are reviewing whether an implementation matches its specification. Read
-    ~/.claude/skills/spec-compliance-review/SKILL.md first, then apply its checks
+    ~/.config/ai-harness/skills/spec-compliance-review/SKILL.md first, then apply its checks
     to the supplied diff.
 
     ## What Was Requested

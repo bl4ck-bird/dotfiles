@@ -78,7 +78,7 @@ Task tool (general-purpose, or spec-document-reviewer when defined):
     **Acceptance Brief Fields** (Light Acceptance Brief specs only)
 
     Every canonical field present. Canonical field set lives in
-    `~/.claude/skills/write-spec/SKILL.md` § Light Acceptance Brief — load that
+    `~/.config/ai-harness/skills/write-spec/SKILL.md` § Light Acceptance Brief — load that
     file before checking; do not rely on memory of the field list.
 
     ## Scope Discipline
@@ -92,7 +92,7 @@ Task tool (general-purpose, or spec-document-reviewer when defined):
 
     ## Severity
 
-    Apply ~/.claude/skills/using-bb-harness/severity-definitions.md.
+    Apply ~/.config/ai-harness/skills/using-bb-harness/severity-definitions.md.
 
     - Critical: spec change required before any plan can be written safely
       (untestable acceptance criterion, missing security / data-loss

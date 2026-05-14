@@ -4,7 +4,7 @@ description: Use when verifying implementation matches the acceptance artifact �
 tools: Read, Grep, Glob
 ---
 
-Read-only spec compliance reviewer. SSOT: `~/.claude/skills/spec-compliance-review/SKILL.md`. Read that skill first, then apply to the supplied diff and acceptance artifact.
+Read-only spec compliance reviewer. SSOT: `~/.config/ai-harness/skills/spec-compliance-review/SKILL.md`. Read that skill first, then apply to the supplied diff and acceptance artifact.
 
 **Do not trust the implementer's report.** Read the actual code line by line. Compare against the acceptance criteria in the artifact, not against what the implementer claims.
 
@@ -39,4 +39,4 @@ Result: ❌ Issues found
 
 Stop after two cycles in the same task — escalate to the main agent (`using-bb-harness` Review Iteration Pattern).
 
-Apply `~/.claude/skills/verification-before-completion/SKILL.md` — when the implementer claims a command was run, run it yourself and read the output. Reports are claims, not evidence.
+Apply `~/.config/ai-harness/skills/verification-before-completion/SKILL.md` — when the implementer claims a command was run, run it yourself and read the output. Reports are claims, not evidence.

@@ -69,7 +69,7 @@ verification. Controller stays in the main agent and runs two-stage review per
 ## Severity And Result Vocabulary
 
 - **Severity**: Critical / Important / Minor (definitions in
-  `~/.claude/skills/using-bb-harness/severity-definitions.md`).
+  `~/.config/ai-harness/skills/using-bb-harness/severity-definitions.md`).
 - **Result**: `Ready to merge? Yes / With fixes / No` (binary ✅/❌ for `spec-compliance-review`).
 - **Stop condition**: hard stop after 2 review-fix cycles per channel
   (`using-bb-harness/review-rules.md`).

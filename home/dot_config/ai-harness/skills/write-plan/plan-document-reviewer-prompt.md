@@ -129,7 +129,7 @@ Task tool (general-purpose, or plan-document-reviewer when defined):
 
     ## Severity
 
-    Apply ~/.claude/skills/using-bb-harness/severity-definitions.md.
+    Apply ~/.config/ai-harness/skills/using-bb-harness/severity-definitions.md.
 
     - Critical: plan cannot be executed safely as-written (wrong behavior, state
       leak, documented invariant violated, unrequested architectural changes
