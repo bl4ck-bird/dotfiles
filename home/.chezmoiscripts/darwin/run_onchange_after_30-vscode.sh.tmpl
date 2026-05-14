@@ -11,16 +11,19 @@ echo_color "$COLOR_BLUE" "VS Code.app Settings: Starting..."
 {{- $UTIs := list
     "public.plain-text"
     "public.unix-executable"
-     "net.daringfireball.markdown"
-     "public.comma-separated-values-text"
-     "public.tab-separated-values-text"
-     "public.yaml"
-     ".toml"
-     ".conf"
-     ".log"
-    ".json"
-    ".jsonc"
+    "net.daringfireball.markdown"
+    "public.comma-separated-values-text"
+    "public.tab-separated-values-text"
+    "public.yaml"
+    "public.json"
+    "log"
 -}}
+# TODO: 비표준 확장자는 duti -s가 -50 에러 (dynamic UTI 등록 거절).
+#       Info.plist declared인 .toml은 LaunchServices 자동 매핑으로 작동 중.
+#       과거 동작했던 이유는 별도 분석 후 재활성화 검토.
+#   - "toml"
+#   - "conf"
+#   - "jsonc"
 {{- range $UTIs }}
 duti -s com.microsoft.VSCode {{ . }} all
 {{- end }}
