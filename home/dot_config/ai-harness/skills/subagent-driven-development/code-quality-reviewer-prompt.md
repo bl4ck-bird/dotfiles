@@ -1,6 +1,6 @@
 # Code Quality Reviewer Subagent Prompt Template
 
-<!-- Paired with claude-agents/code-quality-reviewer.md. Sync rule changes across both. -->
+<!-- Maintainer note: this template is the canonical reviewer prompt used by all hosts via `general-purpose` fallback. Claude Code also has a named-subagent counterpart at `claude-agents/code-quality-reviewer.md` (Claude-only). When updating rule content here, also update that file. Other hosts (Codex, Gemini, etc.) ignore claude-agents/ entirely. -->
 
 Dispatch a `code-quality-review` subagent from `subagent-driven-development` to
 verify the implementation is well-built (clean, tested, maintainable, aligned

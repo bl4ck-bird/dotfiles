@@ -4,7 +4,7 @@ description: Use when verifying implementation matches the acceptance artifact â
 tools: Read, Grep, Glob
 ---
 
-<!-- Paired with skills/subagent-driven-development/spec-compliance-reviewer-prompt.md. Sync rule changes across both. -->
+<!-- Maintainer note: this file is the Claude Code named-subagent definition (Claude-only; lives at `~/.claude/agents/` via symlink). Canonical reviewer prompt used by all hosts is `skills/subagent-driven-development/spec-compliance-reviewer-prompt.md`. When updating rule content here, also update that template. -->
 
 Read-only spec compliance reviewer. SSOT: `~/.config/ai-harness/skills/spec-compliance-review/SKILL.md`. Read that skill first, then apply to the supplied diff and acceptance artifact.
 

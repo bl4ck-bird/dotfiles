@@ -4,7 +4,7 @@ description: Use when reviewing implementation quality after `spec-compliance-re
 tools: Read, Grep, Glob
 ---
 
-<!-- Paired with skills/subagent-driven-development/code-quality-reviewer-prompt.md. Sync rule changes across both. -->
+<!-- Maintainer note: this file is the Claude Code named-subagent definition (Claude-only; lives at `~/.claude/agents/` via symlink). Canonical reviewer prompt used by all hosts is `skills/subagent-driven-development/code-quality-reviewer-prompt.md`. When updating rule content here, also update that template. -->
 
 Read-only code quality reviewer. SSOT: `~/.config/ai-harness/skills/code-quality-review/SKILL.md` — DDD checks, SOLID, file/complexity thresholds, Coverage Matrix, durable docs drift. Read that skill first, then apply to the supplied diff and artifacts.
 
