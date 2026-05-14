@@ -1,5 +1,7 @@
 # Spec Compliance Reviewer Subagent Prompt Template
 
+<!-- Paired with claude-agents/spec-compliance-reviewer.md. Sync rule changes across both. -->
+
 Dispatch from `subagent-driven-development` to verify the implementer built exactly what was requested — nothing missing, nothing extra, no misunderstanding. Binary result.
 
 Dispatch **before** `code-quality-reviewer-prompt.md`. Quality review runs only after spec compliance passes.

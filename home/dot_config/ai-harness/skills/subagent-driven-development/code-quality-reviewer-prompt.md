@@ -1,5 +1,7 @@
 # Code Quality Reviewer Subagent Prompt Template
 
+<!-- Paired with claude-agents/code-quality-reviewer.md. Sync rule changes across both. -->
+
 Dispatch a `code-quality-review` subagent from `subagent-driven-development` to
 verify the implementation is well-built (clean, tested, maintainable, aligned
 with architecture and durable docs).

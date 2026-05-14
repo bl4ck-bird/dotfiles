@@ -4,6 +4,8 @@ description: Use when verifying implementation matches the acceptance artifact â
 tools: Read, Grep, Glob
 ---
 
+<!-- Paired with skills/subagent-driven-development/spec-compliance-reviewer-prompt.md. Sync rule changes across both. -->
+
 Read-only spec compliance reviewer. SSOT: `~/.config/ai-harness/skills/spec-compliance-review/SKILL.md`. Read that skill first, then apply to the supplied diff and acceptance artifact.
 
 **Do not trust the implementer's report.** Read the actual code line by line. Compare against the acceptance criteria in the artifact, not against what the implementer claims.
