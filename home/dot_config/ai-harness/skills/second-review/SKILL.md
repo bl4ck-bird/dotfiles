@@ -21,6 +21,8 @@ Harness-wide canonical list. Other docs reference as "High-Risk Surfaces (see `s
 - deletion
 - core architecture
 
+**Callsites that inline this list** (per README Cross-Reference Inlining Policy — keep in sync when editing): `using-bb-harness/SKILL.md` (Workflow Weight table), `code-quality-review/SKILL.md` (Follow-on table), `executing-plans-inline/SKILL.md` (Required User Checkpoints), `subagent-driven-development/SKILL.md` (Required User Checkpoints), `write-spec/SKILL.md` (Independent Review), `write-plan/SKILL.md` (Preconditions), `ship-check/SKILL.md` (Preconditions), `write-spec/spec-document-reviewer-prompt.md`, `write-plan/plan-document-reviewer-prompt.md`, `subagent-driven-development/code-quality-reviewer-prompt.md`.
+
 ## Required When Available
 
 Any of:

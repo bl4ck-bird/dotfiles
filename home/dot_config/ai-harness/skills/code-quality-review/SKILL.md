@@ -144,7 +144,7 @@ Findings stay inside the diff and the approved acceptance artifact.
 | Trigger present in this diff | Follow-on |
 | --- | --- |
 | Auth, secrets, crypto, deletion, untrusted input, destructive operation, sensitive data | `security-review` |
-| Independent double-check requested or High-Risk Surface touched | `second-review` |
+| Independent double-check requested or High-Risk Surface touched (`security` / `data-loss` / `money` / `auth` / `crypto` / `deletion` / `core architecture` — canonical list in `second-review`) | `second-review` |
 
 Second follow-on justified → name it as a recommendation and ask user. Do not auto-chain.
 

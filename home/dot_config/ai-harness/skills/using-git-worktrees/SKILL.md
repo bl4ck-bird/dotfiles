@@ -13,16 +13,18 @@ Harness-wide SSOT for worktree creation, detection, and cleanup. Other skills (`
 
 ## When To Use
 
-- Before `subagent-driven-development` starts a multi-task plan.
+- Before any code-modifying work starts on a protected base branch (`main`, `master`, `develop`, `trunk`). See `using-bb-harness` Branch Policy — this applies regardless of Workflow Weight.
+- Before `subagent-driven-development` or `executing-plans-inline` starts a multi-task plan.
 - Broad refactors crossing module boundaries.
 - Any vertical slice the user wants reviewable as a branch / PR.
-- When `test-driven-development` is about to make non-trivial changes the user wants reversible.
+- When `test-driven-development` is about to modify production code.
 
 Skip when:
 
 - Host already created an isolated workspace (Step 0 detects this).
-- Change is Tiny / local per `using-bb-harness` Workflow Weight.
-- User explicitly chose to work in place.
+- Current branch is already a non-protected feature branch with scope matching the task.
+- User explicitly consented to work directly on a protected branch this session (record the exception).
+- Work is read-only (questions, investigation, no edits).
 
 ## Step 0 — Detect Existing Isolation
 

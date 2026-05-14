@@ -49,11 +49,11 @@ If key context missing, ask or propose minimal recovery step. Do not invent prod
 | Tiny / local | One bounded module, ≤ 50 LoC, no product / domain / API / data / security decision, no new test target | Direct edit or `test-driven-development` + `ship-check` |
 | Scope review | 3+ files, uncertain blast radius, unclear module boundary | Decide if small path still fits; record bounded scope |
 | Non-trivial | Product behavior, user workflow, domain language, public API, persistence, auth, sync, deletion, external integration | Reviewed acceptance artifact (via `write-spec` Self-Review) + compact plan (via `write-plan` Self-Review) + per-task `spec-compliance-review` + `code-quality-review` + docs gates |
-| Risky / substantial | Module boundary or dependency-direction change, refactor crossing 2+ modules, weak tests, 5+ files, 2+ modules, 300/600-line file thresholds, or any High-Risk Surface (see `second-review`) | Above + `security-review` when triggered + `second-review` required for High-Risk Surface or boundary / dependency-direction change |
+| Risky / substantial | Module boundary or dependency-direction change, refactor crossing 2+ modules, weak tests, 5+ files, 2+ modules, 300/600-line file thresholds, or any High-Risk Surface (`security` / `data-loss` / `money` / `auth` / `crypto` / `deletion` / `core architecture` — canonical list in `second-review`) | Above + `security-review` when triggered + `second-review` required for High-Risk Surface or boundary / dependency-direction change |
 
 ## Acceptance Artifact
 
-Non-trivial work needs reviewed acceptance artifact (spec, PRD, issue, review finding, approved task) before implementation. Use `write-spec` for new specs — its Self-Review owns product clarity and domain alignment. Acceptance Brief Fields (see `write-spec`) are canonical.
+Non-trivial work needs reviewed acceptance artifact (spec, PRD, issue, review finding, approved task) before implementation. Use `write-spec` for new specs — its Self-Review owns product clarity and domain alignment. Acceptance Brief Fields (canonical: Goal, Accepted Behavior, Acceptance Criteria, Non-Goals / Stop Conditions, Touched Surfaces, Edge And Error Cases, Docs / Test Impact, Risk Level, Required Reviews, Second Review, AFK / HITL Boundary — full definitions in `write-spec` Light Acceptance Brief).
 
 - Full `docs/specs/` spec: when product scope / domain language / public API / data / storage / auth / security / deletion / sync / external integrations / user workflow still being decided.
 - Already-clear task: issue / review finding / approved request enough when it meets canonical fields. Chat-only → plan must capture them in Approved Request Anchor.
@@ -99,6 +99,20 @@ Quick recap:
 - Reviewed plan, host cannot dispatch subagents, or only 1-3 small tasks where dispatch overhead not worth it: `executing-plans-inline`. Same review gates as skill invocations against main agent's diff. Switch back to subagent-driven mid-plan if self-review weakens.
 - Workspace isolation for multi-task execution: `using-git-worktrees`.
 - Controller does not pause between tasks unless Required User Checkpoint applies (see `subagent-driven-development`).
+
+## Branch Policy
+
+Code-modifying work must not start on a protected base branch. Default protected set: `main`, `master`, `develop`, `trunk`, plus any branch the repo's `AGENTS.md` / `CLAUDE.md` names as base.
+
+- **Before the first code edit** in a session, check `git branch --show-current`. On a protected branch → invoke `using-git-worktrees` and create a feature branch / worktree first. This applies regardless of Workflow Weight — Tiny/local is not an excuse to commit directly to a protected branch.
+- **Exceptions** require explicit user consent in this session ("yes, edit main directly", "this is a hotfix on main"). Record the exception briefly in the response. Project-local instructions that authorize direct base-branch work also count as consent.
+- **Read-only work** (questions, investigation, doc-only navigation without edits) does not trigger this policy.
+- **Branch name**: derive from the task — `<type>/<short-slug>` (e.g. `fix/vscode-comment-newline`, `feat/branch-policy`). Match the project's existing convention when one is visible in `git log` / `git branch -a`.
+- **At finish time**: `ship-check` Finishing Options presents merge / push+PR / keep / discard. Do not silently commit-and-push from a feature branch without going through that gate.
+
+Implementation skills (`test-driven-development`, `executing-plans-inline`, `subagent-driven-development`) restate this as a precondition so the rule is in context when work actually starts.
+
+**Callsites that inline the protected-branch list** (per README Cross-Reference Inlining Policy — keep in sync when editing): `test-driven-development/SKILL.md` (Branch Precondition), `executing-plans-inline/SKILL.md` (Workspace Isolation), `subagent-driven-development/SKILL.md` (Workspace Isolation), `using-git-worktrees/SKILL.md` (When To Use).
 
 ## Routing
 

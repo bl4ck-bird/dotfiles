@@ -5,7 +5,7 @@ tasks. Default for BB Harness is `write-plan` Self-Review (the author runs the
 checks). This template is the *optional* second pair of eyes — useful when:
 
 - Plan crosses module boundaries or changes dependency direction.
-- Plan touches a High-Risk Surface (see `second-review`).
+- Plan touches a High-Risk Surface (`security` / `data-loss` / `money` / `auth` / `crypto` / `deletion` / `core architecture` — canonical list in `second-review`).
 - Tasks are large or numerous.
 - File responsibility mapping affects untouched code nontrivially.
 - Self-Review passed but the author wants confidence before spending implementer

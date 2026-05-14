@@ -47,6 +47,8 @@ Idea still ambiguous → run `pressure-test` first. Terms unstable → run `doma
 
 Other docs reference this section as "Acceptance Brief Fields (see `write-spec`)" instead of re-listing fields. Harness-wide canonical field set lives here.
 
+**Callsites that inline field names** (per README Cross-Reference Inlining Policy — keep in sync when editing): `using-bb-harness/SKILL.md` (Acceptance Artifact), `write-plan/SKILL.md` Preconditions (intra-file anchor in Approved Request Anchor section).
+
 Use for non-trivial work when a full spec would only duplicate an already clear request. Source can live in an issue, review record, plan anchor, or short `docs/specs/` note, but must include every field below:
 
 ```markdown
@@ -173,7 +175,7 @@ Two options when author wants a second pair of eyes:
 
 - **`spec-document-reviewer-prompt.md`** (in this directory) — same-host subagent re-reads spec and project context independently. Use when:
   - Domain language being introduced or renamed.
-  - High-Risk Surface (see `second-review`) touched.
+  - High-Risk Surface (`security` / `data-loss` / `money` / `auth` / `crypto` / `deletion` / `core architecture` — canonical list in `second-review`) touched.
   - Product direction, MVP boundary, or core architecture changes.
   - Self-Review passed but author is uncertain.
 - **`second-review`** (Codex by default) — different-model, fully-independent double-check. Required when spec touches High-Risk Surface; otherwise optional. Heavier than same-host reviewer.

@@ -33,7 +33,9 @@ Use `bounded-loop` instead when the user wants autonomous iteration beyond the a
 
 ## Workspace Isolation
 
-Use `using-git-worktrees` to set up isolation before the loop. That skill owns detection, creation priority (host-native first), `.gitignore` safety, baseline verification, cleanup ownership.
+**Required.** Invoke `using-git-worktrees` before the loop. That skill owns detection, creation priority (host-native first), `.gitignore` safety, baseline verification, cleanup ownership.
+
+**Never start implementation on a protected base branch** (`main`, `master`, `develop`, `trunk`, or any branch named as base in the repo's `AGENTS.md` / `CLAUDE.md`) without explicit user consent in this session. See `using-bb-harness` Branch Policy for the full rule.
 
 Plan-execution stop conditions:
 
@@ -100,7 +102,7 @@ Stop and ask **only** when:
 1. **BLOCKED** the controller cannot resolve (more context fails, stronger model fails, splitting fails → escalate).
 2. **Two-cycle review-fix without convergence** in the same task. Apply `using-bb-harness` Review Iteration Pattern Hard Stop.
 3. **Plan does not authorize this action.** The plan and acceptance artifact already authorize listed scope, files, dependencies, destructive operations (install / init / hooks / delete / commit / push / PR / history rewrite), and review chain. Stop only when the next action is **outside** plan coverage.
-4. **High-Risk Surface** (see `second-review`) appears in the diff and `second-review` is not scheduled in the plan.
+4. **High-Risk Surface** (`security` / `data-loss` / `money` / `auth` / `crypto` / `deletion` / `core architecture` — canonical list in `second-review`) appears in the diff and `second-review` is not scheduled in the plan.
 
 Plan-authorized items do NOT trigger checkpoints. Plan says "install lodash for Task 3" → `npm install lodash` during Task 3 is approved work. Plan says "delete legacy auth middleware in Task 5" → that delete is approved work.
 

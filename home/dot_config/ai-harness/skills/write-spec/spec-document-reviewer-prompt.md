@@ -5,7 +5,7 @@ plan. Default for BB Harness is `write-spec` Self-Review (the author runs the
 checks). This template is the *optional* second pair of eyes — useful when:
 
 - Domain language is being introduced or renamed.
-- Spec touches a High-Risk Surface (see `second-review`).
+- Spec touches a High-Risk Surface (`security` / `data-loss` / `money` / `auth` / `crypto` / `deletion` / `core architecture` — canonical list in `second-review`).
 - Spec changes product direction, MVP boundary, or core architecture.
 - Author is uncertain whether acceptance criteria are testable.
 - Self-Review passed but the author wants confidence before plan effort.

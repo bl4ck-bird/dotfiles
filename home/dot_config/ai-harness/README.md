@@ -71,6 +71,24 @@ DDD operational checks, SOLID, file/complexity thresholds, Coverage Matrix, and 
 - The independent reviewer is `second-review` in cross-references; Codex is named only inside `skills/second-review/SKILL.md` as the default integration.
 - File/complexity thresholds defined in `skills/code-quality-review/SKILL.md` (File And Complexity Thresholds). Other docs reference, not redefine.
 
+### Cross-Reference Inlining Policy
+
+SSOT lives in one skill, but short canonical lists that **drive model branching at call time** are intentionally **inlined as parenthetical reminders** at every call site, with the SSOT location named in the same parenthesis. This is not duplication to clean up.
+
+**Why**: a skill's body only enters the model's context when that skill is invoked. A call site that says only "see `X`" forces the model to either re-invoke `X` or work from memory — the latter is the most common source of harness hallucination (wrong enum, missing item, invented category). Inlining the 5-10 token list at the call site keeps the rule load-bearing without an extra skill load.
+
+**Currently inlined canonical lists** (audit-safe; do not flag as SSOT violation):
+
+| List | SSOT | Inlined at |
+| --- | --- | --- |
+| High-Risk Surfaces (`security` / `data-loss` / `money` / `auth` / `crypto` / `deletion` / `core architecture`) | `skills/second-review/SKILL.md` | `using-bb-harness`, `code-quality-review`, `executing-plans-inline`, `subagent-driven-development`, `write-spec`, `write-plan`, `ship-check`, plus 3 reviewer prompt templates |
+| Acceptance Brief Fields (11 fields: Goal / Accepted Behavior / Acceptance Criteria / Non-Goals / Touched Surfaces / Edge And Error Cases / Docs / Test Impact / Risk Level / Required Reviews / Second Review / AFK / HITL Boundary) | `skills/write-spec/SKILL.md` Light Acceptance Brief | `using-bb-harness`, `write-plan` Preconditions |
+| Protected base branches (`main` / `master` / `develop` / `trunk`) | `skills/using-bb-harness/SKILL.md` Branch Policy | `test-driven-development`, `executing-plans-inline`, `subagent-driven-development`, `using-git-worktrees` |
+
+**Inline only short lists, not full definitions.** Severity matrix, Review Iteration Pattern, Scope Guard, Chain Depth Cap, Acceptance Brief Field *full definitions* — these are reference-only, multi-sentence, and stay SSOT-only because callers already inline the binding *behavior* (`Stop after 2 cycles`, `at most one automatic follow-on`, etc.) separately. The full definition then becomes the audit reference, not the live rule.
+
+**When updating an inlined list**: grep for every callsite, change them together. The SSOT file should list its callsites at the bottom (see `using-bb-harness/review-rules.md` Cross-Reference for the pattern).
+
 ## Reviewer Pair Pattern (maintenance)
 
 Two reviewer types exist in parallel for `code-quality-review` and `spec-compliance-review`:

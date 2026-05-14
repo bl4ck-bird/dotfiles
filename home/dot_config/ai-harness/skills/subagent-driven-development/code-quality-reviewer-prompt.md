@@ -129,7 +129,9 @@ Task tool (code-quality-reviewer if available, else general-purpose):
 
     - Auth, secrets, crypto, deletion, untrusted input, destructive operation,
       sensitive data → security-review.
-    - Independent double-check requested or High-Risk Surface touched →
+    - Independent double-check requested or High-Risk Surface
+      (security / data-loss / money / auth / crypto / deletion /
+      core architecture — canonical list in second-review) touched →
       second-review.
 
     A second follow-on requires naming it as a recommendation and asking the

@@ -40,7 +40,9 @@ Same as `subagent-driven-development`:
 
 ## Workspace Isolation
 
-Use `using-git-worktrees` to set up isolated workspace, same way as `subagent-driven-development`. Cleanup ownership rules identical.
+**Required.** Invoke `using-git-worktrees` before the first task — same way as `subagent-driven-development`. Cleanup ownership rules identical.
+
+**Never start implementation on a protected base branch** (`main`, `master`, `develop`, `trunk`, or any branch named as base in the repo's `AGENTS.md` / `CLAUDE.md`) without explicit user consent in this session. See `using-bb-harness` Branch Policy for the full rule.
 
 ## Execution Loop (Inline)
 
@@ -97,7 +99,7 @@ Four conditions only:
 1. **BLOCKED** that cannot be resolved with more context.
 2. **Two-cycle review-fix without convergence** in same task.
 3. **Plan does not authorize this action.** Actions inside plan's approved scope, files, dependencies, destructive operations, review chain run without checkpoint.
-4. **High-Risk Surface** in diff and `second-review` not scheduled.
+4. **High-Risk Surface** (`security` / `data-loss` / `money` / `auth` / `crypto` / `deletion` / `core architecture` — canonical list in `second-review`) in diff and `second-review` not scheduled.
 
 Items plan authorizes do NOT trigger checkpoint.
 

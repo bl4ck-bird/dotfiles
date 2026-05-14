@@ -39,8 +39,8 @@ Conditional reads:
 Before writing, confirm acceptance artifact weight:
 
 - Full spec / PRD: `write-spec` Self-Review completed (Product Clarity + Domain Alignment) unless explicit accepted-risk record.
-- Clear issue / review finding / approved user task: record acceptance source + Acceptance Brief Fields (see `write-spec`). Chat-only request? Add `Approved Request Anchor` section with those fields + date.
-- High-risk: consider `second-review`; required when High-Risk Surface (see `second-review`).
+- Clear issue / review finding / approved user task: record acceptance source + Acceptance Brief Fields (canonical: Goal, Accepted Behavior, Acceptance Criteria, Non-Goals / Stop Conditions, Touched Surfaces, Edge And Error Cases, Docs / Test Impact, Risk Level, Required Reviews, Second Review, AFK / HITL Boundary — full definitions in `write-spec` Light Acceptance Brief). Chat-only request? Add `Approved Request Anchor` section with those fields + date.
+- High-risk: consider `second-review`; required when High-Risk Surface (`security` / `data-loss` / `money` / `auth` / `crypto` / `deletion` / `core architecture` — canonical list in `second-review`).
 
 If product goal / domain terms / acceptance criteria unclear, run `pressure-test` or `domain-modeling` first.
 
@@ -64,7 +64,7 @@ Required only when the acceptance source exists only in chat. Include:
 - Date:
 - Request summary:
 - Approved scope:
-- Acceptance Brief Fields (see `write-spec`).
+- Acceptance Brief Fields (all 11 fields listed in Preconditions above).
 
 ## File Responsibility Map
 

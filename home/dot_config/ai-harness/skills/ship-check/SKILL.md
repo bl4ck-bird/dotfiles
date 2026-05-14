@@ -17,7 +17,7 @@ Substantial work should have:
 - `spec-compliance-review` returned ✅ Spec compliant for each implemented slice.
 - `code-quality-review` returned Ready to merge: Yes (or With fixes followed by applied fixes + re-run returning Yes).
 - `security-review` run when security-sensitive surface touched, or explicitly noted as not triggered.
-- `second-review` run when High-Risk Surface touched or user requested independent double-check, or fallback recorded per `second-review` Fallback Record.
+- `second-review` run when High-Risk Surface (`security` / `data-loss` / `money` / `auth` / `crypto` / `deletion` / `core architecture` — canonical list in `second-review`) touched or user requested independent double-check, or fallback recorded per `second-review` Fallback Record.
 - `receiving-review` applied when fixes taken from any reviewer (one item at a time, YAGNI checked).
 - `docs-sync` considered.
 - Commit, PR, release, or stacked-branch actions approved when they are part of next step.
