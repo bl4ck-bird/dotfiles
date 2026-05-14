@@ -280,7 +280,7 @@ for DOMAIN in "${FINDER_BASE_VIEW_DOMAINS[@]}" "SearchRecentsViewSettings" "Sear
     UPDATED_WS=$(echo "$EXISTING_WS" | /usr/bin/jq -c '. + {"ShowStatusBar": "1", "ShowPathbar": "1"}')
     plutil -replace "${DOMAIN}.WindowState" -json "$UPDATED_WS" "$FINDER_PLIST"
 done
-killall "cfprefsd" "Finder" > /dev/null 2>&1
+killall "cfprefsd" "Finder" > /dev/null 2>&1 || true
 
 # 일반
 ## 데스크탑에서 항목 보기
