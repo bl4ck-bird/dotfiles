@@ -1,32 +1,30 @@
 # Spec Document Reviewer Prompt Template
 
-Use this template when **the author of a spec wants an independent reviewer** to
-check the spec before writing the plan. The default for BB Harness is `write-spec`
-Self-Review (the author runs the checks themselves), which catches most issues. This
-template is the *optional* second pair of eyes — useful when:
+Use when **the spec author wants an independent reviewer** before writing the
+plan. Default for BB Harness is `write-spec` Self-Review (the author runs the
+checks). This template is the *optional* second pair of eyes — useful when:
 
 - Domain language is being introduced or renamed.
-- The spec touches a High-Risk Surface (see `second-review`).
-- The spec changes product direction, MVP boundary, or core architecture.
-- The author is uncertain whether the acceptance criteria are testable.
-- Self-Review passed but the author wants confidence before sinking plan effort.
+- Spec touches a High-Risk Surface (see `second-review`).
+- Spec changes product direction, MVP boundary, or core architecture.
+- Author is uncertain whether acceptance criteria are testable.
+- Self-Review passed but the author wants confidence before plan effort.
 
-This is **not** required by the harness. Use when the value is real.
+**Not** required by the harness. Use when value is real.
 
 ```text
 Task tool (general-purpose, or spec-document-reviewer when defined):
   description: "Independent review of <spec name>"
   prompt: |
-    You are reviewing a feature spec for correctness, clarity, and domain alignment
-    before the team writes an implementation plan. You are an independent reviewer —
-    do NOT inherit assumptions from the author. Read the spec and the context, then
-    raise findings.
+    You are reviewing a feature spec for correctness, clarity, and domain
+    alignment before the plan is written. You are independent — do NOT inherit
+    assumptions from the author. Read the spec and context, then raise findings.
 
     ## Spec Under Review
 
     {SPEC_PATH}
 
-    Read it in full.
+    Read in full.
 
     ## Author Focus (optional)
 
@@ -43,67 +41,66 @@ Task tool (general-purpose, or spec-document-reviewer when defined):
     - AGENTS.md
     - CONTEXT.md
     - docs/CURRENT.md
-    - docs/ROADMAP.md (when product scope or milestones are relevant)
-    - docs/DOMAIN_MODEL.md (when domain terms or invariants are relevant)
-    - docs/DATA_MODEL.md (when persistence, migration, retention are relevant)
-    - docs/SECURITY_MODEL.md (when auth, secrets, deletion, sensitive data are relevant)
-    - {EXTRA_CONTEXT_PATHS — project-specific durable docs to also read, or "none"}
+    - docs/ROADMAP.md (when product scope or milestones relevant)
+    - docs/DOMAIN_MODEL.md (when domain terms or invariants relevant)
+    - docs/DATA_MODEL.md (when persistence, migration, retention relevant)
+    - docs/SECURITY_MODEL.md (when auth, secrets, deletion, sensitive data
+      relevant)
+    - {EXTRA_CONTEXT_PATHS — additional project docs, or "none"}
 
     ## What To Check
 
-    Apply write-spec/SKILL.md Self-Review checks as an outsider would.
+    Apply write-spec/SKILL.md Self-Review checks as an outsider.
 
     **Product clarity**
-
     - Goal, problem, users, MVP, non-goals: explicit and unambiguous?
-    - Acceptance criteria: testable through a public interface or user-visible flow?
-      Each criterion has a clear yes/no answer when implementation runs?
+    - Acceptance criteria: testable through a public interface or user-visible
+      flow? Each has a clear yes/no answer when implementation runs?
     - Vertical slices deliver reviewable behavior, not horizontal layers
       ("build DB" / "build API" / "build UI")?
     - AFK / HITL labels: realistic?
     - Testing decisions and docs impact: named?
 
     **Domain alignment** (when CONTEXT.md / docs/DOMAIN_MODEL.md exists)
-
-    - Every domain term in the spec matches the CONTEXT.md glossary.
-    - New terms are defined and added to CONTEXT.md as part of acceptance work,
-      not silently introduced.
-    - Aggregate boundaries respect the bounded contexts in docs/DOMAIN_MODEL.md.
+    - Every domain term matches CONTEXT.md glossary.
+    - New terms defined and added to CONTEXT.md as acceptance work — not
+      silently introduced.
+    - Aggregate boundaries respect bounded contexts in docs/DOMAIN_MODEL.md.
       Cross-context interactions name the translation layer.
-    - Documented invariants the spec touches are listed with how each will be
-      proven (test or domain event).
-    - The spec uses entity / value object / aggregate vocabulary correctly when it
-      introduces or changes one.
+    - Documented invariants the spec touches are listed with how each is proven
+      (test or domain event).
+    - Spec uses entity / value object / aggregate vocabulary correctly when
+      introducing or changing one.
 
     For purely UI / CRUD / glue specs with low domain complexity, mark domain
     alignment "N/A — non-domain change" and skip.
 
-    **Acceptance Brief Fields** (for Light Acceptance Brief specs only)
+    **Acceptance Brief Fields** (Light Acceptance Brief specs only)
 
     Every canonical field present:
     Goal, Accepted Behavior, Acceptance Criteria, Non-Goals / Stop Conditions,
-    Touched Surfaces (Product / API / Data-storage / Security-privacy / UI / Docs /
-    Tests), Edge And Error Cases, Docs / Test Impact, Risk Level, Required Reviews,
-    Second Review, AFK / HITL Boundary.
+    Touched Surfaces (Product / API / Data-storage / Security-privacy / UI /
+    Docs / Tests), Edge And Error Cases, Docs / Test Impact, Risk Level,
+    Required Reviews, Second Review, AFK / HITL Boundary.
 
     ## Scope Discipline
 
-    Stay inside the spec and the project context.
+    Stay inside the spec and project context.
 
     - Findings cite a line in the spec or a project doc.
-    - Do not propose new features, additional scope, or new dependencies. Those are
-      out-of-scope improvements at best.
-    - YAGNI applies to reviewers too — speculative future-proofing is Minor at most.
+    - Do not propose new features, additional scope, or new dependencies.
+    - YAGNI applies to reviewers too — speculative future-proofing is Minor at
+      most.
 
     ## Severity
 
     Apply ~/.claude/skills/using-bb-harness/severity-definitions.md.
 
     - Critical: spec change required before any plan can be written safely
-      (untestable acceptance criterion, missing security / data-loss consideration,
-      domain term that breaks the glossary).
-    - Important: spec should be revised before planning, but the plan author can
-      proceed with a known gap (missing edge case, unclear non-goal).
+      (untestable acceptance criterion, missing security / data-loss
+      consideration, domain term breaking the glossary).
+    - Important: revise before planning, but plan author can proceed with a
+      known gap (missing edge case, unclear non-goal).
     - Minor: nice-to-have polish.
 
     ## Output Format
@@ -149,29 +146,25 @@ Task tool (general-purpose, or spec-document-reviewer when defined):
 
 ## Placeholders
 
-- `{SPEC_PATH}` — path to the spec under review (e.g.
+- `{SPEC_PATH}` — path to spec under review (e.g.
   `docs/specs/2026-05-14-feature.md`).
-- `{AUTHOR_FOCUS}` — short note from the author about what to look at hardest.
-  Pass `"none"` when there is nothing extra.
-- `{WEAK_SPOTS}` — sections the author is uncertain about. Pass `"none"` when
-  the author has no specific concern.
-- `{EXTRA_CONTEXT_PATHS}` — additional project-specific durable docs the
-  reviewer should read beyond the default list. Pass `"none"` when none apply.
+- `{AUTHOR_FOCUS}` — author's note about what to look at hardest, or `"none"`.
+- `{WEAK_SPOTS}` — sections the author is uncertain about, or `"none"`.
+- `{EXTRA_CONTEXT_PATHS}` — additional project docs, or `"none"`.
 
 ## When To Dispatch
 
-Use Claude Code's Task tool (or the equivalent) with this prompt when the author
-wants the second pair of eyes. If `spec-document-reviewer` is defined as a named
-agent in `claude-agents/`, prefer that — otherwise `general-purpose`.
+Use the Task tool with this prompt when the author wants a second pair of eyes.
+If `spec-document-reviewer` is defined in `claude-agents/`, prefer that —
+otherwise `general-purpose`.
 
 ## After The Reviewer Returns
 
 - **Ready to plan: Yes** → proceed to `write-plan`.
-- **Ready to plan: With fixes** → apply `receiving-review`, revise the spec, re-run
-  Self-Review on the changed spec. Re-dispatch this reviewer only if the changes
-  were substantial.
-- **Ready to plan: No** → escalate to the user. The spec needs fundamental revision
-  (or the acceptance idea itself needs rework).
+- **Ready to plan: With fixes** → apply `receiving-review`, revise the spec,
+  re-run Self-Review. Re-dispatch this reviewer only if changes were substantial.
+- **Ready to plan: No** → escalate. The spec needs fundamental revision (or the
+  acceptance idea itself needs rework).
 - **Recommended second-review (Codex): yes** → schedule `second-review` before
   shipping; record in the spec's Required Reviews / Second Review fields.
 
@@ -179,6 +172,6 @@ agent in `claude-agents/`, prefer that — otherwise `general-purpose`.
 
 | | Self-Review only | + This Reviewer |
 | --- | --- | --- |
-| Time | ~5-15 minutes | +10-20 minutes (subagent dispatch + integration) |
-| Catches | Author's own checklist | Author's blind spots, fresh-eyes drift, domain glossary errors |
+| Time | ~5-15 min | +10-20 min (dispatch + integration) |
+| Catches | Author's checklist | Author's blind spots, fresh-eyes drift, domain glossary errors |
 | Use when | Default for clear specs | High-stakes specs, new domain terms, High-Risk Surface, author uncertain |

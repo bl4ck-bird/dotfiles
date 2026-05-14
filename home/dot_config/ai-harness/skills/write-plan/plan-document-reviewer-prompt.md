@@ -1,32 +1,31 @@
 # Plan Document Reviewer Prompt Template
 
-Use this template when **the plan author wants an independent reviewer** to check
-the plan before executing tasks. The default for BB Harness is `write-plan`
-Self-Review (the author runs the checks themselves), which catches most issues.
-This template is the *optional* second pair of eyes — useful when:
+Use when **the plan author wants an independent reviewer** before executing
+tasks. Default for BB Harness is `write-plan` Self-Review (the author runs the
+checks). This template is the *optional* second pair of eyes — useful when:
 
-- The plan crosses module boundaries or changes dependency direction.
-- The plan touches a High-Risk Surface (see `second-review`).
-- Tasks are large or there are many of them.
-- File responsibility mapping affects untouched code in nontrivial ways.
+- Plan crosses module boundaries or changes dependency direction.
+- Plan touches a High-Risk Surface (see `second-review`).
+- Tasks are large or numerous.
+- File responsibility mapping affects untouched code nontrivially.
 - Self-Review passed but the author wants confidence before spending implementer
   cycles.
 
-This is **not** required by the harness. Use when the value is real.
+**Not** required by the harness. Use when value is real.
 
 ```text
 Task tool (general-purpose, or plan-document-reviewer when defined):
   description: "Independent review of <plan name>"
   prompt: |
-    You are reviewing an implementation plan before code execution. You are an
-    independent reviewer — do NOT inherit assumptions from the plan author. Read the
-    plan, the acceptance artifact, and the relevant project docs, then raise findings.
+    You are reviewing an implementation plan before code execution. You are
+    independent — do NOT inherit assumptions from the author. Read the plan, the
+    acceptance artifact, and project docs, then raise findings.
 
     ## Plan Under Review
 
     {PLAN_PATH}
 
-    Read it in full.
+    Read in full.
 
     ## Acceptance Artifact
 
@@ -54,41 +53,39 @@ Task tool (general-purpose, or plan-document-reviewer when defined):
     - docs/ARCHITECTURE.md (when boundaries / runtime / module shape may change)
     - docs/DOMAIN_MODEL.md (when domain language / invariants matter)
     - docs/DATA_MODEL.md (when persistence / migration / retention matter)
-    - docs/SECURITY_MODEL.md (when auth / secrets / deletion / sensitive data matter)
+    - docs/SECURITY_MODEL.md (when auth / secrets / deletion / sensitive data
+      matter)
     - docs/TESTING_STRATEGY.md (when verification expectations matter)
-    - {EXTRA_CONTEXT_PATHS — project-specific durable docs to also read, or "none"}
+    - {EXTRA_CONTEXT_PATHS — additional project docs, or "none"}
 
     ## What To Check
 
-    Apply write-plan/SKILL.md Self-Review checks as an outsider would.
+    Apply write-plan/SKILL.md Self-Review checks as an outsider.
 
     **Plan Hygiene**
-
     - Every acceptance requirement maps to a task or explicit non-goal.
     - Every task has exact verification commands and expected RED / GREEN signals
       for TDD steps.
-    - No placeholder language ("TBD", "later", "appropriate error handling", "write
-      tests for the above").
+    - No placeholder language ("TBD", "later", "appropriate error handling",
+      "write tests for the above").
     - New identifier names match CONTEXT.md.
-    - The plan does not copy large sections from the acceptance artifact — it links.
+    - Plan does not copy large sections from the acceptance artifact — it links.
     - A human can inspect the plan without chat history.
     - Acceptance Source named; Acceptance Self-Review note present.
 
     **Architecture Soundness** (when plan touches more than glue / CRUD)
-
     - SRP: each file in the File Responsibility Map has one primary reason to
-      change. Files listed for two unrelated concerns: flag for split.
-    - DIP: domain or application code does not depend on framework, ORM, HTTP
-      client, or filesystem types. If it must, the plan names the port / adapter.
+      change. Two unrelated concerns: flag for split.
+    - DIP: domain / application code does not depend on framework, ORM, HTTP
+      client, or filesystem types. If it must, plan names the port / adapter.
     - Dependency direction: imports flow inward (UI / infra → application →
-      domain). The plan does not introduce a domain file that imports an
-      infrastructure file.
-    - File-size impact: per touched file. Files at or near the 300 / 600-line
-      threshold (see code-quality-review File And Complexity Thresholds) have one
-      of: scoped extraction before feature work, documented exception, or a
-      follow-up refactor task.
-    - Speculative abstraction: plan does not introduce ports, interfaces,
-      factories, or strategy patterns for variation that does not yet exist.
+      domain). Plan does not introduce a domain file importing infrastructure.
+    - File-size impact: files at or near 300 / 600-line threshold (see
+      code-quality-review File And Complexity Thresholds) have one of: scoped
+      extraction before feature work, documented exception, or follow-up
+      refactor task.
+    - Speculative abstraction: no ports, interfaces, factories, or strategies
+      for variation that does not yet exist.
     - Cross-cutting concerns: logging, auth, persistence, caching at consistent
       boundaries.
 
@@ -102,34 +99,30 @@ Task tool (general-purpose, or plan-document-reviewer when defined):
     names).
 
     **Review Needs**
-
-    - Code-quality follow-on triggers (security surface touched, High-Risk Surface)
-      named correctly?
+    - Code-quality follow-on triggers (security surface, High-Risk Surface) named
+      correctly?
     - security-review scheduled when triggered?
     - second-review scheduled when Required When Available criteria apply (per
       second-review)?
 
     **Verification**
-
     - Each task lists exact commands.
     - Expected RED / GREEN signals named for TDD steps.
-    - Verification commands actually exist in the project (do not invent
+    - Verification commands actually exist (do not invent
       `npm run test:integration` when the project uses `pnpm vitest`).
 
     **Risk And Rollback**
-
     - Open Risks: realistic and named (not "TBD").
-    - Rollback / Recovery: feasible given the commit / stack strategy.
-    - Commit / Stack Strategy: one of the four options chosen (no commit / single
+    - Rollback / Recovery: feasible given commit / stack strategy.
+    - Commit / Stack Strategy: one of four options chosen (no commit / single
       commit / per-slice / stacked); does not authorize commit/push by itself.
 
     ## Scope Discipline
 
-    Stay inside the plan and the project context.
+    Stay inside the plan and project context.
 
     - Findings cite a section + line in the plan.
-    - Do not propose new tasks the acceptance artifact did not require. Those are
-      out-of-scope improvements at best.
+    - Do not propose new tasks the acceptance artifact did not require.
     - "Could be better organized" is not a finding. "Task 3 changes file X which
       already has reason-to-change Y; SRP violation" is a finding.
     - YAGNI applies to reviewers too.
@@ -138,11 +131,11 @@ Task tool (general-purpose, or plan-document-reviewer when defined):
 
     Apply ~/.claude/skills/using-bb-harness/severity-definitions.md.
 
-    - Critical: plan cannot be executed safely as-written (will produce wrong
-      behavior, will leak state, will violate a documented invariant, will require
-      unrequested architectural changes mid-execution).
-    - Important: plan should be revised before execution, but the implementer can
-      proceed if the issue is captured as a known follow-up.
+    - Critical: plan cannot be executed safely as-written (wrong behavior, state
+      leak, documented invariant violated, unrequested architectural changes
+      required mid-execution).
+    - Important: revise before execution, but implementer can proceed if captured
+      as known follow-up.
     - Minor: nice-to-have polish.
 
     ## Output Format
@@ -195,31 +188,26 @@ Task tool (general-purpose, or plan-document-reviewer when defined):
 
 - `{PLAN_PATH}` — path to the plan under review (e.g.
   `docs/plans/2026-05-14-feature.md`).
-- `{ACCEPTANCE_PATH}` — path to the spec / Light Acceptance Brief / issue that
-  the plan implements.
-- `{AUTHOR_FOCUS}` — short note from the plan author about what to look at
-  hardest. Pass `"none"` when there is nothing extra.
-- `{WEAK_SPOTS}` — sections of the plan the author is uncertain about (file
-  responsibility map, verification commands, risk list). Pass `"none"` when the
-  author has no specific concern.
-- `{EXTRA_CONTEXT_PATHS}` — additional project-specific durable docs the
-  reviewer should read beyond the default list. Pass `"none"` when none apply.
+- `{ACCEPTANCE_PATH}` — path to spec / Light Acceptance Brief / issue the plan
+  implements.
+- `{AUTHOR_FOCUS}` — author's note about what to look at hardest, or `"none"`.
+- `{WEAK_SPOTS}` — sections the author is uncertain about, or `"none"`.
+- `{EXTRA_CONTEXT_PATHS}` — additional project-specific durable docs, or `"none"`.
 
 ## When To Dispatch
 
-Use Claude Code's Task tool (or equivalent) with this prompt when the author wants
-the second pair of eyes. If `plan-document-reviewer` is defined as a named agent in
-`claude-agents/`, prefer that — otherwise `general-purpose`.
+Use the Task tool with this prompt when the author wants a second pair of eyes.
+If `plan-document-reviewer` is defined in `claude-agents/`, prefer that —
+otherwise `general-purpose`.
 
 ## After The Reviewer Returns
 
 - **Ready to execute: Yes** → proceed to `subagent-driven-development` or
   `executing-plans-inline`.
 - **Ready to execute: With fixes** → apply `receiving-review`, revise the plan,
-  re-run Self-Review. Re-dispatch this reviewer only if the changes were
-  substantial.
-- **Ready to execute: No** → escalate to the user. The plan needs fundamental
-  revision (or the acceptance artifact itself needs rework — return to `write-spec`).
+  re-run Self-Review. Re-dispatch this reviewer only if changes were substantial.
+- **Ready to execute: No** → escalate. The plan needs fundamental revision (or
+  the acceptance artifact itself — return to `write-spec`).
 - **Recommended second-review (Codex): yes** → schedule `second-review` per its
   Required When Available criteria.
 
@@ -227,6 +215,6 @@ the second pair of eyes. If `plan-document-reviewer` is defined as a named agent
 
 | | Self-Review only | + This Reviewer |
 | --- | --- | --- |
-| Time | ~10-20 minutes | +15-30 minutes (subagent dispatch + integration) |
-| Catches | Author's own checklist | Architecture blind spots, missing review needs, verification commands that do not exist, optimistic risk lists |
+| Time | ~10-20 min | +15-30 min (dispatch + integration) |
+| Catches | Author's checklist | Architecture blind spots, missing review needs, nonexistent verification commands, optimistic risk lists |
 | Use when | Default for plans with clear boundaries | High-Risk Surface, multi-module changes, dependency-direction changes, many tasks, author uncertain about file mapping |

@@ -5,71 +5,48 @@ description: Use when turning a reviewed acceptance artifact, PRD, issue, review
 
 # Write Plan
 
-Create a compact implementation plan a future agent or human can execute without guessing. The plan
-should constrain the work; it should not duplicate the acceptance artifact or become line-by-line
-code prose.
+Compact plan a future agent or human can execute without guessing. Constrain work; do not
+duplicate the acceptance artifact or become line-by-line code prose.
 
 ## Save Location
-
-Save plans to:
 
 ```text
 docs/plans/YYYY-MM-DD-<feature-or-slice>.md
 ```
 
-Use the project's established location if it already has one.
+Use the project's established location if it has one.
 
 ## Reading Tiers
 
 Always read:
 
-- `AGENTS.md`
-- `CONTEXT.md`
-- `docs/CURRENT.md`
-- `docs/AGENT_WORKFLOW.md`
-- Reviewed acceptance artifact: spec, PRD, issue, review finding, or approved task
+- `AGENTS.md`, `CONTEXT.md`, `docs/CURRENT.md`, `docs/AGENT_WORKFLOW.md`
+- Reviewed acceptance artifact (spec, PRD, issue, review finding, approved task)
 - Existing tests and package scripts
 
-Read conditionally when relevant:
+Conditional reads:
 
-- `CONTEXT-MAP.md`: multiple bounded contexts, apps, packages, or external integrations.
-- `docs/ARCHITECTURE.md`: boundaries, dependency direction, runtime surfaces, or module shape may
-  change.
-- `docs/DOMAIN_MODEL.md`: domain terms, invariants, entities, value objects, or workflows may
-  change.
-- `docs/DATA_MODEL.md`: persistence, migration, retention, deletion, backup, import, or export may
-  change.
-- `docs/SECURITY_MODEL.md`: auth, permissions, secrets, trust boundaries, sensitive data, deletion,
-  or crypto may change.
-- `docs/TESTING_STRATEGY.md`: verification commands, test levels, or test strategy may change.
-- Relevant durable decisions when decisions are hard to reverse or surprising.
+| Doc | Read when |
+| --- | --- |
+| `CONTEXT-MAP.md` | Multiple bounded contexts, apps, packages, external integrations |
+| `docs/ARCHITECTURE.md` | Boundaries, dependency direction, runtime surfaces, module shape may change |
+| `docs/DOMAIN_MODEL.md` | Domain terms, invariants, entities, value objects, workflows may change |
+| `docs/DATA_MODEL.md` | Persistence, migration, retention, deletion, backup, import/export may change |
+| `docs/SECURITY_MODEL.md` | Auth, permissions, secrets, trust boundaries, sensitive data, deletion, crypto may change |
+| `docs/TESTING_STRATEGY.md` | Verification commands, test levels, test strategy may change |
+| Durable decisions | Decisions are hard to reverse or surprising |
 
-Before writing the plan, confirm the acceptance artifact was prepared at the right weight:
+Before writing, confirm acceptance artifact weight:
 
-- Full spec or PRD: `write-spec` Self-Review completed (Product Clarity + Domain Alignment),
-  unless an explicit accepted-risk record exists.
-- Clear issue, review finding, or approved user task: record the acceptance source and the
-  Acceptance Brief Fields (see `write-spec`). If the request only exists in chat, add an
-  `Approved Request Anchor` section with those fields and date.
-- High-risk work: consider `second-review`; require it when the change touches a High-Risk
-  Surface (see `second-review`).
+- Full spec / PRD: `write-spec` Self-Review completed (Product Clarity + Domain Alignment) unless explicit accepted-risk record.
+- Clear issue / review finding / approved user task: record acceptance source + Acceptance Brief Fields (see `write-spec`). Chat-only request? Add `Approved Request Anchor` section with those fields + date.
+- High-risk: consider `second-review`; required when High-Risk Surface (see `second-review`).
 
-If product goal, domain terms, or acceptance criteria are unclear, run `pressure-test` or
-`domain-modeling` before writing the plan.
+If product goal / domain terms / acceptance criteria unclear, run `pressure-test` or `domain-modeling` first.
 
-Accepted-risk records may skip a normal gate only when explicitly approved by the user or already
-present in an approved plan. Record:
-
-- skipped gate
-- reason
-- risk that could be missed
-- compensating check
-- user acceptance
-- follow-up or expiry
+Accepted-risk records may skip a normal gate only with explicit user approval or approved plan. Record: skipped gate, reason, risk, compensating check, user acceptance, follow-up/expiry.
 
 ## Required Sections
-
-Every plan must include:
 
 ```markdown
 # <Feature> Implementation Plan
@@ -126,110 +103,75 @@ Required for non-trivial work. Choose one:
 
 ## Edit-On-Findings Mode
 
-When the plan is revised because `spec-compliance-review` or `code-quality-review` found a
-plan-level flaw (wrong file boundary, missing task, weak verification), or because the
-user changed scope, update the existing plan at the same path. Do not create a new plan
-file or restart from scratch. Address each finding, preserve tasks not flagged, and re-run
-Plan Self-Review on the changed plan. See `using-bb-harness` Review Iteration Pattern.
+When plan is revised because `spec-compliance-review` / `code-quality-review` found a plan-level flaw (wrong file boundary, missing task, weak verification), or user changed scope: update existing plan at same path. Do not create a new plan file. Address each finding, preserve unflagged tasks, re-run Plan Self-Review. See `using-bb-harness` Review Iteration Pattern.
 
 ## Planning Rules
 
-- Keep plans compact. Link to the acceptance artifact instead of restating it.
+- Keep plans compact. Link to acceptance artifact instead of restating.
 - Map files before tasks. File boundaries shape the plan.
-- Use vertical slices. Avoid horizontal phases like "build DB", "build API", "build UI"
-  unless the slice is purely infrastructure.
-- Each task should be independently verifiable.
-- For behavior changes, include TDD steps. Do not plan "write tests later".
-- Include exact commands where known.
-- Include expected failure and expected pass signals.
-- Include docs impact for domain, architecture, testing, security, and user-facing
-  behavior.
-- Include commit/stack strategy, but do not authorize commit, push, PR, or stack
-  operations unless the user or project-local instructions already approved them.
-- Default review per implemented task: `spec-compliance-review` → `code-quality-review`.
-  Plan only the *additional* reviews relevant to the task — `security-review` when the
-  task touches a security surface, `second-review` when its Required / Strongly Consider
-  rules apply.
+- Vertical slices. Avoid horizontal phases ("build DB", "build API", "build UI") unless slice is purely infrastructure.
+- Each task independently verifiable.
+- Behavior changes → TDD steps. No "write tests later".
+- Exact commands where known.
+- Expected failure and expected pass signals.
+- Docs impact for domain, architecture, testing, security, user-facing behavior.
+- Commit/stack strategy included, but do not authorize commit/push/PR/stack unless user or project-local instructions approved.
+- Default per-task review: `spec-compliance-review` → `code-quality-review`. Plan only *additional* reviews — `security-review` when security surface touched, `second-review` when its Required / Strongly Consider rules apply.
 
 ## File Size Planning
 
-Apply the file/function size thresholds defined in `code-quality-review` (File And
-Complexity Thresholds). When a touched file is at or near the 300/600 threshold, the plan
-must include one of: scoped extraction before feature work, an explicitly documented
-exception, or a narrow edit with a follow-up refactor issue.
+Apply file/function size thresholds from `code-quality-review` (File And Complexity Thresholds). When a touched file is at/near 300/600 threshold, plan must include one of: scoped extraction before feature work, documented exception, or narrow edit + follow-up refactor issue.
 
 ## Self-Review
 
-Before presenting the plan, walk this checklist yourself. Plan correctness is owned
-here, then re-verified by `spec-compliance-review` + `code-quality-review` after
-implementation.
+Walk this checklist before presenting. Plan correctness owned here, re-verified by `spec-compliance-review` + `code-quality-review` after implementation.
 
 ### Plan Hygiene
 
 - Every acceptance requirement maps to a task or explicit non-goal.
-- Every task has exact verification commands and expected RED / GREEN signals for TDD
-  steps.
+- Every task has exact verification commands and expected RED / GREEN signals for TDD steps.
 - No placeholder language ("TBD", "later", "appropriate error handling").
 - New identifier names match `CONTEXT.md`.
-- The plan does not copy large sections from the acceptance artifact — it links.
-- A human can inspect the plan without chat history.
+- Plan does not copy large sections from acceptance artifact — links.
+- Human can inspect plan without chat history.
 
 ### Architecture Soundness (SOLID upstream check)
 
-When the plan touches more than glue / CRUD code:
+When plan touches more than glue / CRUD code:
 
-- **SRP**: each file in the File Responsibility Map has one primary reason to change. If
-  a file is listed for two unrelated concerns, split or revisit.
-- **DIP**: domain or application code in the plan does not depend on framework, ORM,
-  HTTP client, or filesystem types. If it must, name the port/adapter explicitly.
-- **Dependency direction**: imports flow inward (UI / infra → application → domain). Plan
-  does not introduce a domain file that imports an infrastructure file.
-- **File-size impact**: estimate per touched file. If a file already at or near the 300 /
-  600-line threshold (see `code-quality-review` File And Complexity Thresholds), the plan
-  includes scoped extraction, a documented exception, or a follow-up refactor task.
-- **Speculative abstraction**: the plan does not introduce ports, interfaces, factories,
-  or strategy patterns for variation that does not yet exist.
-- **Cross-cutting concerns**: logging, auth, persistence, caching are placed at consistent
-  boundaries, not sprinkled across domain code.
+- **SRP**: each file in File Responsibility Map has one primary reason to change. Two unrelated concerns → split or revisit.
+- **DIP**: domain / application code does not depend on framework, ORM, HTTP client, filesystem types. If it must, name port/adapter explicitly.
+- **Dependency direction**: imports flow inward (UI / infra → application → domain). No domain file importing infrastructure.
+- **File-size impact**: estimate per touched file. At/near 300/600 threshold → scoped extraction, documented exception, or follow-up refactor task.
+- **Speculative abstraction**: no ports, interfaces, factories, strategy patterns for variation that does not yet exist.
+- **Cross-cutting concerns**: logging, auth, persistence, caching at consistent boundaries, not sprinkled across domain code.
 
-For glue, config, docs, or scaffold-only plans, mark this section `N/A — non-architectural
-change` and skip.
+Glue, config, docs, scaffold-only: mark `N/A — non-architectural change` and skip.
 
 ### Domain Alignment
 
-Same checks as `write-spec` Self-Review Domain Alignment apply here when the plan touches
-domain code. Do not re-list invariants resolved in the spec; do check the plan respects
-them.
+Same checks as `write-spec` Self-Review Domain Alignment when plan touches domain code. Do not re-list invariants resolved in spec; check plan respects them.
 
 ### Independent Review
 
-Two options when the author wants a second pair of eyes:
+Two options for a second pair of eyes:
 
-- **`plan-document-reviewer-prompt.md`** (in this directory) — dispatch a same-host
-  subagent that re-reads the plan, acceptance artifact, and project docs
-  independently. Use when:
+- **`plan-document-reviewer-prompt.md`** (this dir) — same-host subagent re-reads plan, acceptance artifact, project docs independently. Use when:
   - Plan crosses module boundaries or changes dependency direction.
   - Many tasks or large file responsibility map.
   - High-Risk Surface (see `second-review`) touched.
-  - Self-Review passed but the author is uncertain about file mapping or
-    verification commands.
-- **`second-review`** (Codex by default) — different-model, fully-independent
-  double-check. Required when the plan touches a High-Risk Surface; otherwise
-  optional. Heavier than the same-host reviewer.
+  - Self-Review passed but uncertain about file mapping or verification commands.
+- **`second-review`** (Codex by default) — different-model, fully-independent double-check. Required for High-Risk Surface; otherwise optional. Heavier than same-host reviewer.
 
-Neither is mandatory — Self-Review alone is the default. Pick the one (or both)
-whose value justifies the time.
+Neither mandatory — Self-Review alone is default. Pick the one (or both) whose value justifies the time.
 
-Otherwise, the next gates are `spec-compliance-review` and `code-quality-review` after
-each implemented slice.
+Otherwise next gates: `spec-compliance-review` and `code-quality-review` after each implemented slice.
 
 ## Output
-
-Report:
 
 - Plan path
 - Slice count
 - Highest-risk files
 - Required reviews
 - Recommended next command
-- One next-phase question, such as whether to start the approved first slice
+- One next-phase question (e.g. start approved first slice?)

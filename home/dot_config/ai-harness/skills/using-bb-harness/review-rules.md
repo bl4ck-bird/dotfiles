@@ -1,11 +1,10 @@
 # Review Rules
 
-Harness-wide SSOT for **how reviews iterate, when they stop, and what they may
-recommend**. All review skills (`spec-compliance-review`, `code-quality-review`,
-`security-review`, `second-review`) and `receiving-review` follow these rules.
+Harness-wide SSOT for **how reviews iterate, when they stop, and what they may recommend**.
+All review skills (`spec-compliance-review`, `code-quality-review`, `security-review`,
+`second-review`) and `receiving-review` follow these rules.
 
-For severity classification of individual findings, see `severity-definitions.md` in
-this directory.
+Severity classification: see `severity-definitions.md` in this directory.
 
 ## Review Iteration Pattern
 
@@ -15,126 +14,107 @@ For each review channel (spec-compliance, code-quality, security, second):
 2. **Run the review**.
 3. **Act on the result**:
    - **`spec-compliance-review`** — binary:
-     - ✅ Spec compliant → proceed to the next channel.
-     - ❌ Issues found → implementer applies fixes via `receiving-review`, re-run
-       this review.
+     - ✅ Spec compliant → next channel.
+     - ❌ Issues found → implementer applies fixes via `receiving-review`, re-run.
    - **`code-quality-review` / `security-review` / `second-review`** — three states:
-     - **Ready to merge: Yes** → proceed to the next channel or to `ship-check`.
-     - **Ready to merge: With fixes** → implementer applies Critical / Important
-       findings via `receiving-review`, re-run this review.
-     - **Ready to merge: No** → plan or acceptance needs revision. Escalate to the
-       user; do not loop on review-fix.
-4. **Hard stop after 2 cycles** in the same review channel without convergence.
-   - Do not run a third cycle automatically.
+     - **Yes** → next channel or `ship-check`.
+     - **With fixes** → implementer applies Critical/Important via `receiving-review`,
+       re-run.
+     - **No** → plan or acceptance needs revision. Escalate to user; do not loop.
+4. **Hard stop after 2 cycles** in the same channel without convergence.
+   - Do not run cycle 3 automatically.
    - Summarize unresolved findings.
-   - Ask the user to choose: reduce scope, accept the current state, or revise the
-     artifact.
-   - Findings introduced in cycle 2 that were not in cycle 1 must be labeled
-     `introduced-in-cycle-2` with a reason. This is the signal that the *review
-     scope* is expanding rather than the *artifact* failing.
+   - User chooses: reduce scope, accept current state, or revise artifact.
+   - Findings introduced in cycle 2 not in cycle 1 must be labeled `introduced-in-cycle-2`
+     with reason — signals review scope expanding rather than artifact failing.
 
-Minor findings do not block. List them but do not require tracking.
+Minor findings do not block. List but do not require tracking.
 
 ## Review Result Contract
 
-All review skills use this gate. Authoring skills must apply it when reading review
-results.
+All review skills use this gate. Vocabulary: **`Ready to merge?`** with three answers:
 
-The vocabulary is **`Ready to merge?`** with three answers:
+- **Yes** — no Critical or Important remain. Minor may be listed; tracking encouraged not
+  required.
+- **With fixes** — Critical/Important remain that the implementer can apply directly. Fix via
+  `receiving-review`; reviewer re-runs on changed diff.
+- **No** — fundamental problem requires plan/acceptance revision, not just code. Escalate to
+  user; do not loop.
 
-- **Yes** — no Critical or Important findings remain. Minor findings may be listed;
-  tracking them as plan tasks or accepted-risk notes is encouraged but not required.
-- **With fixes** — Critical or Important findings remain that the implementer can
-  apply directly. Implementer fixes via `receiving-review`; reviewer re-runs on the
-  changed diff.
-- **No** — fundamental problem requires the plan or acceptance artifact to be
-  revised, not just the code. Escalate to the user; do not loop on review-fix.
+`spec-compliance-review` is binary: ✅ → `Yes`, ❌ → `With fixes`.
 
-`spec-compliance-review` uses a binary form of the same gate: ✅ Spec compliant maps
-to `Ready to merge: Yes`, ❌ Issues found maps to `Ready to merge: With fixes`.
-
-**Hard stop after 2 cycles** — see Review Iteration Pattern above. After two
-cycles in the same channel without convergence, the result becomes effectively
-`No` until the user chooses a path (reduce scope, accept current state, revise
-artifact).
+**Hard stop after 2 cycles** — see above. After two cycles without convergence the result is
+effectively `No` until the user picks a path.
 
 ## Review Chain Depth Cap
 
 A focused review may automatically recommend **at most one** follow-on review.
-Examples:
 
-- `code-quality-review` recommends `security-review` because the diff touches auth →
-  allowed, one follow-on.
-- `code-quality-review` recommends `security-review` *and* `second-review` →
-  pick one automatic, name the other as a recommendation requiring user
-  confirmation.
+- `code-quality-review` recommends `security-review` (auth touched) → allowed.
+- `code-quality-review` recommends `security-review` *and* `second-review` → pick one
+  automatic, name the other as a recommendation requiring user confirmation.
 
-A second hop (e.g., the auto-recommended `security-review` then recommends another
-review) **requires user confirmation**. This stops chains from inflating into
-"review of review of review" loops on small to medium work.
+A second hop (auto `security-review` then recommends another) **requires user confirmation**.
+Stops chains from inflating into "review of review of review" loops.
 
-**Exemption**: `second-review` is exempt from the cap when its Required When
-Available criteria are met (High-Risk Surface, explicit double-check request, or
-boundary / dependency-direction change — see `second-review`).
+**Exemption**: `second-review` is exempt from the cap when its Required When Available
+criteria are met (High-Risk Surface, explicit double-check, boundary/dependency-direction
+change — see `second-review`).
 
 ## Review Scope Guard
 
-Review findings must stay inside the approved acceptance artifact, plan, and touched
-surface.
+Findings stay inside the approved acceptance artifact, plan, and touched surface.
 
-- Do not propose new product behavior, broad rewrites, new dependencies, new
-  storage / API shape, or unrelated cleanup as required fixes.
-- If a real issue is outside approved scope, classify it as **Minor** unless it is a
-  **Critical** defect in the touched path (per `severity-definitions.md`
-  Untouched-Code Rule).
-- A required fix may expand scope only with explicit user approval or an
-  accepted-risk record updated in the plan.
-- "Could be better organized" is not a finding. "This diff adds a reason-to-change
-  that conflicts with existing responsibility at `file:line`" is a finding.
+- Do not propose new product behavior, broad rewrites, new deps, new storage/API shape, or
+  unrelated cleanup as required fixes.
+- Real issue outside approved scope → **Minor** unless it is a **Critical** defect in the
+  touched path (per `severity-definitions.md` Untouched-Code Rule).
+- A required fix may expand scope only with explicit user approval or an accepted-risk record
+  updated in the plan.
+- "Could be better organized" is not a finding. "This diff adds a reason-to-change that
+  conflicts with existing responsibility at `file:line`" is a finding.
 - YAGNI applies to reviewers too. Speculative future-proofing is Minor at best.
-- Do not recommend large rewrites unless the current design blocks the requested
-  work. Prefer small refactor slices that keep tests green.
+- Do not recommend large rewrites unless the current design blocks the requested work. Prefer
+  small refactor slices that keep tests green.
 
 ## When Review Says "Plan Needs Revision"
 
-A `Ready to merge: No` result is not a defeat — it is the system working. The
-authoring skill (`write-spec` / `write-plan`) is the right place to revise. Do not
-fight the result with cycle 2 fixes.
+A `No` result is the system working, not defeat. The authoring skill (`write-spec` /
+`write-plan`) is the right place to revise. Do not fight with cycle-2 fixes.
 
-Signs the plan really does need revision:
+Signs the plan really needs revision:
 
-- The acceptance criterion cannot be satisfied with the planned file structure.
-- The plan assumes an architecture decision that conflicts with `docs/ARCHITECTURE.md`.
-- Implementing the plan requires a domain change not captured in `CONTEXT.md` /
-  `docs/DOMAIN_MODEL.md`.
-- Two slices in the plan write the same file and they cannot run in either order.
+- Acceptance criterion cannot be satisfied with planned file structure.
+- Plan assumes an architecture decision that conflicts with `docs/ARCHITECTURE.md`.
+- Implementation requires a domain change not in `CONTEXT.md` / `docs/DOMAIN_MODEL.md`.
+- Two slices write the same file and cannot run in either order.
 
-Escalate, revise the plan, restart from the affected slice. The completed earlier
-slices stay completed (their reviews already passed).
+Escalate, revise the plan, restart from the affected slice. Completed earlier slices stay
+completed (their reviews already passed).
 
 ## Receiving Review Feedback
 
-Once a reviewer returns findings, the next agent action goes through `receiving-review`
-before applying any fix:
+Once a reviewer returns findings, the next action goes through `receiving-review` before
+applying any fix:
 
 - Read all findings first; do not react.
 - Restate each finding's technical requirement.
-- Verify against the codebase / acceptance artifact.
+- Verify against codebase / acceptance artifact.
 - Push back with technical reasoning when wrong.
 - Apply one item at a time, running verification after each (per
   `verification-before-completion`).
 
-`receiving-review` SKILL.md owns the full procedure. This file only states the
-ordering: review returns → `receiving-review` → fix → re-run review.
+`receiving-review` SKILL.md owns the full procedure. This file only states the ordering:
+review returns → `receiving-review` → fix → re-run review.
 
 ## Cross-Reference
 
 Callers of this file:
 
-- `using-bb-harness` SKILL.md links here for the full rules.
-- Each review skill quotes the iteration rule and the scope guard.
-- `subagent-driven-development` and `executing-plans-inline` use the Hard Stop After
-  2 Cycles in their loop.
+- `using-bb-harness` SKILL.md links here.
+- Each review skill quotes the iteration rule and scope guard.
+- `subagent-driven-development` and `executing-plans-inline` use Hard Stop After 2 Cycles in
+  their loop.
 - `claude-agents/*-reviewer.md` instructs reviewers to apply the scope guard.
 
 If you change a rule here, audit those callers in the same change.

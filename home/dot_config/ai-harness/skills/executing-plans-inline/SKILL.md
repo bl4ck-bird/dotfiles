@@ -5,55 +5,42 @@ description: Use when executing an approved implementation plan in the main agen
 
 # Executing Plans Inline
 
-Execute an approved plan task by task in the **main agent session**, with the same
-review gates as `subagent-driven-development` but run as skill invocations rather than
-fresh subagent dispatches.
+Execute approved plan task by task in **main agent session**, same review gates as `subagent-driven-development` but as skill invocations rather than fresh subagent dispatches.
 
-This skill is the fallback. Prefer `subagent-driven-development` whenever the host can
-dispatch subagents reliably — fresh context per task is worth the overhead.
+Fallback skill. Prefer `subagent-driven-development` when host can dispatch subagents reliably — fresh context per task is worth the overhead.
 
 ## When To Use This Skill Instead Of Subagent-Driven
 
-Use `executing-plans-inline` when **any** of the following:
+Use when **any**:
 
-- The host environment does not support subagent dispatch (no Task tool, no
-  `general-purpose` agent type, no in-tool subagent dispatcher).
-- The plan has 1-3 small tasks and the subagent dispatch overhead clearly exceeds the
-  benefit of fresh context per task.
-- The user explicitly asked to keep execution in the main session.
-- The work needs the main agent to retain visibility into a long-running interactive
-  state (a dev server, a watched test runner, a REPL) across multiple tasks.
+- Host does not support subagent dispatch (no Task tool, no `general-purpose` agent type, no in-tool dispatcher).
+- Plan has 1-3 small tasks; subagent dispatch overhead clearly exceeds fresh-context benefit.
+- User explicitly asked to keep execution in main session.
+- Work needs main agent visibility into long-running interactive state (dev server, watched test runner, REPL) across tasks.
 
 Otherwise: `subagent-driven-development`.
 
 ## Cost Of Inline Mode
 
-- Context accumulates across tasks. After ~3-4 tasks, the controller has to re-read
-  earlier files and reviews to stay accurate.
-- Self-review across tasks gets weaker — the same agent that wrote task N is now
-  reviewing it. `spec-compliance-review` and `code-quality-review` remain mandatory,
-  but their effectiveness depends on the main agent treating its own work skeptically.
-- Worker / reviewer anti-pattern containment is weaker. Apply `receiving-review`
-  strictly.
+- Context accumulates. After ~3-4 tasks, controller must re-read earlier files/reviews.
+- Self-review weakens — same agent that wrote task N reviews it. `spec-compliance-review` and `code-quality-review` remain mandatory; effectiveness depends on treating own work skeptically.
+- Worker/reviewer anti-pattern containment weaker. Apply `receiving-review` strictly.
 
-If any of these costs become a problem mid-plan, switch to
-`subagent-driven-development` for the remaining tasks (the plan and acceptance
-artifact already exist, so the switch is cheap).
+If costs become a problem mid-plan, switch to `subagent-driven-development` for remaining tasks (plan + acceptance artifact already exist; switch is cheap).
 
 ## Preconditions
 
 Same as `subagent-driven-development`:
 
-- Acceptance artifact with acceptance criteria.
-- Implementation plan with file responsibility mapping and Plan Self-Review completed.
+- Acceptance artifact with criteria.
+- Implementation plan with file responsibility mapping + Plan Self-Review completed.
 - Core docs read.
 - Conditional docs read when relevant.
-- The next task is small enough to complete and verify in one pass.
+- Next task small enough to complete and verify in one pass.
 
 ## Workspace Isolation
 
-Use `using-git-worktrees` to set up an isolated workspace, the same way
-`subagent-driven-development` does. The cleanup ownership rules are identical.
+Use `using-git-worktrees` to set up isolated workspace, same way as `subagent-driven-development`. Cleanup ownership rules identical.
 
 ## Execution Loop (Inline)
 
@@ -101,65 +88,49 @@ For each task in order:
 
 ## Continuous Execution
 
-Same as `subagent-driven-development`: do not pause between tasks. The user approved
-the plan; execute it. Stop only on the Required User Checkpoints below.
+Same as `subagent-driven-development`: do not pause between tasks. User approved plan; execute it. Stop only on Required User Checkpoints below.
 
 ## Required User Checkpoints
 
-Same as `subagent-driven-development` — four conditions only:
+Four conditions only:
 
 1. **BLOCKED** that cannot be resolved with more context.
-2. **Two-cycle review-fix without convergence** in the same task.
-3. **Plan does not authorize this action.** Actions inside the plan's approved scope,
-   files, dependencies, destructive operations, and review chain run without a
-   checkpoint.
-4. **High-Risk Surface** in the diff and `second-review` is not scheduled.
+2. **Two-cycle review-fix without convergence** in same task.
+3. **Plan does not authorize this action.** Actions inside plan's approved scope, files, dependencies, destructive operations, review chain run without checkpoint.
+4. **High-Risk Surface** in diff and `second-review` not scheduled.
 
-Items the plan already authorizes do NOT trigger a checkpoint.
+Items plan authorizes do NOT trigger checkpoint.
 
 ## Inline-Mode Self-Review Discipline
 
-Because the same agent wrote the code and is now reviewing it, apply these extra
-guards:
+Same agent wrote code, now reviews it — extra guards:
 
-- **Read the diff with fresh eyes**. `git diff` the changes; do not rely on memory of
-  what you typed.
-- **Re-read the acceptance criterion verbatim** for each criterion. Match each one to
-  evidence (test, command output, observation).
-- **Apply `verification-before-completion`** at every claim. "Tests pass" requires
-  fresh test output read in this response.
-- **Apply `receiving-review`** to your own review findings as if they came from a
-  reviewer — verify before fixing, push back when wrong, apply one item at a time.
-- **Re-check `using-bb-harness` Review Scope Guard** before declaring a finding. Is
-  this finding inside the diff and the approved scope? If not, demote to Minor or note
-  as out-of-scope.
+- **Read diff with fresh eyes**. `git diff`; don't rely on memory.
+- **Re-read acceptance criterion verbatim** per criterion. Match to evidence (test, command output, observation).
+- **Apply `verification-before-completion`** at every claim. "Tests pass" → fresh test output read in this response.
+- **Apply `receiving-review`** to own findings as if from reviewer — verify before fixing, push back when wrong, one item at a time.
+- **Re-check `using-bb-harness` Review Scope Guard** before declaring a finding. Inside diff and approved scope? If not, demote to Minor or note out-of-scope.
 
 ## Switching To Subagent-Driven Mid-Plan
 
-If inline mode becomes painful (context bloat, weakening review quality), switch:
+Inline mode painful (context bloat, weakening review quality):
 
-1. Write a handoff in `docs/reviews/` summarizing completed tasks, decisions, open
-   risks, and the next task.
-2. Hand control to `subagent-driven-development` for the remaining tasks. The plan and
-   acceptance artifact already capture the full work; the switch costs only one
-   handoff write.
+1. Write handoff in `docs/reviews/` — completed tasks, decisions, open risks, next task.
+2. Hand control to `subagent-driven-development` for remaining tasks. Plan + acceptance artifact already capture full work; switch costs one handoff write.
 
-This is preferable to continuing inline when self-review is no longer trustworthy.
+Preferable to continuing inline when self-review is no longer trustworthy.
 
 ## Worker / Reviewer Anti-Patterns
 
-Most of `subagent-driven-development`'s anti-patterns still apply. The ones unique to
-inline mode:
+Most of `subagent-driven-development`'s anti-patterns apply. Unique to inline:
 
-- **Treating self-review as adequate without inline-mode discipline** above. Self
-  review is not free in inline mode — it requires explicit re-reading.
-- **Carrying assumptions from task N into task N+1**. Each task starts by re-reading
-  its acceptance criteria, not by remembering them.
+- **Treating self-review as adequate without inline-mode discipline** above. Self-review not free in inline mode — requires explicit re-reading.
+- **Carrying assumptions from task N into N+1**. Each task starts by re-reading its acceptance criteria, not remembering.
 - **Mocking the review** ("I know this is fine"). Run the gate. Read the output.
 
 ## Output
 
-After each task, report:
+After each task:
 
 - Task completed.
 - Files changed.
@@ -168,5 +139,4 @@ After each task, report:
 - Docs updated or intentionally unchanged.
 - Next task.
 
-If switching to `subagent-driven-development`, report the switch reason and the
-handoff path.
+Switching to `subagent-driven-development` → report switch reason and handoff path.

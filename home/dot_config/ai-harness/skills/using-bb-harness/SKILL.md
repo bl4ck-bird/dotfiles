@@ -5,61 +5,42 @@ description: Use when starting any session before non-trivial work — checks th
 
 # Using BB Harness
 
-Universal entry point. Invoke at every session start. If the repo references the BB
-Harness, route to the right phase. If not, this skill self-disables with a one-line
-note and the agent proceeds with standard behavior.
+Universal entry point. Invoke at every session start. If repo references BB Harness, route to right phase. If not, self-disable in one line; agent proceeds with standard behavior.
 
 ## Bootstrap Rule
 
-At the start of any session, before non-trivial work:
+Session start, before non-trivial work:
 
-1. Check the repo root for BB Harness markers:
-   - `AGENTS.md`, `CLAUDE.md`, or `docs/AGENT_WORKFLOW.md` that **mentions BB Harness
-     or uses BB skill names** (`using-bb-harness`, `subagent-driven-development`,
-     `code-quality-review`, etc.).
-2. **If markers present** — read the nearest `AGENTS.md` or `CLAUDE.md`, then proceed
-   to Start (below) or invoke the directly matching skill when the task obviously
-   maps to one (e.g., `bug-diagnosis` for a bug, `test-driven-development` for a
-   small behavior change).
-3. **If markers absent** — report once: "BB Harness not in this repo. Proceeding with
-   standard agent behavior." Skip the rest of this skill. Do not force BB workflow
-   on projects that did not adopt it.
-4. Trivial questions and pure-conversation replies may skip the bootstrap check
-   entirely.
+1. Check repo root for BB Harness markers:
+   - `AGENTS.md`, `CLAUDE.md`, or `docs/AGENT_WORKFLOW.md` that **mentions BB Harness or uses BB skill names** (`using-bb-harness`, `subagent-driven-development`, `code-quality-review`, etc.).
+2. **Markers present** — read nearest `AGENTS.md` / `CLAUDE.md`, then proceed to Start or invoke the directly matching skill (e.g. `bug-diagnosis` for a bug, `test-driven-development` for small behavior change).
+3. **Markers absent** — report once: "BB Harness not in this repo. Proceeding with standard agent behavior." Skip rest. Do not force BB workflow on non-adopters.
+4. Trivial questions and pure-conversation replies may skip bootstrap.
 
-This bootstrap is **cheap when BB is absent** (a single grep / file-existence check)
-and is the only reliable way to make sure BB-using repos get the right workflow
-without the user typing the skill name every session.
+Cheap when BB absent (single grep / file-existence check). Only reliable way to make BB repos get the right workflow without user typing skill name every session.
 
 ## Skill-First Rule
 
-- Start with `using-bb-harness` when current phase is unclear.
-- If the task directly matches a skill, use that skill instead of rephrasing its procedure
-  in chat.
-- Use the next relevant skill at each phase boundary.
-- Choose the smallest set of skills that materially protects the work.
-- If a relevant skill is skipped for a small / local task, state the reason briefly.
+- Start with `using-bb-harness` when current phase unclear.
+- Task matches a skill directly → use that skill, don't rephrase its procedure in chat.
+- Use next relevant skill at each phase boundary.
+- Smallest set of skills that materially protects the work.
+- If a relevant skill is skipped for small/local task, state reason briefly.
 
 ## Start
 
-1. Read the nearest `AGENTS.md` or `CLAUDE.md`.
-2. If present, read `CONTEXT.md`, `docs/CURRENT.md`, `docs/AGENT_WORKFLOW.md`, the active
-   acceptance artifact, plan, and recent review or handoff note.
-3. Check available skills for a direct match before choosing the execution path.
-4. Summarize only: current goal, workflow weight, missing decisions or artifacts, next safe
-   action.
+1. Read nearest `AGENTS.md` or `CLAUDE.md`.
+2. If present, read `CONTEXT.md`, `docs/CURRENT.md`, `docs/AGENT_WORKFLOW.md`, active acceptance artifact, plan, recent review or handoff note.
+3. Check available skills for direct match before choosing execution path.
+4. Summarize: current goal, workflow weight, missing decisions/artifacts, next safe action.
 
-If key context is missing, ask for it or propose a minimal recovery step. Do not invent
-product, domain, architecture, or safety decisions.
+If key context missing, ask or propose minimal recovery step. Do not invent product, domain, architecture, or safety decisions.
 
 ## Evidence Gate
 
-- Trivial edits: inspect the target file and adjacent context before editing.
-- Behavior, API, dependency, data, security, or infrastructure changes: trace execution
-  path, call sites, constraints, and regression surface first.
-- If the next action would change behavior, API / UX, naming, persistence, auth,
-  dependency, config, compatibility, product scope, or domain language outside an approved
-  plan, ask first.
+- Trivial edits: inspect target file + adjacent context before editing.
+- Behavior / API / dependency / data / security / infrastructure changes: trace execution path, call sites, constraints, regression surface first.
+- Next action would change behavior, API/UX, naming, persistence, auth, dependency, config, compatibility, product scope, domain language outside approved plan → ask first.
 
 ## Workflow Weight
 
@@ -72,26 +53,15 @@ product, domain, architecture, or safety decisions.
 
 ## Acceptance Artifact
 
-Non-trivial work needs a reviewed acceptance artifact (spec, PRD, issue, review finding, or
-approved task) before implementation. Use `write-spec` for new specs — its Self-Review
-section owns product clarity and domain alignment. The Acceptance Brief Fields (see
-`write-spec`) are the canonical field set.
+Non-trivial work needs reviewed acceptance artifact (spec, PRD, issue, review finding, approved task) before implementation. Use `write-spec` for new specs — its Self-Review owns product clarity and domain alignment. Acceptance Brief Fields (see `write-spec`) are canonical.
 
-- Use a full `docs/specs/` spec when product scope, domain language, public API,
-  data / storage, auth / security, deletion, sync, external integrations, or user workflow
-  is still being decided.
-- For an already-clear task, an issue / review finding / approved request can be enough
-  when it meets the canonical fields. If it only exists in chat, the plan must capture
-  them in an Approved Request Anchor.
-- Accepted-risk exceptions may skip a normal gate only with explicit user acceptance.
-  Record: skipped gate, reason, risk, compensating check, user acceptance,
-  follow-up / expiry.
+- Full `docs/specs/` spec: when product scope / domain language / public API / data / storage / auth / security / deletion / sync / external integrations / user workflow still being decided.
+- Already-clear task: issue / review finding / approved request enough when it meets canonical fields. Chat-only → plan must capture them in Approved Request Anchor.
+- Accepted-risk exceptions may skip a normal gate only with explicit user acceptance. Record: skipped gate, reason, risk, compensating check, user acceptance, follow-up/expiry.
 
 ## Review Channels
 
-The harness uses **five** review channels. The upstream ones (spec / plan correctness)
-live inside their authoring skills as Self-Review. Implementation-time reviews run as
-fresh subagents from `subagent-driven-development`.
+Harness uses **five** review channels. Upstream ones (spec/plan correctness) live in authoring skills as Self-Review. Implementation-time reviews run as fresh subagents from `subagent-driven-development`.
 
 | Channel | Owner | When |
 | --- | --- | --- |
@@ -107,46 +77,32 @@ fresh subagents from `subagent-driven-development`.
 
 ## Review Rules
 
-How reviews iterate, when they stop, what they may recommend, and severity
-definitions live in two companion files in this directory:
+Iteration, stop conditions, recommendations, severity definitions live in companion files:
 
-- `review-rules.md` — Review Iteration Pattern, Result Contract, Chain Depth Cap (1
-  automatic follow-on), Scope Guard, "plan needs revision" handoff, receiving-feedback
-  ordering. **Hard stop after 2 cycles** is here.
-- `severity-definitions.md` — Critical / Important / Minor with concrete examples,
-  Untouched-Code Rule, "do not promote" guidance.
+- `review-rules.md` — Review Iteration Pattern, Result Contract, Chain Depth Cap (1 automatic follow-on), Scope Guard, "plan needs revision" handoff, receiving-feedback ordering. **Hard stop after 2 cycles** here.
+- `severity-definitions.md` — Critical / Important / Minor with examples, Untouched-Code Rule, "do not promote" guidance.
 
-Other review skills and `claude-agents/*-reviewer.md` reference these companions as
-the SSOT. Do not duplicate the definitions in calling skills.
+Other review skills and `claude-agents/*-reviewer.md` reference these companions as SSOT. Do not duplicate.
 
-Quick recap (full rules in the companion files):
+Quick recap:
 
 - spec-compliance: binary ✅ / ❌.
 - code-quality / security / second: Ready to merge **Yes / With fixes / No**.
-- Hard stop after **2** review-fix cycles per channel — escalate to user, do not
-  auto-run a third cycle.
-- Findings outside the touched surface default to **Minor** unless the change makes
-  them unsafe.
-- At most **1** automatic follow-on review per channel; `second-review` is exempt
-  when its Required-When-Available criteria are met.
+- Hard stop after **2** review-fix cycles per channel — escalate, no auto third cycle.
+- Findings outside touched surface default to **Minor** unless change makes them unsafe.
+- At most **1** automatic follow-on review per channel; `second-review` exempt when Required-When-Available criteria met.
 
 ## Execution Model
 
 - Small / local behavior change: `test-driven-development` then `ship-check`.
-- Reviewed multi-task plan, host supports subagents: `subagent-driven-development` as
-  controller; each task runs in a fresh implementer subagent + `spec-compliance-review` +
-  `code-quality-review`.
-- Reviewed plan, host cannot dispatch subagents or plan has only 1-3 small tasks where
-  dispatch overhead is not worth it: `executing-plans-inline`. Same review gates, run as
-  skill invocations against the main agent's diff. Switch back to subagent-driven mid-plan
-  if self-review weakens.
-- Workspace isolation for any multi-task execution: `using-git-worktrees`.
-- The controller does not pause for confirmation between tasks unless a Required User
-  Checkpoint applies (see `subagent-driven-development`).
+- Reviewed multi-task plan, host supports subagents: `subagent-driven-development` as controller; each task = fresh implementer subagent + `spec-compliance-review` + `code-quality-review`.
+- Reviewed plan, host cannot dispatch subagents, or only 1-3 small tasks where dispatch overhead not worth it: `executing-plans-inline`. Same review gates as skill invocations against main agent's diff. Switch back to subagent-driven mid-plan if self-review weakens.
+- Workspace isolation for multi-task execution: `using-git-worktrees`.
+- Controller does not pause between tasks unless Required User Checkpoint applies (see `subagent-driven-development`).
 
 ## Routing
 
-Choose the next phase, not the entire lifecycle:
+Choose next phase, not entire lifecycle:
 
 | Situation | Next skill |
 | --- | --- |
@@ -177,45 +133,31 @@ Choose the next phase, not the entire lifecycle:
 
 After each phase:
 
-1. Record or update the durable artifact for that phase when work is non-trivial.
-2. Update `docs/CURRENT.md` only when active phase, acceptance artifact / source, plan,
-   blocker, completed slice, verification evidence, or next action materially changes.
-3. Run the narrowest useful verification or explain why none applies.
-4. Decide: continue to next skill, ask the user, clear context after handoff, or stop.
-5. Recommend one next phase. If two paths are equally valid, present at most one
-   alternative for confirmation.
-6. Do not advance when approval is required for git setup, dependency execution, hooks,
-   deletion, commit / stack actions, history rewrite, broad scope expansion, or unresolved
-   product / domain / architecture decisions.
+1. Record/update durable artifact for that phase when work non-trivial.
+2. Update `docs/CURRENT.md` only when active phase, acceptance artifact/source, plan, blocker, completed slice, verification evidence, or next action materially changes.
+3. Run narrowest useful verification or explain why none applies.
+4. Decide: continue, ask user, clear context after handoff, or stop.
+5. Recommend one next phase. Two paths equally valid → present at most one alternative.
+6. Do not advance when approval required for git setup, dependency execution, hooks, deletion, commit/stack actions, history rewrite, broad scope expansion, or unresolved product/domain/architecture decisions.
 
 ## Continuation
 
-After each phase, recommend exactly one next phase and ask a concise confirmation in the
-user's language (Korean default per global `AGENTS.md`). If the user already approved an
-end-to-end bounded goal, continue inside the approved scope and stop conditions instead of
-asking after every safe phase.
+After each phase, recommend exactly one next phase, ask concise confirmation in user's language (Korean default per global `AGENTS.md`). If user already approved end-to-end bounded goal, continue inside approved scope and stop conditions instead of asking after every safe phase.
 
 ## Parallel Work
 
-- Scope in the main agent first. Do not delegate before reading enough artifacts to split
-  the work clearly.
-- Use parallel tool calls for small independent reads or searches.
-- Use subagents for substantial independent tracks with distinct concerns and clear return
-  formats.
-- A single focused reviewer subagent is acceptable for a named review concern; exploratory
-  batches should usually have two or more independent tracks.
+- Scope in main agent first. Don't delegate before reading enough artifacts to split work clearly.
+- Parallel tool calls for small independent reads/searches.
+- Subagents for substantial independent tracks with distinct concerns and clear return formats.
+- Single focused reviewer subagent OK for named review concern; exploratory batches usually have 2+ independent tracks.
 
 ## Context Control
 
-- Load only the skill needed for the current phase.
-- Prefer artifact paths over chat summaries.
-- Write a handoff before clearing after discovery / spec, plan approval, several
-  implementation tasks, or review fixes.
-- New sessions resume from `AGENTS.md`, `CONTEXT.md`, `docs/CURRENT.md`,
-  `docs/AGENT_WORKFLOW.md`, active acceptance artifact / plan, recent reviews, and
-  relevant code.
+- Load only the skill needed for current phase.
+- Artifact paths over chat summaries.
+- Write handoff before clearing after discovery/spec, plan approval, several implementation tasks, or review fixes.
+- New sessions resume from `AGENTS.md`, `CONTEXT.md`, `docs/CURRENT.md`, `docs/AGENT_WORKFLOW.md`, active acceptance artifact/plan, recent reviews, relevant code.
 
 ## Output
 
-Return: context read, workflow weight, selected next skill, current and next recommended
-phase, required artifact or approval, next safe action.
+Return: context read, workflow weight, selected next skill, current and next recommended phase, required artifact or approval, next safe action.

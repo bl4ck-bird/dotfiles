@@ -5,18 +5,13 @@ description: Use when running an independent double-check (Codex by default) on 
 
 # Second Review
 
-Run an independent review that does not inherit the primary agent's context. The purpose is
-to **catch what self-review and the first reviewer missed** — same artifacts, fresh eyes,
-different model when possible.
-
-This is the harness's mechanism for "did the primary agent miss something?" It is not a
-rubber stamp on prior findings and it is not a re-run of `code-quality-review` by the same
-model.
+Independent review, fresh context, different model when possible. Purpose: **catch what
+self-review and the first reviewer missed**. Not a rubber stamp. Not a re-run of
+`code-quality-review` by the same model.
 
 ## High-Risk Surfaces (Canonical)
 
-This list is the harness-wide canonical definition. Other docs and skills reference it as
-"High-Risk Surfaces (see `second-review`)" instead of re-listing.
+Harness-wide canonical list. Other docs reference as "High-Risk Surfaces (see `second-review`)".
 
 - security
 - data-loss
@@ -28,74 +23,63 @@ This list is the harness-wide canonical definition. Other docs and skills refere
 
 ## Required When Available
 
-Use independent second review when any are true:
+Any of:
 
-- The change touches a High-Risk Surface.
-- The user explicitly asks for an independent double-check.
-- A primary review (`spec-compliance-review`, `code-quality-review`, `security-review`)
-  passed but the artifact crosses module boundaries the primary reviewer could not fully
-  inspect.
+- Change touches a High-Risk Surface.
+- User asks for independent double-check.
+- Primary review passed but artifact crosses module boundaries primary could not fully inspect.
 
 ## Strongly Consider
 
-Treat second review as **strongly recommended** (not automatic) only when **two or more** of
-the following triggers apply together, or one trigger touches a High-Risk Surface. A single
-trigger in isolation is **optional**, not strongly recommended.
+**Two or more** triggers, or one trigger on a High-Risk Surface. Single trigger = optional.
 
-Triggers:
-
-- Diff is large, multi-module, hard to inspect, or accepts a 300 / 600-line file risk.
+- Diff is large, multi-module, hard to inspect, or accepts a 300/600-line file risk.
 - Tests are weak, flaky, slow, expensive, or heavily mocked.
-- The primary agent is stuck or changed approach more than once.
-- Bounded automation is proposed for broad or user-facing work.
-- Product direction, MVP boundary, persistence, sync, concurrency, external integrations,
-  or broad architecture direction changes.
+- Primary agent stuck or changed approach more than once.
+- Bounded automation proposed for broad or user-facing work.
+- Product direction, MVP boundary, persistence, sync, concurrency, external integrations, or
+  broad architecture direction changes.
 
 ## Optional For Specs And Plans
 
-For specs and plans, `second-review` is optional unless the change meets the required
-criteria above. The author can request it from `write-spec` Self-Review or `write-plan`
-Self-Review when they want a second opinion before implementation.
+Optional unless required criteria met. Authors may request from `write-spec` or `write-plan`
+Self-Review.
 
 ## Procedure
 
-Prefer, in order:
+Prefer in order:
 
-1. The host agent's Codex integration when available (Claude Code Codex plugin, in-tool
-   Codex command, project-specific Codex helper).
-2. A separate clean Codex app session or Codex CLI in the same repo.
-3. A Claude subagent dispatched with the `second-reviewer` agent definition, *only* when
-   Codex is unavailable.
-4. Human / manual review using the same output format.
+1. Host agent's Codex integration (Claude Code Codex plugin, in-tool Codex command,
+   project-specific Codex helper).
+2. Separate clean Codex app session or Codex CLI in same repo.
+3. Claude subagent with `second-reviewer` agent definition — *only* when Codex unavailable.
+4. Human / manual review using same output format.
 
-Codex is the default; substitute another reviewer only when Codex is unavailable and
-record the fallback.
+Codex is default. Record any fallback.
 
-The reviewer must read artifacts, not only chat summaries:
+Reviewer reads artifacts, not chat:
 
 - `AGENTS.md`, `CONTEXT.md`, `docs/CURRENT.md`, `docs/AGENT_WORKFLOW.md`
-- Relevant acceptance artifact, plan, primary review records, durable decisions
+- Acceptance artifact, plan, primary review records, durable decisions
 - Changed files or diff
 - Test and verification evidence
 
 ## What The Independent Reviewer Looks For
 
-The independent reviewer is not duplicating `code-quality-review`. It focuses on:
+Not duplicating `code-quality-review`. Focus:
 
-- **Blind spots the primary reviewer shares with the primary author** (same model, same
-  framing, same skim path).
-- **Acceptance gaps** the primary review accepted without challenge.
-- **Architecture / boundary decisions** the primary review treated as given.
-- **Test gaps** where coverage looked present but the assertion was weak.
-- **Security / data-loss / money** paths where the primary review used "looks fine".
-- **Plan vs reality drift** the primary review did not check against the durable docs.
+- **Blind spots** primary reviewer shares with author (same model, framing, skim).
+- **Acceptance gaps** primary accepted without challenge.
+- **Architecture / boundary decisions** primary treated as given.
+- **Test gaps** — coverage present but assertion weak.
+- **Security / data-loss / money** paths where primary used "looks fine".
+- **Plan vs reality drift** primary did not check against durable docs.
 
-When the independent reviewer agrees with the primary review, say so directly and list any
-residual risk the primary review did not surface.
+Agreeing with primary? Say so directly. List residual risk primary did not surface.
 
 ## Severity And Result
 
-Use the same vocabulary as `code-quality-review`:
+Same vocabulary as `code-quality-review`:
 
 - **Critical (Must Fix)** — blocks shipping.
 - **Important (Should Fix)** — fix before next phase.
@@ -103,12 +87,12 @@ Use the same vocabulary as `code-quality-review`:
 
 Result: **Ready to merge: Yes / With fixes / No**.
 
-Stop after two cycles in the same phase if findings are still surfacing — escalate to the
-user. See `using-bb-harness` Review Iteration Pattern.
+Stop after two cycles in same phase if findings still surfacing — escalate. See
+`using-bb-harness` Review Iteration Pattern.
 
 ## Fallback Record
 
-If unavailable, record:
+If unavailable:
 
 ```text
 Second review: unavailable
@@ -118,12 +102,10 @@ Accepted risk: <what could be missed>
 User accepted proceeding: <yes/no>
 ```
 
-Do not approve Critical-risk work without explicit user acceptance when independent review
-is unavailable.
+Do not approve Critical-risk work without explicit user acceptance when independent review is
+unavailable.
 
 ## Output
-
-Lead with strengths (briefly), then findings, then result and double-check summary.
 
 ```text
 ## Strengths

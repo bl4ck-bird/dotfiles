@@ -1,43 +1,40 @@
 # Lefthook / Pre-Commit Hook Recipes
 
-Load this reference when:
+Load when:
 
-- The project uses `lefthook` (or another git-hook runner), **or**
-- The user is considering adopting one for dependency-audit / lint / typecheck
-  automation.
+- Project uses `lefthook` (or another git-hook runner), **or**
+- User is considering adopting one for dependency-audit/lint/typecheck automation.
 
-If the project does not use a hook runner and is not adopting one, skip this file.
+Otherwise skip.
 
 ## Principle
 
-The harness rule is **trigger automation by hook; judgment lives in skills.**
+**Trigger automation by hook; judgment lives in skills.**
 
-- Hook **triggers** language audits, lint, typecheck, focused tests, secret scans on
-  the right git event.
-- Skill **judgment** (alternatives, license, removal cost, architecture impact)
-  remains in `write-plan` Self-Review (for dependency adds) and `security-review`
-  (for high-risk deps).
+- Hook **triggers** language audits, lint, typecheck, focused tests, secret scans on the
+  right git event.
+- Skill **judgment** (alternatives, license, removal cost, architecture impact) stays in
+  `write-plan` Self-Review and `security-review`.
 
-A hook that runs `npm audit` and fails the commit is a trigger. The decision "do we
-accept the vulnerability, replace the dependency, or proceed with documented risk" is
-a `write-plan` / `security-review` decision.
+A hook running `npm audit` and failing the commit is a trigger. "Do we accept the vuln,
+replace the dep, or proceed with documented risk?" is a `write-plan` / `security-review`
+decision.
 
 ## Propose, Do Not Install
 
-`project-scaffold` and skill agents may **propose** hook configuration. They do not
-install or execute hook runners without explicit user approval. The user owns:
+`project-scaffold` and skill agents **propose** hook config. They do not install or execute
+runners without explicit user approval. User owns:
 
-- Choosing the hook runner (`lefthook`, `husky`, `pre-commit`, `simple-git-hooks`).
-- Installing it (`brew install lefthook`, `npm install lefthook`, etc.).
-- Committing the configuration file.
+- Choosing the runner (`lefthook`, `husky`, `pre-commit`, `simple-git-hooks`).
+- Installing it (`brew install lefthook`, `npm install lefthook`).
+- Committing the config.
 
-Agents may write the configuration file if the user asks, but should not invoke the
-installer.
+Agents may write the config file on request but should not invoke the installer.
 
 ## Dependency Audit Hooks
 
-Trigger when manifest files change in staged commits. Run language-appropriate audit
-tools and fail the commit on findings the project rejects.
+Trigger when manifest files change in staged commits. Run language-appropriate audit; fail on
+findings the project rejects.
 
 | Manifest changed | Recommended audit command |
 | --- | --- |
@@ -68,9 +65,7 @@ pre-commit:
 
 ### Commit-msg rationale enforcement
 
-When a commit touches a manifest file, require the message body to mention dependency
-rationale (added / replaced / upgraded reason, alternatives considered when relevant).
-Lefthook can enforce this with a small commit-msg script.
+When a commit touches a manifest, require the message body to mention dependency rationale.
 
 ```yaml
 commit-msg:
@@ -86,60 +81,54 @@ commit-msg:
         fi
 ```
 
-The script's contract is a **trigger**: it forces the human to write the rationale.
-The rationale's **content** (alternatives evaluated, license compatibility, removal
-cost, project fit) belongs in the plan or a decision record.
+The script is a **trigger**: forces the human to write rationale. Content (alternatives,
+license, removal cost, fit) belongs in plan or decision record.
 
 ## Other Hook Targets
 
 | Stage | Recommended targets |
 | --- | --- |
-| Pre-commit | Lint, typecheck, focused / fast tests, secret scan (gitleaks, ggshield, trufflehog), formatter |
-| Commit-msg | Conventional commit format (when the project uses it), dependency rationale |
-| Pre-push | Full test suite (when fast enough), build verification, license check |
+| Pre-commit | Lint, typecheck, focused/fast tests, secret scan (gitleaks, ggshield, trufflehog), formatter |
+| Commit-msg | Conventional commit format, dependency rationale |
+| Pre-push | Full test suite (if fast enough), build verification, license check |
 | Post-merge | Re-run dependency audit on merged manifest changes |
 
 ### Pre-commit secret scan
 
-Three options. Pick one based on tolerance for setup:
-
 | Tool | Setup | Trade-off |
 | --- | --- | --- |
-| `gitleaks` | `brew install gitleaks` + config file | Fast, mature, false-positive prone without tuning |
+| `gitleaks` | `brew install gitleaks` + config | Fast, mature, FP-prone without tuning |
 | `trufflehog` | Container or binary | More signals, slower |
-| Plain regex grep | None | Brittle, fine for "no AWS keys" minimal protection |
+| Plain regex grep | None | Brittle, fine for minimal "no AWS keys" protection |
 
 ### Pre-push full suite
 
-Pre-push is the right stage for the full test suite when it takes more than ~30
-seconds. Pre-commit should stay fast (< 10 seconds for staged-file-only checks) so
-developers do not bypass it with `--no-verify`.
+Right stage when the suite > ~30 s. Pre-commit should stay fast (< 10 s for staged-file
+checks) so devs do not bypass with `--no-verify`.
 
 ## What Lefthook Cannot Enforce
 
 These belong in skills, not hooks:
 
-- Architecture decisions (DDD / SOLID / file-size) — `code-quality-review`.
+- Architecture (DDD / SOLID / file-size) — `code-quality-review`.
 - Acceptance compliance — `spec-compliance-review`.
 - Security judgment beyond audit output — `security-review`.
 - Independent double-check — `second-review`.
-- Plan / spec hygiene — `write-plan` / `write-spec` Self-Review.
+- Plan/spec hygiene — `write-plan` / `write-spec` Self-Review.
 
-A hook that runs `npm audit` does not know whether the project accepts a `moderate`
-vulnerability. That judgment is a `security-review` decision recorded in the plan.
+A hook running `npm audit` does not know if the project accepts a `moderate` vuln. That is a
+`security-review` decision recorded in the plan.
 
 ## Avoid
 
-- Hooks that mutate files (auto-format, auto-fix lint) without explicit user opt-in.
-  Surprise mutations cause merge conflicts and break "what I staged is what I
-  committed".
-- Hooks that bypass `verification-before-completion` semantics — a hook claiming
-  "tests pass" must run the test command and read the output, same as any skill.
-- Skipping hooks with `--no-verify` to finish faster. The harness rule is to fix the
-  underlying issue or report the blocker, not to bypass the gate.
+- Hooks mutating files (auto-format, auto-fix lint) without explicit opt-in. Surprise
+  mutations cause merge conflicts and break "what I staged is what I committed".
+- Hooks that bypass `verification-before-completion` semantics — a hook claiming "tests pass"
+  must run the command and read output.
+- Skipping hooks with `--no-verify` to finish faster. Fix the underlying issue or report the
+  blocker.
 
 ## Implementation File
 
-Hook implementation specifics belong in `lefthook.yml` (or the project's
-equivalent), not in this companion. This file is the catalog of *what* to hook and
-*why*. The *how* lives in the project's hook config.
+Hook specifics belong in `lefthook.yml` (or project equivalent), not in this companion. This
+file is the catalog of *what* and *why*; *how* lives in the project's hook config.

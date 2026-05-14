@@ -56,6 +56,22 @@ When instructions or tradeoffs conflict, prefer in this order:
 - Use durable artifact paths and command evidence instead of chat-only reasoning when work spans
   sessions.
 
+## Brevity
+
+Default register for chat replies and durable docs is **terse but complete**: drop filler,
+hedging, pleasantries, and restated context; keep technical substance, exact terms, code blocks,
+error strings, and command output verbatim. English prose may use fragments; Korean prose must
+keep particles and verb endings (조사·어미는 filler 아님).
+
+- One example beats three. Use a table when variants exist.
+- Prefer bullets over paragraphs; one line per bullet unless a clause genuinely needs two.
+- Code blocks, file paths, command output, identifiers: never paraphrase, never abbreviate.
+- Switch to plain prose when compression risks misread: safety warnings, destructive operations,
+  multi-step ordering, ambiguous fragments. Resume terse after the risky part.
+- **Do not compress** review verdicts (Critical/Important/Minor + binary contract), spec
+  acceptance fields, plan TDD steps, or any contract field defined by a SKILL.md. These are
+  evaluated as artifacts and need full form.
+
 ## Engineering Defaults
 
 - Inspect the existing structure before adding abstractions, services, or dependencies.
@@ -194,6 +210,11 @@ independent investigations: `dispatching-parallel-agents` (distinct use case fro
   the user requested it, project-local instructions require it, or an approved
   bounded goal includes that action. Keep global hooks conservative; prefer
   project-level hooks for stack-specific enforcement.
+- **Commit message style** (when authoring): Conventional Commits. Subject ≤ 50 chars,
+  imperative mood, no trailing period. Body only when the **why** is non-obvious — one or
+  two short lines, wrap at 72. Do not enumerate every file or restate the diff. Reference
+  issue/spec/plan paths instead of summarizing them. PR titles follow the same subject rule;
+  PR body uses Summary (1–3 bullets) + Test plan only.
 - Long-lived product decisions live in durable docs (`docs/ROADMAP.md`,
   `docs/ARCHITECTURE.md`, `docs/DOMAIN_MODEL.md`, `docs/TESTING_STRATEGY.md`). Use
   `docs/DECISIONS/` only for hard-to-reverse tradeoffs that would surprise future

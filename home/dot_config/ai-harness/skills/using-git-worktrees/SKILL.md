@@ -5,34 +5,28 @@ description: Use when starting a vertical slice that needs isolation from the cu
 
 # Using Git Worktrees
 
-Ensure work happens in an isolated workspace. Prefer host-native worktree tooling. Fall back
-to manual `git worktree add` only when no native tool exists. Never fight the harness.
+Ensure work happens in an isolated workspace. Prefer host-native worktree tooling. Fall back to manual `git worktree add` only when no native tool exists. Never fight the harness.
 
-This skill is the harness-wide SSOT for worktree creation, detection, and cleanup. Other
-skills (`subagent-driven-development` Workspace Isolation, `ship-check` Finishing Options) reference this
-file instead of duplicating the rules.
+Harness-wide SSOT for worktree creation, detection, and cleanup. Other skills (`subagent-driven-development` Workspace Isolation, `ship-check` Finishing Options) reference this file.
 
-**Core principle**: detect existing isolation first → use native tools → fall back to git.
-Owner-of-creation owns cleanup.
+**Core principle**: detect existing isolation first → use native tools → fall back to git. Owner-of-creation owns cleanup.
 
 ## When To Use
 
-- Before `subagent-driven-development` starts a multi-task plan that should not pollute the user's main
-  tree.
-- For broad refactors that cross module boundaries.
-- For any vertical slice the user wants reviewable as a branch / PR.
-- When `test-driven-development` is about to make non-trivial changes the user wants to keep
-  reversible.
+- Before `subagent-driven-development` starts a multi-task plan.
+- Broad refactors crossing module boundaries.
+- Any vertical slice the user wants reviewable as a branch / PR.
+- When `test-driven-development` is about to make non-trivial changes the user wants reversible.
 
 Skip when:
 
-- The host environment already created an isolated workspace (Step 0 detects this).
-- The change is Tiny / local per `using-bb-harness` Workflow Weight.
-- The user explicitly chose to work in place.
+- Host already created an isolated workspace (Step 0 detects this).
+- Change is Tiny / local per `using-bb-harness` Workflow Weight.
+- User explicitly chose to work in place.
 
 ## Step 0 — Detect Existing Isolation
 
-Before creating anything, check whether you are already in an isolated workspace.
+Check before creating anything.
 
 ```bash
 GIT_DIR=$(cd "$(git rev-parse --git-dir)" 2>/dev/null && pwd -P)
@@ -40,74 +34,61 @@ GIT_COMMON=$(cd "$(git rev-parse --git-common-dir)" 2>/dev/null && pwd -P)
 BRANCH=$(git branch --show-current)
 ```
 
-**Submodule guard**: `GIT_DIR != GIT_COMMON` is also true inside a git submodule. Verify you
-are not in a submodule before concluding "already in a worktree":
+**Submodule guard**: `GIT_DIR != GIT_COMMON` is also true in a submodule. Verify:
 
 ```bash
 # If this returns a path, you are in a submodule — treat as a normal repo.
 git rev-parse --show-superproject-working-tree 2>/dev/null
 ```
 
-- **If `GIT_DIR != GIT_COMMON` and not a submodule**: already in a linked worktree. Skip to
-  Step 3. Do not create another worktree.
-- **If `GIT_DIR == GIT_COMMON` or in a submodule**: normal repo checkout.
+- **`GIT_DIR != GIT_COMMON` and not a submodule**: already in a linked worktree. Skip to Step 3. Do not create another.
+- **`GIT_DIR == GIT_COMMON` or in submodule**: normal repo checkout.
 
 Report with branch state:
 
-- On a branch: "Already in isolated workspace at `<path>` on branch `<name>`."
-- Detached HEAD: "Already in isolated workspace at `<path>` (detached HEAD, externally
-  managed). Branch creation deferred to `ship-check` Finishing Options."
+- On branch: "Already in isolated workspace at `<path>` on branch `<name>`."
+- Detached HEAD: "Already in isolated workspace at `<path>` (detached HEAD, externally managed). Branch creation deferred to `ship-check` Finishing Options."
 
-If no isolation exists and the user has not declared a worktree preference, ask for consent
-before creating one. Honor a declared preference without asking. If the user declines,
-work in place and skip to Step 3.
+No isolation and no declared preference → ask consent before creating. Honor declared preference without asking. User declines → work in place, skip to Step 3.
 
 ## Step 1 — Create An Isolated Workspace
 
-Two mechanisms. Try them in this order.
+Two mechanisms. Try in order.
 
 ### 1a. Host-Native Worktree Tool (preferred)
 
-If the host agent provides a worktree facility (a Claude Code tool named `EnterWorktree`,
-a slash command like `/worktree`, a Codex helper, or a project-specific script), use it
-and skip to Step 3.
+If host provides a worktree facility (Claude Code `EnterWorktree` tool, `/worktree` slash command, Codex helper, project-specific script), use it and skip to Step 3.
 
-Native tools handle directory placement, branch creation, registration, and cleanup
-automatically. Using `git worktree add` when a native tool exists creates phantom state the
-host cannot see or manage, and breaks `ship-check` cleanup provenance.
+Native tools handle placement, branch creation, registration, and cleanup automatically. Using `git worktree add` when native tool exists creates phantom state, breaks `ship-check` cleanup provenance.
 
 ### 1b. Git Worktree Fallback
 
-Use this only when Step 1a does not apply.
+Use only when Step 1a does not apply.
 
 #### Directory Selection
 
-Follow this priority. Explicit user preference always wins over observed state.
+Priority. Explicit user preference always wins.
 
-1. **Declared preference** in `AGENTS.md`, `CLAUDE.md`, `docs/AGENT_WORKFLOW.md`, or chat
-   instructions. Use it without asking.
+1. **Declared preference** in `AGENTS.md`, `CLAUDE.md`, `docs/AGENT_WORKFLOW.md`, or chat. Use without asking.
 2. **Existing project-local directory**:
    ```bash
    ls -d .worktrees 2>/dev/null     # preferred (hidden)
    ls -d worktrees 2>/dev/null      # alternative
    ```
-   If both exist, `.worktrees` wins.
-3. **Project-local default**: `.worktrees/` at the project root.
+   Both exist → `.worktrees` wins.
+3. **Project-local default**: `.worktrees/` at project root.
 
-The BB Harness does **not** use a global worktree path (e.g.
-`~/.config/superpowers/worktrees/`). Project-local keeps the workspace discoverable by
-project-level tooling and lefthook hooks.
+BB Harness does **not** use a global worktree path (e.g. `~/.config/superpowers/worktrees/`). Project-local keeps the workspace discoverable by project tooling and lefthook hooks.
 
 #### Safety Verification (project-local only)
 
-Verify the directory is git-ignored before creating the worktree:
+Verify directory is git-ignored before creating:
 
 ```bash
 git check-ignore -q .worktrees 2>/dev/null || git check-ignore -q worktrees 2>/dev/null
 ```
 
-If not ignored, add to `.gitignore`, commit the change (small dedicated commit), then
-proceed. Skipping this risks committing worktree contents.
+Not ignored → add to `.gitignore`, commit (small dedicated commit), proceed. Skipping risks committing worktree contents.
 
 #### Create The Worktree
 
@@ -118,20 +99,15 @@ git worktree add "$path" -b "$BRANCH_NAME"
 cd "$path"
 ```
 
-**Sandbox fallback**: if `git worktree add` fails with a permission error, tell the user
-the sandbox blocked worktree creation and you are working in place instead. Then continue
-with Step 3 in the current directory.
+**Sandbox fallback**: `git worktree add` fails with permission error → tell user the sandbox blocked creation, working in place. Continue with Step 3 in current directory.
 
 ## Step 2 — (reserved)
 
-Step 2 in the upstream skill aligned project setup with worktree creation. In the BB
-Harness, dependency installation is user-managed by default
-(`project-scaffold` Defaults). Move directly to Step 3.
+Step 2 upstream aligned project setup with worktree creation. In BB Harness, dependency installation is user-managed by default (`project-scaffold` Defaults). Go to Step 3.
 
 ## Step 3 — Project Setup (User-Managed)
 
-Auto-detection of dependencies is allowed; *running* installs is not, unless the user
-explicitly authorized it for this session.
+Auto-detection allowed; *running* installs is not, unless user explicitly authorized this session.
 
 Suggest and assume:
 
@@ -143,13 +119,11 @@ Suggest and assume:
 [ -f go.mod ]         && echo "Suggested: go mod download"
 ```
 
-If the user already approved running setup commands for this session (e.g. in
-`subagent-driven-development` Workspace Isolation Baseline-first rule), run them.
+User already approved running setup commands for this session (e.g., `subagent-driven-development` Workspace Isolation Baseline-first rule) → run them.
 
 ## Step 4 — Verify Clean Baseline
 
-Run the project's narrowest meaningful test suite, type check, or lint to confirm the
-workspace starts clean:
+Run narrowest meaningful test suite, type check, or lint:
 
 ```bash
 # Use the project-appropriate command. Apply verification-before-completion —
@@ -157,9 +131,8 @@ workspace starts clean:
 npm test / cargo test / pytest -x / go test ./...
 ```
 
-- **Tests pass**: report ready.
-- **Tests fail**: distinguish pre-existing failures from regressions caused by worktree
-  creation. Ask the user before proceeding — do not silently start work on a red baseline.
+- **Pass**: report ready.
+- **Fail**: distinguish pre-existing from regression caused by worktree creation. Ask user before proceeding — never silently start on a red baseline.
 
 ### Report Format
 
@@ -172,14 +145,11 @@ Ready to: <next skill or action>
 
 ## Cleanup
 
-Worktree cleanup happens at `ship-check` Finishing Options (Merge or Discard). The rule:
+Cleanup happens at `ship-check` Finishing Options (Merge or Discard). Rules:
 
-- **Cleanup ownership**: only whoever created a worktree removes it. Worktrees created via
-  this skill are owned by this skill (and cleaned up by `ship-check`).
-- **Project-local provenance**: worktrees under `.worktrees/` or `worktrees/` (the paths
-  this skill creates) are owned by the BB Harness. Cleanup is allowed.
-- **Host-owned provenance**: worktrees outside those paths are owned by the host (native
-  tool or external agent). Do not remove them — the host owns their lifecycle.
+- **Cleanup ownership**: only the creator removes it. Worktrees created via this skill are owned by this skill (cleaned by `ship-check`).
+- **Project-local provenance**: `.worktrees/` or `worktrees/` paths (this skill's paths) are owned by BB Harness. Cleanup allowed.
+- **Host-owned provenance**: worktrees outside those paths are owned by the host (native tool or external agent). Do not remove — host owns lifecycle.
 
 Cleanup steps (from `ship-check`):
 
@@ -190,17 +160,15 @@ git worktree remove "$WORKTREE_PATH"
 git worktree prune
 ```
 
-Never run `git worktree remove` from inside the worktree being removed — it fails
-silently. Always `cd` to the main repo root first.
+Never run `git worktree remove` from inside the worktree being removed — silent fail. Always `cd` to main repo root first.
 
 Order for merge:
 
 1. Merge succeeds.
 2. Cleanup worktree.
-3. Delete the branch (`git branch -d`).
+3. Delete branch (`git branch -d`).
 
-Reversing this fails because `git branch -d` refuses while the worktree references the
-branch.
+Reverse fails — `git branch -d` refuses while worktree references the branch.
 
 ## Quick Reference
 
@@ -213,7 +181,7 @@ branch.
 | `.worktrees/` exists | Use it (verify ignored). |
 | `worktrees/` exists | Use it (verify ignored). |
 | Both exist | Use `.worktrees/`. |
-| Neither exists | Use declared preference, else default `.worktrees/`. |
+| Neither exists | Declared preference, else default `.worktrees/`. |
 | Directory not ignored | Add to `.gitignore` + commit, then proceed. |
 | Permission error on create | Sandbox fallback, work in place, report. |
 | Tests fail during baseline | Report, distinguish pre-existing from new, ask. |
@@ -221,17 +189,12 @@ branch.
 
 ## Common Mistakes
 
-- **Fighting the harness**: using `git worktree add` when a native tool exists. → Use the
-  native tool.
-- **Skipping Step 0**: creating a nested worktree inside an existing one. → Always detect
-  first.
-- **Skipping ignore verification**: worktree contents get tracked, polluting `git status`
-  in the main tree. → Always `git check-ignore` before creating.
-- **Running install without approval**: violates user-managed dependency rule. → Suggest;
-  do not execute.
-- **Cleaning up host-owned worktrees**: leaves the host with phantom state. → Only clean
-  up paths this skill created.
-- **Removing a worktree from inside it**: silent failure. → `cd` to main repo root first.
+- **Fighting the harness**: `git worktree add` when a native tool exists. → Use native.
+- **Skipping Step 0**: nested worktree inside existing one. → Always detect first.
+- **Skipping ignore verification**: worktree contents tracked, polluting `git status`. → Always `git check-ignore` first.
+- **Running install without approval**: violates user-managed dependency rule. → Suggest; do not execute.
+- **Cleaning up host-owned worktrees**: leaves host with phantom state. → Only clean paths this skill created.
+- **Removing worktree from inside it**: silent failure. → `cd` to main repo root first.
 
 ## Red Flags
 
@@ -239,8 +202,8 @@ Never:
 
 - Create a worktree when Step 0 detects existing isolation.
 - Use `git worktree add` when a native worktree tool is available.
-- Skip Step 1a by jumping straight to Step 1b.
-- Create a project-local worktree without verifying the directory is git-ignored.
+- Skip Step 1a by jumping to Step 1b.
+- Create a project-local worktree without verifying it is git-ignored.
 - Skip baseline test verification.
 - Proceed silently with failing baseline tests.
 - Run `git worktree remove` from inside the worktree being removed.
@@ -251,7 +214,6 @@ Always:
 - Run Step 0 detection first.
 - Prefer host-native tools over the git fallback.
 - Verify directory is ignored for project-local worktrees.
-- Read fresh baseline test output in this response (per
-  `verification-before-completion`).
+- Read fresh baseline test output in this response (per `verification-before-completion`).
 - Distinguish pre-existing failures from regressions.
 - Honor cleanup provenance.

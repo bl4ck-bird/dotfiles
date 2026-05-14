@@ -1,66 +1,59 @@
 # Test Pollution
 
-Load this reference when:
+Load when:
 
-- A test creates files, directories, database rows, or external state that survives
-  beyond the test.
-- The test suite leaves artifacts in the source tree (`.git`, `tmp/`, leaked
-  fixtures).
-- Tests pass in isolation but fail when run as a suite (or vice versa).
-- You suspect one test corrupts the environment for the next.
+- A test creates files, directories, DB rows, or external state that survives the test.
+- Suite leaves artifacts in the source tree (`.git`, `tmp/`, leaked fixtures).
+- Tests pass in isolation but fail in suite (or vice versa).
+- One test corrupts the environment for the next.
 
-If symptoms point elsewhere (deterministic logic bug, missing implementation), use
-the main `bug-diagnosis` workflow without this file.
+If symptoms point elsewhere (deterministic logic bug, missing impl), use main `bug-diagnosis`
+without this file.
 
 ## What This File Owns
 
-The "which test is polluting?" investigation pattern, plus the bisection tool that
-finds the polluter automatically.
-
-Defense against re-pollution after the fix lives in `defense-in-depth.md` (Layer 3
-environment guards).
+The "which test is polluting?" investigation + the bisection tool. Defense against
+re-pollution lives in `defense-in-depth.md` (Layer 3 environment guards).
 
 ## Symptoms
 
 | Symptom | Likely cause |
 | --- | --- |
-| `.git` appears in `packages/<x>/` after running tests | Test ran `git init` with empty / wrong `cwd` |
+| `.git` appears in `packages/<x>/` after tests | Test ran `git init` with empty/wrong `cwd` |
 | Random files in `tmp/`, `dist/`, project root | Test wrote outside its sandbox |
-| Database has unexpected rows after suite | Test seeded data without cleanup |
-| Test passes alone, fails in suite | Earlier test changed shared state |
-| Test fails alone, passes in suite | Earlier test set up the state this test expects (hidden coupling) |
+| Unexpected DB rows after suite | Test seeded without cleanup |
+| Passes alone, fails in suite | Earlier test changed shared state |
+| Fails alone, passes in suite | Earlier test sets up state this test expects (hidden coupling) |
 | CI passes, local fails (or vice versa) | Environment-specific leak |
 
-## The Investigation Process
+## Investigation Process
 
 ### 1. Identify The Pollution Signal
 
-Pick a specific, observable artifact:
+Pick a specific, observable artifact checkable with a single shell command:
 
-- A file path (`/tmp/leak.json`, `packages/core/.git`).
-- A database row (`SELECT * FROM sessions WHERE user_id = 'test-leak'`).
-- A process (`pgrep -f leaked-server`).
-- A network port (`lsof -iTCP:8080`).
+- File path (`/tmp/leak.json`, `packages/core/.git`).
+- DB row (`SELECT * FROM sessions WHERE user_id = 'test-leak'`).
+- Process (`pgrep -f leaked-server`).
+- Port (`lsof -iTCP:8080`).
 
-The signal must be checkable with a single shell command. "The tests are weird" is
-not a signal.
+"The tests are weird" is not a signal.
 
-### 2. Confirm The Repro Is Deterministic
+### 2. Confirm Deterministic Repro
 
 ```text
 1. Clean the signal: rm -rf <path> / DROP TABLE / kill <pid>.
 2. Run the suite.
 3. Check the signal. Does it appear?
-4. Repeat 1-3 once more. Same result?
-
-If the signal appears in step 3 but not always, raise the repro rate first:
-parallel test workers, slow network, smaller temp directory — the techniques in
-bug-diagnosis SKILL.md reproduction-loop step apply.
+4. Repeat once more. Same result?
 ```
+
+If non-deterministic, raise the repro rate first (parallel workers, slow network, smaller
+temp dir — `bug-diagnosis` reproduction-loop techniques).
 
 ### 3. Bisect To Find The Polluter
 
-Use `find-polluter.sh` in this directory:
+Use `find-polluter.sh`:
 
 ```bash
 # Default (npm test):
@@ -72,109 +65,91 @@ TEST_CMD="cargo test --"    ./find-polluter.sh 'target/leak'    'tests/*.rs'
 TEST_CMD="go test"          ./find-polluter.sh 'tmp/leak'       './...'
 ```
 
-The script runs each test file individually, checking the signal between runs. It
-stops at the first test that creates the signal.
+Runs each test file individually, checks the signal between runs, stops at the first
+polluter.
 
-If the script returns "no polluter found":
+If "no polluter found":
 
-- The pollution is created by **the combination** of tests (e.g., setup hook + a
-  later test). Run the full suite and watch the signal mid-run.
-- The pollution is created by a **shared fixture or global hook** (Vitest `setup.ts`,
-  Jest `globalSetup`, Pytest `conftest.py`, Rust `mod tests { fn setup() }`). Audit
-  those before suspecting individual tests.
-- Test runner caches mask the polluter. Disable parallelism / caching once:
+- Pollution is from a **combination** (setup hook + later test). Run full suite, watch signal
+  mid-run.
+- Pollution is from a **shared fixture / global hook** (Vitest `setup.ts`, Jest `globalSetup`,
+  Pytest `conftest.py`, Rust `mod tests { fn setup() }`). Audit those first.
+- Runner caches mask the polluter. Disable parallelism/caching once:
   `npm test -- --no-cache --runInBand`, `pytest -p no:cacheprovider`,
   `cargo test -- --test-threads=1`.
 
 ### 4. Find The Root Cause
 
-Once `find-polluter.sh` names the test, switch to `root-cause-tracing.md`:
+Switch to `root-cause-tracing.md`: read the test file, trace the call chain to the polluting
+operation, identify the original trigger (empty parameter, missing teardown, etc.).
 
-1. Read the test file.
-2. Trace the call chain from the test through to the polluting operation.
-3. Identify the original trigger (empty parameter, missing teardown, etc.).
+### 5. Fix At Root + Add Defense
 
-### 5. Fix At The Root + Add Defense
-
-After identifying the root cause:
-
-1. Fix at the source (see `root-cause-tracing.md` step "Fix At Source").
-2. Add validation layers via `defense-in-depth.md` so the same bug cannot reappear
-   through a different code path.
-3. Apply `verification-before-completion`: re-run `find-polluter.sh`. The script must
-   return "No polluter found".
+1. Fix at source (`root-cause-tracing.md` "Fix At Source").
+2. Add validation layers via `defense-in-depth.md` so the bug cannot reappear via another
+   path.
+3. Apply `verification-before-completion`: re-run `find-polluter.sh` → "No polluter found".
 
 ## Common Polluter Mechanisms
 
 ### Empty / Default cwd
 
 ```typescript
-// ❌ Bug
+// ❌ Bug — empty cwd → process.cwd() → source tree
 await execFileAsync('git', ['init'], { cwd: projectDir });  // projectDir = ''
-// Empty cwd → process.cwd() → source tree
 ```
 
-Fix: validate `cwd` at the public API boundary (`defense-in-depth.md` Layer 1).
-Environment guard: refuse `git init` outside `tmpdir` during tests
-(`defense-in-depth.md` Layer 3).
+Fix: validate `cwd` at the public API boundary (Layer 1). Environment guard: refuse `git
+init` outside `tmpdir` during tests (Layer 3).
 
-### Test accessed shared fixture before `beforeEach` / `beforeAll` ran
+### Fixture Accessed Before `beforeEach`
 
 ```typescript
 // ❌ Bug
-const ctx = setupTest();              // returns { tempDir: '' } before beforeEach
+const ctx = setupTest();              // returns { tempDir: '' }
 beforeEach(() => { ctx.tempDir = makeTempDir(); });
-
-test('thing', () => {
-  somethingThatNeeds(ctx.tempDir);    // first access uses '' → process.cwd()
-});
+test('thing', () => { somethingThatNeeds(ctx.tempDir); });  // first access uses ''
 ```
 
-Fix: convert the fixture to a getter that throws if accessed before initialization.
+Fix: convert fixture to a getter that throws if accessed before initialization.
 
-### Cleanup runs only on success
+### Cleanup Only On Success
 
 ```typescript
-// ❌ Bug
+// ❌ Bug — throw bypasses cleanup
 test('does thing', async () => {
   const session = await createSession();
-  await doRiskyThing(session);  // throws → cleanup never runs
+  await doRiskyThing(session);
   await cleanupSession(session);
 });
 ```
 
-Fix: `afterEach` / `try`-`finally` for cleanup, not inline.
+Fix: `afterEach` / `try`-`finally`, not inline.
 
-### External process spawned in test, never killed
+### External Process Spawned, Never Killed
 
 ```typescript
-// ❌ Bug
+// ❌ Bug — server still running after test
 const server = spawn('node', ['server.js']);
-// ...test body...
-// server still running after the test
 ```
 
-Fix: track the PID, kill in `afterEach`. Layer 3 guard: in CI, refuse to spawn long-
-running processes from tests without an explicit allowlist.
+Fix: track PID, kill in `afterEach`. Layer 3 guard: in CI, refuse to spawn long-running
+processes from tests without explicit allowlist.
 
-### Database rows seeded but not removed
+### DB Rows Seeded But Not Removed
 
-Fix: transactional tests (begin / rollback), or fixture-scoped cleanup. Layer 3
-guard: refuse non-test database connections from test runs.
+Fix: transactional tests (begin/rollback) or fixture-scoped cleanup. Layer 3 guard: refuse
+non-test DB connections from test runs.
 
 ## When Pollution Is Acceptable
 
-Some pollution is *load-bearing*: build artifacts in `target/` or `dist/`, coverage
-reports, log files. The signal is "did *unintended* state leak?" If `.git` showing
-up in `packages/core/` is fine for your project, ignore it; if it is not, fix it.
-
-The check for "unintended": is this in `.gitignore`? If yes, fine. If no, the
-pollution probably leaked.
+Some pollution is load-bearing: build artifacts in `target/`/`dist/`, coverage, logs. Signal
+is "did *unintended* state leak?" Check: is it in `.gitignore`? Yes → fine. No → leaked.
 
 ## Hand-Off
 
 After find-polluter + root-cause-tracing + defense-in-depth:
 
 1. Apply `verification-before-completion` — re-run `find-polluter.sh`.
-2. Return to `bug-diagnosis` SKILL.md workflow step 9-10 (verify, clean up temporary
-   instrumentation, update durable docs if the bug exposed a project-wide rule).
+2. Return to `bug-diagnosis` SKILL.md step 9-10 (verify, clean instrumentation, update
+   durable docs if the bug exposed a project-wide rule).
