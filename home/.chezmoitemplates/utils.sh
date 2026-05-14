@@ -59,11 +59,3 @@ homebrew_shellenv() {
         fi
     fi
 }
-homebrew_check() {
-    homebrew_shellenv
-
-    if ! command -v brew &> /dev/null; then
-        echo_color $COLOR_RED "Homebrew: Not found."
-        exit 1
-    fi
-}
