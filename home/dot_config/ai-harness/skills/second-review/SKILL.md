@@ -51,9 +51,11 @@ Self-Review.
 
 Prefer in order:
 
-1. Plugin-based invocation in the primary agent (e.g., Codex plugin in Claude Code).
+1. Plugin-based invocation in the primary agent — invoke an installed different-model reviewer in-process. Do **not** fall back to a same-model subagent here; that is option 3.
+   - **Claude Code**: invoke the Codex plugin. Use `/codex:adversarial-review` for High-Risk Surfaces or when challenging design choices; use `/codex:review` for a plain independent double-check. Pass the change scope (e.g., `--base <ref>`) explicitly and return Codex's output verbatim.
+   - **Other agents**: use whichever installed plugin or extension runs a different-model review in-process. If none exists, skip to option 2 — do not silently substitute a same-model reviewer subagent.
 2. Separate terminal running another agent's CLI on the same repo, with this skill as the guide.
-3. Human / manual review using the same output format.
+3. Human / manual review using the same output format. A same-model reviewer subagent counts as "manual review by the primary agent" — record it as a fallback per the Fallback Record block, not as a true independent review.
 
 Different-model reviewer is the goal. Record any fallback.
 
