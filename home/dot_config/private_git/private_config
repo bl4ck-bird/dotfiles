@@ -1,6 +1,6 @@
 [user]
-    name = {{ .name | quote }}
-    email = {{ .email | quote }}
+    name = "BL4CKBIRD"
+    email = "bl4ckbird@bl4ckbird.com"
 [alias]
     a = add
     ap = add -p
@@ -28,6 +28,7 @@
     excludesfile = ~/.config/git/ignore
     precomposeunicode = true
     autocrlf = input
+    symlinks = true
 [init]
     defaultBranch = main
 [pull]
