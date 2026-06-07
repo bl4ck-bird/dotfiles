@@ -23,6 +23,7 @@ brew:
       - starship
       - neovim
     dev:
+      - direnv
       - mise
       - gh
       - typos-cli
