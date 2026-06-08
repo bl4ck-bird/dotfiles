@@ -112,13 +112,44 @@ Harness principle: **trigger automation by hook; judgment lives in skills.** Hoo
 
 ## Defaults
 
-- `README.md` high-level, onboarding-friendly.
+- `README.md` high-level, onboarding-friendly. Cover what/why, tech stack, and how to get started
+  (prerequisites, build/run) — link to `ROADMAP.md` instead of inlining a long roadmap.
 - `docs/` is human-facing documentation only; agent workflow state lives in `.ai-harness/` and is gitignored (see Gitignore Policy).
 - Durable design rules in focused docs under `.ai-harness/`, not README.
 - Project instructions specific, short enough to read every session.
 - Don't copy global rules into project files unless project needs stricter version.
 - Mark scaffolded docs as `stub` until TODOs resolved. Agents may read stub docs for structure but must not treat TODO content as project truth.
 - Dependency installation is user-managed by default. Record suggested commands, package manager assumptions, unresolved choices instead of running installs.
+
+## Human-Facing vs Agent-Internal Separation
+
+Committed, human-facing artifacts (`README.md`, root `ROADMAP.md`, `LICENSE`, `docs/`) are read by
+contributors and users. They MUST NOT leak harness-internal vocabulary:
+
+- No slice/version IDs (`S0`, `S7`…), review labels (AFK/HITL, Risk High/Medium), severity terms,
+  or invariant codes (`I1`…). These live only under `.ai-harness/`.
+- No `.ai-harness/` paths, skill names, or "BB Harness"/agent-workflow references.
+- Describe milestones by user-visible capability ("real-time tile status"), not by execution
+  sequencing or internal slice order.
+
+Agent-internal artifacts (everything under `.ai-harness/`) may use the full harness vocabulary —
+they are gitignored and never shown to contributors. When authoring a human-facing file, **translate
+from** the internal docs; never copy slice tables, review labels, or invariant codes across the
+boundary. README dev section = prerequisites + how to build/run/use, not the agent workflow.
+
+## Roadmap: Two Homes
+
+A roadmap can live in two distinct files for two audiences — keep them from duplicating:
+
+- `.ai-harness/ROADMAP.md` — **internal** version/slice SSOT (slices, review labels, invariant
+  gates, diet tracking). Gitignored. Audience: agents. Part of the `product`+ profiles.
+- root `ROADMAP.md` — **optional, committed** human-facing milestone view: capability checklist
+  (`- [ ]`), MVP / later / non-goals, **no internal IDs**. Audience: contributors. Offer it when the
+  project wants a public roadmap (common OSS convention); it is a communication view, not a second
+  SSOT. README links to it rather than inlining.
+
+Not every project needs the public file. When it has one, the internal `.ai-harness/ROADMAP.md`
+stays the execution SSOT and the root file is regenerated from it by capability, never by slice ID.
 
 ## New Project Defaults
 
