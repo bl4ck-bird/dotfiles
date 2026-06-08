@@ -27,9 +27,9 @@ Inspect existing docs first. Ask only questions that remove real ambiguity.
 
 Create or update only artifacts justified by approved scaffold profile and project risk:
 
-- `docs/reviews/YYYY-MM-DD-<topic>-discovery.md` for longer sessions
-- `docs/CURRENT.md` when active phase, next step, blocker, or acceptance artifact/plan changes
-- `docs/ROADMAP.md` when product scope, milestones, non-goals, or open decisions need durable
+- `.ai-harness/reviews/YYYY-MM-DD-<topic>-discovery.md` for longer sessions
+- `.ai-harness/CURRENT.md` when active phase, next step, blocker, or acceptance artifact/plan changes
+- `.ai-harness/ROADMAP.md` when product scope, milestones, non-goals, or open decisions need durable
   tracking
 
 Do not create a spec from discovery directly. Route output through `write-spec` when an
@@ -38,17 +38,17 @@ acceptance artifact is needed.
 For new projects, ensure approved scaffold profile has:
 
 - `AGENTS.md`
-- `CONTEXT.md`
-- `docs/AGENT_WORKFLOW.md`
-- `docs/TESTING_STRATEGY.md`
+- `.ai-harness/CONTEXT.md`
+- `.ai-harness/AGENT_WORKFLOW.md`
+- `.ai-harness/TESTING_STRATEGY.md`
 
 Add only when relevant:
 
-- `CONTEXT-MAP.md`: multiple contexts, apps, packages, integrations.
-- `docs/ARCHITECTURE.md`: boundaries, runtime surfaces, dependency direction matter.
-- `docs/DOMAIN_MODEL.md`: domain terms, invariants, workflows matter.
-- `docs/DATA_MODEL.md`: persistence, migration, retention, deletion, import/export, backup.
-- `docs/SECURITY_MODEL.md`: auth, permissions, secrets, trust boundaries, sensitive data,
+- `.ai-harness/CONTEXT-MAP.md`: multiple contexts, apps, packages, integrations.
+- `.ai-harness/ARCHITECTURE.md`: boundaries, runtime surfaces, dependency direction matter.
+- `.ai-harness/DOMAIN_MODEL.md`: domain terms, invariants, workflows matter.
+- `.ai-harness/DATA_MODEL.md`: persistence, migration, retention, deletion, import/export, backup.
+- `.ai-harness/SECURITY_MODEL.md`: auth, permissions, secrets, trust boundaries, sensitive data,
   deletion, crypto.
 
 ## Discovery Output Format

@@ -14,7 +14,7 @@ No file edits, no shell commands. Missing diff or artifact path? Ask the main ag
 
 - Missing requirements — acceptance criterion with no implementing code.
 - Extra / unrequested work — code or behavior not in the artifact.
-- Misunderstandings — right feature, wrong semantics (including domain term drift from `CONTEXT.md`).
+- Misunderstandings — right feature, wrong semantics (including domain term drift from `.ai-harness/CONTEXT.md`).
 
 **Scope discipline:** findings must cite file:line in the diff or an acceptance criterion in the artifact. Code quality, naming style, architecture, test design, docs drift belong in `code-quality-review` — not here.
 

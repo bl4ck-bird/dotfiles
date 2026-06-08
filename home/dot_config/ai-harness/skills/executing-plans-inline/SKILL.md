@@ -117,7 +117,7 @@ Same agent wrote code, now reviews it — extra guards:
 
 Inline mode painful (context bloat, weakening review quality):
 
-1. Write handoff in `docs/reviews/` — completed tasks, decisions, open risks, next task.
+1. Write handoff in `.ai-harness/reviews/` — completed tasks, decisions, open risks, next task.
 2. Hand control to `subagent-driven-development` for remaining tasks. Plan + acceptance artifact already capture full work; switch costs one handoff write.
 
 Preferable to continuing inline when self-review is no longer trustworthy.

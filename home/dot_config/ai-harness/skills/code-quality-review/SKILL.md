@@ -28,10 +28,10 @@ Other skills (`write-spec` Self-Review, `write-plan` Self-Review, `test-driven-d
 
 Read directly:
 
-- `AGENTS.md`, `CONTEXT.md`, `docs/CURRENT.md`
+- `AGENTS.md`, `.ai-harness/CONTEXT.md`, `.ai-harness/CURRENT.md`
 - Acceptance artifact (spec, PRD, issue, plan task, or approved request).
 - Plan when one exists.
-- `docs/ARCHITECTURE.md`, `docs/DOMAIN_MODEL.md`, `docs/TESTING_STRATEGY.md` when present and relevant.
+- `.ai-harness/ARCHITECTURE.md`, `.ai-harness/DOMAIN_MODEL.md`, `.ai-harness/TESTING_STRATEGY.md` when present and relevant.
 - Changed file list, diff, test/verification output.
 
 ## What To Check
@@ -53,7 +53,7 @@ Five areas. Each finding cites a file:line in the diff.
 
 Load `ddd-operational-checks.md` when **both**:
 
-- `CONTEXT.md` or `docs/DOMAIN_MODEL.md` exists, **and**
+- `.ai-harness/CONTEXT.md` or `.ai-harness/DOMAIN_MODEL.md` exists, **and**
 - Diff touches domain code (entities, aggregates, value objects, domain services, repositories, ports, anti-corruption layers, or domain events).
 
 Either absent → skip companion. General CRUD / glue / UI does not need DDD review.
@@ -79,7 +79,7 @@ Summary (full in companion):
 #### File And Complexity Thresholds
 
 - **300 lines (source file)**: require responsibility review. Split when multiple reasons to change mixed.
-- **600 lines (source file)**: review finding unless generated, vendored, fixture, migration, data table, or documented exception in `docs/ARCHITECTURE.md`.
+- **600 lines (source file)**: review finding unless generated, vendored, fixture, migration, data table, or documented exception in `.ai-harness/ARCHITECTURE.md`.
 - **50-80 lines (function)**: consider extraction if mixed concerns or deep branching.
 - **3+ repeated conditionals on same concept**: consider domain concept, strategy, lookup table, or policy object.
 
@@ -114,9 +114,9 @@ Map every acceptance criterion to its proof.
 ### 4. Durable Docs Drift
 
 - README stays user-facing and high-level.
-- `CONTEXT.md` owns canonical domain terms — flag drift.
-- `docs/CURRENT.md` reflects current phase, acceptance source, last verification, next action when substantial state changed.
-- `docs/ARCHITECTURE.md`, `docs/DOMAIN_MODEL.md`, `docs/DATA_MODEL.md`, `docs/SECURITY_MODEL.md`, `docs/TESTING_STRATEGY.md`: updated when their concern changed.
+- `.ai-harness/CONTEXT.md` owns canonical domain terms — flag drift.
+- `.ai-harness/CURRENT.md` reflects current phase, acceptance source, last verification, next action when substantial state changed.
+- `.ai-harness/ARCHITECTURE.md`, `.ai-harness/DOMAIN_MODEL.md`, `.ai-harness/DATA_MODEL.md`, `.ai-harness/SECURITY_MODEL.md`, `.ai-harness/TESTING_STRATEGY.md`: updated when their concern changed.
 - Stub / TODO content not treated as project truth.
 - Specs and plans do not duplicate or contradict durable docs.
 
@@ -203,7 +203,7 @@ Lead with strengths (specific, brief), then findings, then result.
 - Reasoning: <one or two sentences>
 ```
 
-Substantial reviews → save record in `docs/reviews/YYYY-MM-DD-<topic>-code-quality-review.md`.
+Substantial reviews → save record in `.ai-harness/reviews/YYYY-MM-DD-<topic>-code-quality-review.md`.
 
 ## Do Not
 

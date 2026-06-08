@@ -11,7 +11,7 @@ duplicate the acceptance artifact or become line-by-line code prose.
 ## Save Location
 
 ```text
-docs/plans/YYYY-MM-DD-<feature-or-slice>.md
+.ai-harness/plans/YYYY-MM-DD-<feature-or-slice>.md
 ```
 
 Use the project's established location if it has one.
@@ -20,7 +20,7 @@ Use the project's established location if it has one.
 
 Always read:
 
-- `AGENTS.md`, `CONTEXT.md`, `docs/CURRENT.md`, `docs/AGENT_WORKFLOW.md`
+- `AGENTS.md`, `.ai-harness/CONTEXT.md`, `.ai-harness/CURRENT.md`, `.ai-harness/AGENT_WORKFLOW.md`
 - Reviewed acceptance artifact (spec, PRD, issue, review finding, approved task)
 - Existing tests and package scripts
 
@@ -28,12 +28,12 @@ Conditional reads:
 
 | Doc | Read when |
 | --- | --- |
-| `CONTEXT-MAP.md` | Multiple bounded contexts, apps, packages, external integrations |
-| `docs/ARCHITECTURE.md` | Boundaries, dependency direction, runtime surfaces, module shape may change |
-| `docs/DOMAIN_MODEL.md` | Domain terms, invariants, entities, value objects, workflows may change |
-| `docs/DATA_MODEL.md` | Persistence, migration, retention, deletion, backup, import/export may change |
-| `docs/SECURITY_MODEL.md` | Auth, permissions, secrets, trust boundaries, sensitive data, deletion, crypto may change |
-| `docs/TESTING_STRATEGY.md` | Verification commands, test levels, test strategy may change |
+| `.ai-harness/CONTEXT-MAP.md` | Multiple bounded contexts, apps, packages, external integrations |
+| `.ai-harness/ARCHITECTURE.md` | Boundaries, dependency direction, runtime surfaces, module shape may change |
+| `.ai-harness/DOMAIN_MODEL.md` | Domain terms, invariants, entities, value objects, workflows may change |
+| `.ai-harness/DATA_MODEL.md` | Persistence, migration, retention, deletion, backup, import/export may change |
+| `.ai-harness/SECURITY_MODEL.md` | Auth, permissions, secrets, trust boundaries, sensitive data, deletion, crypto may change |
+| `.ai-harness/TESTING_STRATEGY.md` | Verification commands, test levels, test strategy may change |
 | Durable decisions | Decisions are hard to reverse or surprising |
 
 Before writing, confirm acceptance artifact weight:
@@ -131,7 +131,7 @@ Walk this checklist before presenting. Plan correctness owned here, re-verified 
 - Every acceptance requirement maps to a task or explicit non-goal.
 - Every task has exact verification commands and expected RED / GREEN signals for TDD steps.
 - No placeholder language ("TBD", "later", "appropriate error handling").
-- New identifier names match `CONTEXT.md`.
+- New identifier names match `.ai-harness/CONTEXT.md`.
 - Plan does not copy large sections from acceptance artifact — links.
 - Human can inspect plan without chat history.
 

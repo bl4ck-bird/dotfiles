@@ -71,7 +71,7 @@ Use only when Step 1a does not apply.
 
 Priority. Explicit user preference always wins.
 
-1. **Declared preference** in `AGENTS.md`, `CLAUDE.md`, `docs/AGENT_WORKFLOW.md`, or chat. Use without asking.
+1. **Declared preference** in `AGENTS.md`, `CLAUDE.md`, `.ai-harness/AGENT_WORKFLOW.md`, or chat. Use without asking.
 2. **Existing project-local directory**:
    ```bash
    ls -d .worktrees 2>/dev/null     # preferred (hidden)

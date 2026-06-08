@@ -9,9 +9,9 @@
 
 - Invoke `using-bb-harness` at session start. Self-disables when this repo's markers are absent
   (safe to invoke universally).
-- Read and update `docs/CURRENT.md` at phase boundaries so next session knows active phase and next
+- Read and update `.ai-harness/CURRENT.md` at phase boundaries so next session knows active phase and next
   action.
-- Before clearing context, update `docs/CURRENT.md` and write a handoff note in `docs/reviews/`.
+- Before clearing context, update `.ai-harness/CURRENT.md` and write a handoff note in `.ai-harness/reviews/`.
 
 ## Default Skill Flow
 

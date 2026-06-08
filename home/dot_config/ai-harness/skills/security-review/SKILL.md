@@ -30,7 +30,7 @@ Work touches:
 - Destructive operations require explicit user or product-level approval.
 - Crypto and secret handling follow project docs or primary-source guidance.
 - Tests or manual checks cover denial, invalid input, failure behavior when practical.
-- `docs/SECURITY_MODEL.md` updated when durable security behavior changes.
+- `.ai-harness/SECURITY_MODEL.md` updated when durable security behavior changes.
 
 ## Scope Discipline
 
@@ -68,4 +68,4 @@ Iteration Pattern.
 Normally a follow-on from `code-quality-review` when a security-sensitive surface is touched.
 May be called directly when a planned slice is security-heavy from the outset.
 
-Save substantial records in `docs/reviews/YYYY-MM-DD-<topic>-security-review.md`.
+Save substantial records in `.ai-harness/reviews/YYYY-MM-DD-<topic>-security-review.md`.

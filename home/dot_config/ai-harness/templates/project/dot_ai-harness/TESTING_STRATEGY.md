@@ -48,7 +48,7 @@ exception for behavior that automated tests and hooks cannot cover well.
 - Prefer behavior-focused tests.
 - Avoid tests that only duplicate implementation details.
 - Cover risky edge cases, data boundaries, and error handling.
-- Test names use project domain language from `CONTEXT.md` when relevant.
+- Test names use project domain language from `.ai-harness/CONTEXT.md` when relevant.
 - Regression tests fail before the fix and pass after the fix.
 - Avoid mocking away the behavior under test.
 

@@ -22,7 +22,7 @@ Prompt:
 ```text
 Use using-bb-harness.
 Task: <describe task>.
-Read AGENTS.md, CONTEXT.md, docs/CURRENT.md, docs/AGENT_WORKFLOW.md, current
+Read AGENTS.md, .ai-harness/CONTEXT.md, .ai-harness/CURRENT.md, .ai-harness/AGENT_WORKFLOW.md, current
 acceptance artifacts, plans, and reviews relevant to this task, and data/security
 docs when relevant.
 Report workflow weight, selected next skill, required artifact or approval, and
@@ -86,7 +86,7 @@ Adjacent skills:
 Non-trivial work needs one artifact accepted/reviewed at the right weight, stating behavior and
 acceptance criteria. Can be:
 
-- `docs/specs/YYYY-MM-DD-<feature>.md`
+- `.ai-harness/specs/YYYY-MM-DD-<feature>.md`
 - a PRD or issue
 - a review finding
 - a user-approved task with testable acceptance criteria
@@ -136,7 +136,7 @@ explicitly asked.
 
 After each non-trivial phase:
 
-1. Update `docs/CURRENT.md` when current phase, active acceptance artifact/source, plan, done, next,
+1. Update `.ai-harness/CURRENT.md` when current phase, active acceptance artifact/source, plan, done, next,
    blockers, or last verification materially changes. If same session continues immediately, update
    once at end of phase.
 2. Recommend exactly one next phase when path is clear.
@@ -196,12 +196,12 @@ Stop and ask if scope expands, verification fails twice for the same reason, a p
 ## Artifact Rules
 
 - Current phase, active acceptance artifact/source, blockers, last verification, next action →
-  `docs/CURRENT.md`.
-- Product scope → `docs/ROADMAP.md` and acceptance artifacts.
-- Domain language → `CONTEXT.md` and `docs/DOMAIN_MODEL.md`.
-- Data storage, migration, retention, deletion, backups → `docs/DATA_MODEL.md`.
-- Secrets, auth, permissions, trust boundaries, sensitive data handling → `docs/SECURITY_MODEL.md`.
-- Implementation details for one feature → `docs/plans/` when a durable plan is needed.
-- Review records and handoffs → `docs/reviews/`.
-- Formal decision records → `docs/DECISIONS/` only for hard-to-reverse, surprising tradeoffs.
+  `.ai-harness/CURRENT.md`.
+- Product scope → `.ai-harness/ROADMAP.md` and acceptance artifacts.
+- Domain language → `.ai-harness/CONTEXT.md` and `.ai-harness/DOMAIN_MODEL.md`.
+- Data storage, migration, retention, deletion, backups → `.ai-harness/DATA_MODEL.md`.
+- Secrets, auth, permissions, trust boundaries, sensitive data handling → `.ai-harness/SECURITY_MODEL.md`.
+- Implementation details for one feature → `.ai-harness/plans/` when a durable plan is needed.
+- Review records and handoffs → `.ai-harness/reviews/`.
+- Formal decision records → `.ai-harness/DECISIONS/` only for hard-to-reverse, surprising tradeoffs.
 - README stays user-facing and high-level.

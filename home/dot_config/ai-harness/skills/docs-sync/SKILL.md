@@ -17,17 +17,17 @@ review*; this skill *resolves* drift after acceptance.
 Review changed files, identify durable concerns touched, decide whether any candidate doc
 needs updates:
 
-- `README.md`, `AGENTS.md`, `CLAUDE.md`, `CONTEXT.md`, `CONTEXT-MAP.md`
-- `docs/AGENT_WORKFLOW.md`, `docs/CURRENT.md`, `docs/ROADMAP.md`
-- `docs/ARCHITECTURE.md`, `docs/DOMAIN_MODEL.md`, `docs/DATA_MODEL.md`
-- `docs/SECURITY_MODEL.md`, `docs/TESTING_STRATEGY.md`
-- `docs/DECISIONS/`, `docs/specs/`, `docs/plans/`, `docs/reviews/`
+- `README.md`, `AGENTS.md`, `CLAUDE.md`, `.ai-harness/CONTEXT.md`, `.ai-harness/CONTEXT-MAP.md`
+- `.ai-harness/AGENT_WORKFLOW.md`, `.ai-harness/CURRENT.md`, `.ai-harness/ROADMAP.md`
+- `.ai-harness/ARCHITECTURE.md`, `.ai-harness/DOMAIN_MODEL.md`, `.ai-harness/DATA_MODEL.md`
+- `.ai-harness/SECURITY_MODEL.md`, `.ai-harness/TESTING_STRATEGY.md`
+- `.ai-harness/DECISIONS/`, `.ai-harness/specs/`, `.ai-harness/plans/`, `.ai-harness/reviews/`
 - feature specs and implementation plans
 
 ## Rules
 
 - README stays high-level and user-facing.
-- `CONTEXT.md` owns bounded-context vocabulary and canonical domain terms.
+- `.ai-harness/CONTEXT.md` owns bounded-context vocabulary and canonical domain terms.
 - Architecture, domain, data, security, testing rules live in focused docs.
 - Specs and plans describe a single work item; not long-term source of truth.
 - Remove stale claims instead of adding caveats around them.
@@ -52,7 +52,7 @@ Update docs when:
 
 ## Handoffs
 
-Session about to be cleared → add/update handoff in `docs/reviews/`:
+Session about to be cleared → add/update handoff in `.ai-harness/reviews/`:
 
 - current goal
 - completed work
@@ -60,8 +60,34 @@ Session about to be cleared → add/update handoff in `docs/reviews/`:
 - verification evidence
 - next safe action
 
-Update `docs/CURRENT.md` with active phase and next recommended action when changed. Same
+Update `.ai-harness/CURRENT.md` with active phase and next recommended action when changed. Same
 session continuing immediately → update once at end of phase, not after every step.
+
+### `.ai-harness/CURRENT.md` Template (SSOT)
+
+Canonical skeleton. Other skills reference this; do not redefine the format elsewhere.
+Keep it short — it points to artifacts, it does not duplicate them. One line per field.
+
+```markdown
+# CURRENT — <project> 진행 상태
+
+> 세션 시작 시 가장 먼저 읽는 상태 파일. phase 경계에서만 갱신(매 스텝 X).
+> 형식 SSOT: docs-sync Handoffs. 상세는 각 artifact 경로 참조.
+
+- **Active phase**: <discovery | spec | plan | impl:S0… | review | ship>
+- **Acceptance source**: <spec / ADR / issue 경로들>
+- **Plan**: <.ai-harness/plans/... 경로 | 없음>
+- **Completed slice/work**: <최근 완료 단위 + 한 줄>
+- **Verification**: <명령 + 결과 evidence | N/A 사유>
+- **Blocker**: <없음 | 내용>
+- **Next action**: <다음 안전 액션 1개>
+
+_Updated: <YYYY-MM-DD> · <session/agent>_
+```
+
+- Create on first non-trivial phase boundary (or at `project-scaffold` time).
+- Fields map 1:1 to the update triggers above (Active phase, acceptance artifact/source,
+  plan, blocker, completed slice, verification evidence, next action).
 
 ## Output
 

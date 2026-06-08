@@ -1,6 +1,6 @@
 ---
 name: domain-modeling
-description: Use when domain terms are unclear, overloaded, or drifting; when introducing or renaming aggregates, value objects, or bounded contexts; or when CONTEXT.md / CONTEXT-MAP.md / docs/DOMAIN_MODEL.md need updates before a spec or plan touches domain code. Domain-language axis is independent of product-direction; runs alongside product-discovery or pressure-test as needed.
+description: Use when domain terms are unclear, overloaded, or drifting; when introducing or renaming aggregates, value objects, or bounded contexts; or when .ai-harness/CONTEXT.md / .ai-harness/CONTEXT-MAP.md / .ai-harness/DOMAIN_MODEL.md need updates before a spec or plan touches domain code. Domain-language axis is independent of product-direction; runs alongside product-discovery or pressure-test as needed.
 ---
 
 # Domain Modeling
@@ -16,11 +16,11 @@ when introducing or renaming aggregates, value objects, or bounded contexts.
 
 ## Read First
 
-- `CONTEXT.md`
-- `CONTEXT-MAP.md`
-- `docs/DOMAIN_MODEL.md`
-- `docs/ARCHITECTURE.md`
-- `docs/DECISIONS/`
+- `.ai-harness/CONTEXT.md`
+- `.ai-harness/CONTEXT-MAP.md`
+- `.ai-harness/DOMAIN_MODEL.md`
+- `.ai-harness/ARCHITECTURE.md`
+- `.ai-harness/DECISIONS/`
 - Current spec or plan
 - Relevant code and tests
 
@@ -59,7 +59,7 @@ Avoid ceremonial layers when domain is simple.
 
 ## Context Map
 
-Multiple subsystems or bounded contexts → update `CONTEXT-MAP.md`:
+Multiple subsystems or bounded contexts → update `.ai-harness/CONTEXT-MAP.md`:
 
 - Context name
 - Responsibility
@@ -76,11 +76,11 @@ Suggest a formal decision record only for hard-to-reverse, surprising tradeoffs.
 
 Update or propose updates to:
 
-- `CONTEXT.md`
-- `CONTEXT-MAP.md`
-- `docs/DOMAIN_MODEL.md`
-- `docs/ARCHITECTURE.md`
-- `docs/DECISIONS/<number>-<slug>.md`
+- `.ai-harness/CONTEXT.md`
+- `.ai-harness/CONTEXT-MAP.md`
+- `.ai-harness/DOMAIN_MODEL.md`
+- `.ai-harness/ARCHITECTURE.md`
+- `.ai-harness/DECISIONS/<number>-<slug>.md`
 
 End with:
 

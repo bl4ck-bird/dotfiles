@@ -32,16 +32,16 @@ Prompt:
 ```text
 Use write-spec.
 Turn the resolved context into the lightest acceptance artifact.
-Use docs/specs/YYYY-MM-DD-<feature>.md only if a full spec is needed.
+Use .ai-harness/specs/YYYY-MM-DD-<feature>.md only if a full spec is needed.
 Split it into vertical slices with AFK/HITL labels.
 ```
 
 Self-Review prompt:
 
 ```text
-Run write-spec Self-Review on docs/specs/YYYY-MM-DD-<feature>.md.
+Run write-spec Self-Review on .ai-harness/specs/YYYY-MM-DD-<feature>.md.
 Check product goal, MVP boundary, acceptance criteria, vertical slices,
-domain alignment (terms match CONTEXT.md, aggregates respect bounded
+domain alignment (terms match .ai-harness/CONTEXT.md, aggregates respect bounded
 contexts, invariants have proof paths), testing decisions, and docs
 impact. Request second-review (Codex) only when triggers apply.
 ```

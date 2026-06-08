@@ -34,7 +34,7 @@ If change set grows past Tiny/local definition, escalate to full checklist befor
 2. Read relevant diff and ensure no unrelated user changes were reverted.
 3. Run narrowest meaningful tests, type checks, linters, or build checks. Apply `verification-before-completion` — "green" claims require fresh output read in this response, not remembered prior run.
 4. Run `docs-sync` if behavior, architecture, tests, security, or user-facing behavior changed — or note "no durable docs touched". Skip the run only when the change set demonstrably touches no durable concern.
-5. Confirm `docs-sync` produced an up-to-date `docs/CURRENT.md` (fields and update triggers defined in `docs-sync` Handoffs).
+5. Confirm `docs-sync` produced an up-to-date `.ai-harness/CURRENT.md` (fields and update triggers defined in `docs-sync` Handoffs).
 6. Confirm `spec-compliance-review` and `code-quality-review` were run with passing results, and `security-review` was run or explicitly noted as not triggered.
 7. Run or request `second-review` for required High-Risk Surface changes, or note why optional independent double-check is not needed.
 8. Confirm no source file crossed file-size thresholds from `code-quality-review` (File And Complexity Thresholds) without review.
@@ -122,12 +122,12 @@ When a shipped change breaks production, downstream tests, or accepted behavior:
    - Deployed artifact (container/binary/release) → redeploy previous artifact first, then revert source.
 3. **Verify rollback closed the symptom.** Re-run the failing check that triggered the incident. Apply `verification-before-completion` — read the output, not the deployer's word.
 4. **Open a regression test that reproduces the failure** before re-attempting the change. Per `bug-diagnosis` workflow, no second attempt without a failing test.
-5. **Record the incident** in `docs/reviews/YYYY-MM-DD-<topic>-incident.md`:
+5. **Record the incident** in `.ai-harness/reviews/YYYY-MM-DD-<topic>-incident.md`:
    - What shipped, what broke, blast radius, who was affected
    - Detection signal and lead time
    - Revert commands run + verification evidence
    - Root cause (or hypothesis if unconfirmed)
    - Follow-up: test added, durable doc updated, decision recorded
-6. **Update `docs/CURRENT.md`** with the incident and the recovery state.
+6. **Update `.ai-harness/CURRENT.md`** with the incident and the recovery state.
 
-Do not delete the broken commit (history-rewrite). Do not silently re-roll the same change without addressing the root cause and adding regression coverage. Project-specific deploy commands and revert procedures belong in `docs/AGENT_WORKFLOW.md`.
+Do not delete the broken commit (history-rewrite). Do not silently re-roll the same change without addressing the root cause and adding regression coverage. Project-specific deploy commands and revert procedures belong in `.ai-harness/AGENT_WORKFLOW.md`.

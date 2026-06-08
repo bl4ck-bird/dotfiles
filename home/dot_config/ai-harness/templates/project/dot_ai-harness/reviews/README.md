@@ -36,7 +36,7 @@ Handoffs include:
 Prompt:
 
 ```text
-Write a handoff note in docs/reviews/YYYY-MM-DD-<topic>-handoff.md.
+Write a handoff note in .ai-harness/reviews/YYYY-MM-DD-<topic>-handoff.md.
 Include goal, docs to read, decisions, completed slices, changed files, verification, risks, and next action.
-Update docs/CURRENT.md before clearing.
+Update .ai-harness/CURRENT.md before clearing.
 ```

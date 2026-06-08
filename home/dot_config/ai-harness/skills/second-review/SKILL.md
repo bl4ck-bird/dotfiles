@@ -61,7 +61,7 @@ Different-model reviewer is the goal. Record any fallback.
 
 Reviewer reads artifacts, not chat:
 
-- `AGENTS.md`, `CONTEXT.md`, `docs/CURRENT.md`, `docs/AGENT_WORKFLOW.md`
+- `AGENTS.md`, `.ai-harness/CONTEXT.md`, `.ai-harness/CURRENT.md`, `.ai-harness/AGENT_WORKFLOW.md`
 - Acceptance artifact, plan, primary review records, durable decisions
 - Changed files or diff
 - Test and verification evidence
@@ -136,4 +136,4 @@ Stay inside the supplied artifact / diff. Same artifacts as the primary review, 
 - Residual risk:
 ```
 
-Store substantial records in `docs/reviews/YYYY-MM-DD-<topic>-second-review.md`.
+Store substantial records in `.ai-harness/reviews/YYYY-MM-DD-<topic>-second-review.md`.

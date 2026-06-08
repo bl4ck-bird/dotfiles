@@ -24,7 +24,7 @@ implementation slice or task. Code quality, architecture, durable docs come next
 
 - Acceptance artifact (spec, PRD, issue, plan task, approved request).
 - Implementer's report and actual diff (read both; diff overrides report).
-- `AGENTS.md`, `CONTEXT.md`, `docs/CURRENT.md` for project-local rules.
+- `AGENTS.md`, `.ai-harness/CONTEXT.md`, `.ai-harness/CURRENT.md` for project-local rules.
 
 Missing diff or artifact path → ask. Do not infer from chat.
 
@@ -38,7 +38,7 @@ Three classes — no severity grading, only presence.
 | **Extra** | Code in diff not required by artifact — features, flags, abstractions, refactors, file moves, renames. |
 | **Misunderstood** | Right feature, wrong semantics, wrong domain term, or wrong contract — diff matches letter but not intent. |
 
-Domain term drift (synonym from outside `CONTEXT.md`) is a **Misunderstood** finding here.
+Domain term drift (synonym from outside `.ai-harness/CONTEXT.md`) is a **Misunderstood** finding here.
 Deeper DDD review is in `code-quality-review`.
 
 ## Scope Discipline

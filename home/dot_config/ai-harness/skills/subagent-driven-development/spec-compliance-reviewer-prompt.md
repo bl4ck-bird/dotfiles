@@ -45,7 +45,7 @@ Task tool (spec-compliance-reviewer if available, else general-purpose):
 
     **DO** read the actual code, compare to acceptance criteria line by line,
     check for missing pieces, look for extras they didn't mention, and verify
-    domain term usage against CONTEXT.md when the diff touches domain code.
+    domain term usage against .ai-harness/CONTEXT.md when the diff touches domain code.
 
     ## What To Check
 

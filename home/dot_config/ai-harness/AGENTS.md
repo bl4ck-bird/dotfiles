@@ -9,7 +9,7 @@ Use these terms consistently across skills, docs, plans, and reviews.
 
 - **Acceptance artifact**: the reviewed object that defines accepted behavior — a spec, PRD,
   issue, review finding, or approved task. **Acceptance source** is its location/origin (e.g. an
-  issue link or `docs/specs/...` path), not a synonym for the artifact.
+  issue link or `.ai-harness/specs/...` path), not a synonym for the artifact.
 - **Slice**: a vertical unit of behavior reviewable end to end. A **task** is a step inside a slice
   (test → impl → refactor). One slice contains one or more tasks.
 - **Independent second review**: the prose form. **`second-review`** (with hyphen) refers to the
@@ -34,7 +34,7 @@ Use these terms consistently across skills, docs, plans, and reviews.
 - Do not use placeholders in code output such as `// ... existing code`; provide complete, working
   edits.
 - Read the nearest project instructions before changing files: `AGENTS.md`, `CLAUDE.md`,
-  `CONTEXT.md`, `docs/CURRENT.md`, `CONTEXT-MAP.md`, project docs, and relevant package scripts.
+  `.ai-harness/CONTEXT.md`, `.ai-harness/CURRENT.md`, `.ai-harness/CONTEXT-MAP.md`, project docs, and relevant package scripts.
 - Prefer small, reversible changes that follow the existing architecture over broad rewrites.
 - Treat project instructions as higher priority than this global file.
 - State uncertainty plainly. When a claim depends on current tool behavior, library versions,
@@ -114,7 +114,7 @@ keep particles and verb endings (조사·어미는 filler 아님).
   materially protect the work, and record the skip reason.
 - **Universal bootstrap**: at every session start, invoke `using-bb-harness` before
   non-trivial work. The skill performs a cheap marker check (`AGENTS.md`, `CLAUDE.md`,
-  or `docs/AGENT_WORKFLOW.md` referencing BB Harness or BB skill names). If markers
+  or `.ai-harness/AGENT_WORKFLOW.md` referencing BB Harness or BB skill names). If markers
   are present, it routes to the right phase. If absent, it self-disables in one line
   and the agent proceeds with standard behavior. Trivial questions and pure-conversation
   replies may skip the bootstrap entirely.
@@ -193,10 +193,10 @@ independent investigations: `dispatching-parallel-agents` (distinct use case fro
 
 - For non-trivial features, produce or identify a reviewed acceptance artifact before
   an implementation plan. A lightweight artifact must include the Acceptance Brief
-  Fields (see `write-spec`). Use a full spec in `docs/specs/` only when product scope,
+  Fields (see `write-spec`). Use a full spec in `.ai-harness/specs/` only when product scope,
   domain language, API, data/storage, auth/security, deletion, sync, external
   integrations, or user workflow is still being decided.
-- Convert accepted behavior into vertical slices. Plans in `docs/plans/` stay compact
+- Convert accepted behavior into vertical slices. Plans in `.ai-harness/plans/` stay compact
   (file responsibility map, TDD steps, verification commands, docs impact,
   commit/stack strategy, rollback notes, review checkpoints).
 - Call a review skill only when the touched surface matches its triggers. The full
@@ -212,7 +212,7 @@ independent investigations: `dispatching-parallel-agents` (distinct use case fro
 - When delegating coding work to a worker agent, assign one vertical slice or
   disjoint write scope, pass artifact paths instead of chat history, and review for
   acceptance compliance plus code quality before the next task.
-- Keep `docs/CURRENT.md` current at phase boundaries (active phase, acceptance source,
+- Keep `.ai-harness/CURRENT.md` current at phase boundaries (active phase, acceptance source,
   plan, blocker, completed slice, verification, next action). Persist
   goal/plan/evidence/next action in project artifacts so work resumes without chat
   history.
@@ -225,9 +225,15 @@ independent investigations: `dispatching-parallel-agents` (distinct use case fro
   two short lines, wrap at 72. Do not enumerate every file or restate the diff. Reference
   issue/spec/plan paths instead of summarizing them. PR titles follow the same subject rule;
   PR body uses Summary (1–3 bullets) + Test plan only.
-- Long-lived product decisions live in durable docs (`docs/ROADMAP.md`,
-  `docs/ARCHITECTURE.md`, `docs/DOMAIN_MODEL.md`, `docs/TESTING_STRATEGY.md`). Use
-  `docs/DECISIONS/` only for hard-to-reverse tradeoffs that would surprise future
+- **Agent artifacts go in `.ai-harness/`, never `docs/`.** All agent-generated workflow state —
+  CONTEXT, CURRENT, specs, plans, reviews, architecture/domain/data/security/testing models,
+  decisions — is written under `.ai-harness/` (gitignored, local agent context). `docs/` is
+  reserved for human-facing product/user documentation and stays committed; do not create or move
+  agent workflow files there. If a project has no `.ai-harness/` yet, create it; do not fall back
+  to `docs/`.
+- Long-lived product decisions live in durable docs (`.ai-harness/ROADMAP.md`,
+  `.ai-harness/ARCHITECTURE.md`, `.ai-harness/DOMAIN_MODEL.md`, `.ai-harness/TESTING_STRATEGY.md`). Use
+  `.ai-harness/DECISIONS/` only for hard-to-reverse tradeoffs that would surprise future
   maintainers.
 
 ## Quality Gates
@@ -262,7 +268,7 @@ independent investigations: `dispatching-parallel-agents` (distinct use case fro
   discovery/spec, after plan approval, after large implementation slices, or after review fixes.
 - Before clearing a session, write a handoff note in the relevant acceptance artifact, plan, or
   review file with current state, decisions, verification, and next action.
-- New sessions must begin by reading `AGENTS.md`, `CONTEXT.md`, `docs/CURRENT.md`, current
+- New sessions must begin by reading `AGENTS.md`, `.ai-harness/CONTEXT.md`, `.ai-harness/CURRENT.md`, current
   acceptance artifact/plan, recent reviews, and relevant code.
 - Long-running loops must record iteration count, verification evidence, remaining risk, and the
   next safe action before context is cleared.

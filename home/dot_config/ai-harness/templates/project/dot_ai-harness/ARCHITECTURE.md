@@ -63,8 +63,8 @@ Avoid ceremonial DDD for simple CRUD or thin glue code.
 
 ## Related Models
 
-- Data storage, migrations, retention, deletion, recovery → `docs/DATA_MODEL.md`.
-- Secrets, auth, permissions, trust boundaries, sensitive data handling → `docs/SECURITY_MODEL.md`.
+- Data storage, migrations, retention, deletion, recovery → `.ai-harness/DATA_MODEL.md`.
+- Secrets, auth, permissions, trust boundaries, sensitive data handling → `.ai-harness/SECURITY_MODEL.md`.
 
 ## Tradeoffs
 

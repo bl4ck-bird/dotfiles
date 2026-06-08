@@ -10,27 +10,27 @@ rules apply immediately.
 - MVP boundary: TODO
 - Explicit non-goals: TODO
 - Keep this file focused on instructions agents must follow every session.
-- Move long-lived design details into `CONTEXT.md`, `CONTEXT-MAP.md`, and `docs/`.
+- Move long-lived design details into `.ai-harness/CONTEXT.md`, `.ai-harness/CONTEXT-MAP.md`, and `.ai-harness/`.
 
 ## Required Reading
 
 Before non-trivial edits, read:
 
-- `CONTEXT.md`
-- `docs/CURRENT.md`
-- `docs/AGENT_WORKFLOW.md`
+- `.ai-harness/CONTEXT.md`
+- `.ai-harness/CURRENT.md`
+- `.ai-harness/AGENT_WORKFLOW.md`
 - relevant acceptance artifacts, plans, and review notes
 
 Conditionally when relevant:
 
-- `CONTEXT-MAP.md`: multiple bounded contexts, apps, packages, or external integrations.
-- `docs/ROADMAP.md`: product scope, milestones, non-goals may change.
-- `docs/ARCHITECTURE.md`: boundaries, dependencies, runtime surfaces, module shape may change.
-- `docs/DOMAIN_MODEL.md`: domain language, invariants, entities, value objects, workflows may change.
-- `docs/DATA_MODEL.md`: persistence, migration, retention, deletion, backup, import, export may change.
-- `docs/SECURITY_MODEL.md`: auth, permissions, secrets, trust boundaries, sensitive data, deletion,
+- `.ai-harness/CONTEXT-MAP.md`: multiple bounded contexts, apps, packages, or external integrations.
+- `.ai-harness/ROADMAP.md`: product scope, milestones, non-goals may change.
+- `.ai-harness/ARCHITECTURE.md`: boundaries, dependencies, runtime surfaces, module shape may change.
+- `.ai-harness/DOMAIN_MODEL.md`: domain language, invariants, entities, value objects, workflows may change.
+- `.ai-harness/DATA_MODEL.md`: persistence, migration, retention, deletion, backup, import, export may change.
+- `.ai-harness/SECURITY_MODEL.md`: auth, permissions, secrets, trust boundaries, sensitive data, deletion,
   crypto may change.
-- `docs/TESTING_STRATEGY.md`: verification commands, test levels, test strategy may change.
+- `.ai-harness/TESTING_STRATEGY.md`: verification commands, test levels, test strategy may change.
 
 If a required/conditional doc is `stub`, use non-TODO rules as guidance; treat TODO claims as
 unknown until confirmed.
@@ -97,7 +97,7 @@ Use the heavier workflow when a change touches product behavior, domain language
 persistence, auth/security, sync/concurrency, deletion, external integrations, 2+ modules, or
 300/600-line file thresholds.
 
-After each non-trivial phase, update `docs/CURRENT.md` when active phase, active acceptance
+After each non-trivial phase, update `.ai-harness/CURRENT.md` when active phase, active acceptance
 artifact/source, active plan, blocker, completed slice, verification evidence, or next action
 materially changes. If the same session continues immediately, update once at the end of the phase.
 
@@ -116,7 +116,7 @@ but must not run them unless explicitly asked.
 
 ## Session Handoff
 
-Before clearing a long session, write/update `docs/reviews/YYYY-MM-DD-<topic>-handoff.md` with:
+Before clearing a long session, write/update `.ai-harness/reviews/YYYY-MM-DD-<topic>-handoff.md` with:
 
 - current goal
 - completed slices
@@ -124,4 +124,4 @@ Before clearing a long session, write/update `docs/reviews/YYYY-MM-DD-<topic>-ha
 - verification evidence
 - next safe action
 
-Also update `docs/CURRENT.md` before clearing or pausing.
+Also update `.ai-harness/CURRENT.md` before clearing or pausing.

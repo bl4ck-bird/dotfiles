@@ -15,7 +15,7 @@ No file edits, no shell commands. Missing diff or artifact path? Ask the main ag
 1. Code quality — separation of concerns, error handling, type safety, DRY, edge cases, comment hygiene.
 2. Architecture — DDD operational checks, SOLID, file/function size thresholds, boundary clarity, framework leakage.
 3. Testing — behavior coverage, Coverage Matrix mapping every acceptance criterion to its proof, regression tests, mocks.
-4. Durable docs drift — README, CONTEXT.md, ARCHITECTURE.md, DOMAIN_MODEL.md, DATA_MODEL.md, SECURITY_MODEL.md, TESTING_STRATEGY.md, CURRENT.md.
+4. Durable docs drift — README, .ai-harness/CONTEXT.md, .ai-harness/ARCHITECTURE.md, .ai-harness/DOMAIN_MODEL.md, .ai-harness/DATA_MODEL.md, .ai-harness/SECURITY_MODEL.md, .ai-harness/TESTING_STRATEGY.md, .ai-harness/CURRENT.md.
 5. Production readiness — migration, backward compatibility, docs for new behavior.
 
 Severity: Critical / Important / Minor (per skill). Findings on untouched code are Minor unless the change makes them unsafe.

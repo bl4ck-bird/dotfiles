@@ -21,7 +21,7 @@ This README is for humans. Agents treat `AGENTS.md`, project-local instructions,
 
 Domain / DDD / security depth is **opt-in by file presence**:
 
-- With `CONTEXT.md` or `docs/DOMAIN_MODEL.md`: `code-quality-review` runs DDD checks; `write-spec`/`write-plan` Self-Review verifies domain alignment.
+- With `.ai-harness/CONTEXT.md` or `.ai-harness/DOMAIN_MODEL.md`: `code-quality-review` runs DDD checks; `write-spec`/`write-plan` Self-Review verifies domain alignment.
 - Without those docs: those checks self-skip. Harness still works as a general TDD/review workflow.
 - Security depth (`security-review`, `second-review`) triggers only when the diff touches a security-sensitive surface or High-Risk Surface.
 - Scaffold profiles (`minimal` → `product` → `data-security` → `full`) let a project pick durable-doc depth.
@@ -34,7 +34,7 @@ Small CLI = TDD + spec-compliance + code-quality + ship. Domain-heavy app = same
 - `skills/` — executable workflow skills. `using-bb-harness` is bootstrap + router.
 - `claude-agents/` — Claude Code reviewer subagents (thin dispatchers delegating to `skills/<name>-review/SKILL.md`). Three reviewers: `spec-compliance-reviewer`, `code-quality-reviewer`, `security-reviewer`. `second-review` has no Claude subagent — it requires a different-model reviewer (see `skills/second-review`). `receiving-review` is implementer-side behavior, not a subagent.
 - `hooks/` — conservative hook scripts. Not wired globally by default.
-- `templates/project/` — starter project instructions and durable docs. The single `project/` nest leaves room for future template categories (e.g. `library/`, `service/`, `skill/`) without restructuring.
+- `templates/project/` — starter project instructions and durable docs. Root-level `AGENTS.md`/`CLAUDE.md` plus an `.ai-harness/` tree (chezmoi source `dot_ai-harness/`) holding CONTEXT and all workflow docs. The single `project/` nest leaves room for future template categories (e.g. `library/`, `service/`, `skill/`) without restructuring.
 
 ## Link Strategy
 
@@ -59,7 +59,7 @@ Apply all four before adding/splitting/merging a skill:
 3. **Reuse** — split only when multiple skills/phases call the same check.
 4. **ROI vs noise** — split only when inline would noticeably bloat unrelated projects' context.
 
-Adopted patterns (Hexagonal, CQRS, Event Sourcing) belong in `docs/ARCHITECTURE.md` or `docs/DECISIONS/` of the adopting project — not in a global skill.
+Adopted patterns (Hexagonal, CQRS, Event Sourcing) belong in `.ai-harness/ARCHITECTURE.md` or `.ai-harness/DECISIONS/` of the adopting project — not in a global skill.
 
 DDD operational checks, SOLID, file/complexity thresholds, Coverage Matrix, and durable docs drift checks are SSOT-owned by `skills/code-quality-review/SKILL.md`. Upstream variants (domain alignment, SOLID at plan time) are inlined into `write-spec` / `write-plan` Self-Review.
 
@@ -192,7 +192,7 @@ Production behavior changes may skip TDD only with explicit user approval + reco
 
 `project-scaffold` proposes the smallest profile that preserves restartable context.
 
-- `minimal` — `AGENTS.md`, `CLAUDE.md`, `CONTEXT.md`, `docs/AGENT_WORKFLOW.md`, `docs/CURRENT.md`.
+- `minimal` — `AGENTS.md`, `CLAUDE.md`, `.ai-harness/CONTEXT.md`, `.ai-harness/AGENT_WORKFLOW.md`, `.ai-harness/CURRENT.md`.
 - `product` — `minimal` + testing strategy, specs/plans/reviews folders, roadmap, architecture, domain model.
 - `data-security` — `product` + data and security models.
 - `full` — `data-security` + context map + formal decision record template.
@@ -203,20 +203,25 @@ Dependency installation is user-managed by default. Agents may suggest commands 
 
 Separate ownership:
 
-- `CONTEXT.md` — product identity, canonical vocabulary, current boundaries.
-- `CONTEXT-MAP.md` — multiple contexts, apps, packages, integrations.
-- `docs/CURRENT.md` — phase, active acceptance artifact/source, blocker, last verification, next action.
-- `docs/AGENT_WORKFLOW.md` — project-local overrides; no duplication of `using-bb-harness` rules.
-- `docs/ROADMAP.md` — product goal, MVP, milestones, parking lot.
-- `docs/ARCHITECTURE.md` — boundaries, layers, dependency rules, tradeoffs.
-- `docs/DOMAIN_MODEL.md` — domain terms, invariants, workflows, entities, value objects.
-- `docs/DATA_MODEL.md` — storage, retention, deletion, migration, backup.
-- `docs/SECURITY_MODEL.md` — secrets, auth, permissions, trust boundaries, sensitive data.
-- `docs/TESTING_STRATEGY.md` — TDD rules, test levels, verification commands, hooks.
-- `docs/specs/` — temporary feature specs.
-- `docs/plans/` — compact implementation plans.
-- `docs/reviews/` — substantial review records, handoffs, project-local retros.
-- `docs/DECISIONS/` — formal decision records only for hard-to-reverse, surprising tradeoffs.
+- `.ai-harness/CONTEXT.md` — product identity, canonical vocabulary, current boundaries.
+- `.ai-harness/CONTEXT-MAP.md` — multiple contexts, apps, packages, integrations.
+- `.ai-harness/CURRENT.md` — phase, active acceptance artifact/source, blocker, last verification, next action.
+- `.ai-harness/AGENT_WORKFLOW.md` — project-local overrides; no duplication of `using-bb-harness` rules.
+- `.ai-harness/ROADMAP.md` — product goal, MVP, milestones, parking lot.
+- `.ai-harness/ARCHITECTURE.md` — boundaries, layers, dependency rules, tradeoffs.
+- `.ai-harness/DOMAIN_MODEL.md` — domain terms, invariants, workflows, entities, value objects.
+- `.ai-harness/DATA_MODEL.md` — storage, retention, deletion, migration, backup.
+- `.ai-harness/SECURITY_MODEL.md` — secrets, auth, permissions, trust boundaries, sensitive data.
+- `.ai-harness/TESTING_STRATEGY.md` — TDD rules, test levels, verification commands, hooks.
+- `.ai-harness/specs/` — temporary feature specs.
+- `.ai-harness/plans/` — compact implementation plans.
+- `.ai-harness/reviews/` — substantial review records, handoffs, project-local retros.
+- `.ai-harness/DECISIONS/` — formal decision records only for hard-to-reverse, surprising tradeoffs.
+
+All of the above live under `.ai-harness/` and are **gitignored** — local agent context, not committed
+artifacts. `AGENTS.md` / `CLAUDE.md` / `GEMINI.md` stay at the repo root (tools require them there) but
+are also gitignored. The repo's `docs/` path is reserved for human-facing product/user documentation and
+stays committed; the harness never generates into `docs/`. See `project-scaffold` Gitignore Policy.
 
 Project README files stay user-facing and high-level.
 

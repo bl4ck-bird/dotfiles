@@ -23,8 +23,8 @@ Harness-wide SSOT for review finding severity. All review skills (`spec-complian
     exception.
   - Test design flaw: mocks remove the behavior under test, regression test passes without
     Red-Green-Revert, missing edge case coverage for a claimed criterion.
-  - Durable doc claim already false (`CONTEXT.md` glossary out of sync,
-    `docs/ARCHITECTURE.md` describes the old shape).
+  - Durable doc claim already false (`.ai-harness/CONTEXT.md` glossary out of sync,
+    `.ai-harness/ARCHITECTURE.md` describes the old shape).
   - Missing error handling on a path that can actually fail.
   - DDD violation in the touched path: ubiquitous-language drift, missing aggregate
     invariant test, cross-context import without translation.

@@ -3,7 +3,7 @@
 Document status: stub. TODO claims are not project truth yet. Non-TODO workflow, safety, and quality
 rules apply immediately.
 
-Use this file for durable domain structure. Use `CONTEXT.md` for the glossary and canonical
+Use this file for durable domain structure. Use `.ai-harness/CONTEXT.md` for the glossary and canonical
 language.
 
 ## Core Concepts
@@ -35,7 +35,7 @@ What belongs in the domain vs outside it.
 
 ## Language
 
-Canonical terms live in `CONTEXT.md`. Do not introduce synonyms in specs, plans, tests, or UI copy
+Canonical terms live in `.ai-harness/CONTEXT.md`. Do not introduce synonyms in specs, plans, tests, or UI copy
 without updating context.
 
 ## Entities

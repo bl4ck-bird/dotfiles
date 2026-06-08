@@ -124,7 +124,7 @@ Refactor only after green. Rerun focused verification after.
 Prefer:
 
 - Public interfaces or user-visible behavior.
-- Project domain language from `CONTEXT.md`.
+- Project domain language from `.ai-harness/CONTEXT.md`.
 - Survive internal refactors.
 - Protect invariants and edge cases.
 - Cover regression behavior for bugs.

@@ -12,7 +12,7 @@ if git rev-parse --is-inside-work-tree >/dev/null 2>&1; then
   # BB Harness bootstrap reminder: surface when the repo references the harness
   # so the agent invokes `using-bb-harness` before non-trivial replies.
   if grep -lE 'BB Harness|using-bb-harness' \
-       AGENTS.md CLAUDE.md docs/AGENT_WORKFLOW.md 2>/dev/null | head -1 >/dev/null; then
+       AGENTS.md CLAUDE.md .ai-harness/AGENT_WORKFLOW.md 2>/dev/null | head -1 >/dev/null; then
     printf '\n'
     printf 'BB Harness detected. Before any non-trivial action, invoke `using-bb-harness`\n'
     printf 'to verify the next phase, or invoke the directly matching skill when the task\n'

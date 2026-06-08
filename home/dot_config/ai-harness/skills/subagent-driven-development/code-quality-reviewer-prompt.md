@@ -58,7 +58,7 @@ Task tool (code-quality-reviewer if available, else general-purpose):
     - Comments explain *why* (constraint, invariant, workaround), not *what*.
 
     **2. Architecture (DDD / SOLID / boundaries)**
-    - DDD operational checks (when CONTEXT.md / docs/DOMAIN_MODEL.md exists and
+    - DDD operational checks (when .ai-harness/CONTEXT.md / .ai-harness/DOMAIN_MODEL.md exists and
       the diff touches domain code): ubiquitous language, aggregate invariants,
       bounded context boundaries, anti-corruption layer, entity vs value object,
       application vs domain services, repositories / ports.
@@ -80,11 +80,12 @@ Task tool (code-quality-reviewer if available, else general-purpose):
 
     **4. Durable Docs Drift**
     - README stays user-facing and high-level.
-    - CONTEXT.md owns canonical domain terms — flag drift.
-    - docs/CURRENT.md reflects current phase, acceptance source, last
+    - .ai-harness/CONTEXT.md owns canonical domain terms — flag drift.
+    - .ai-harness/CURRENT.md reflects current phase, acceptance source, last
       verification, next action when substantial state changed.
-    - docs/ARCHITECTURE.md, DOMAIN_MODEL.md, DATA_MODEL.md, SECURITY_MODEL.md,
-      TESTING_STRATEGY.md updated when their concern changed.
+    - .ai-harness/ARCHITECTURE.md, .ai-harness/DOMAIN_MODEL.md, .ai-harness/DATA_MODEL.md,
+      .ai-harness/SECURITY_MODEL.md, .ai-harness/TESTING_STRATEGY.md updated when their
+      concern changed.
 
     **5. Production Readiness**
     - Migration strategy if schema changed.

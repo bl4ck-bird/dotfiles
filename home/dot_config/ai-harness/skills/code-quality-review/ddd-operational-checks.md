@@ -2,7 +2,7 @@
 
 Load when:
 
-- `CONTEXT.md` or `docs/DOMAIN_MODEL.md` exists, **and**
+- `.ai-harness/CONTEXT.md` or `.ai-harness/DOMAIN_MODEL.md` exists, **and**
 - The diff touches domain code (entities, aggregates, value objects, domain services,
   repositories, ports, anti-corruption layers, domain events).
 
@@ -24,8 +24,8 @@ regardless of project type.
 
 ### 1. Ubiquitous Language
 
-- Identifiers (class, function, table, event, log, test names) match `CONTEXT.md` and
-  `docs/DOMAIN_MODEL.md` glossary.
+- Identifiers (class, function, table, event, log, test names) match `.ai-harness/CONTEXT.md` and
+  `.ai-harness/DOMAIN_MODEL.md` glossary.
 - Flag synonyms ("Account"/"User"/"Member" interchanged).
 - Flag undefined terms — new domain words appearing in code without a glossary entry.
 - Test names count. `it('lets a member join a workspace')` must use the same terms.
@@ -35,18 +35,18 @@ How to check:
 ```bash
 # Grep the diff for domain identifiers
 git diff --name-only <base>..<head> | xargs grep -n -E '(class|function|interface|type) [A-Z]'
-# Cross-reference with CONTEXT.md glossary
-grep -nE '^- [*`]?[A-Z][A-Za-z]+' CONTEXT.md
+# Cross-reference with .ai-harness/CONTEXT.md glossary
+grep -nE '^- [*`]?[A-Z][A-Za-z]+' .ai-harness/CONTEXT.md
 ```
 
 Finding template:
 
-> **Important** — `<file:line>` introduces `Foo` not in `CONTEXT.md` glossary. Add `Foo` or
+> **Important** — `<file:line>` introduces `Foo` not in `.ai-harness/CONTEXT.md` glossary. Add `Foo` or
 > rename to an existing term. Synonym drift creates ubiquitous-language decay.
 
 ### 2. Aggregate Invariants
 
-- Each invariant in `docs/DOMAIN_MODEL.md` (or implied) has at least one test through a
+- Each invariant in `.ai-harness/DOMAIN_MODEL.md` (or implied) has at least one test through a
   public interface or domain event.
 - Flag invariants enforced only by convention/comment with no test.
 
@@ -58,21 +58,21 @@ Finding template:
 
 Finding template:
 
-> **Important** — `docs/DOMAIN_MODEL.md` lists invariant "<text>" but no test in this diff
+> **Important** — `.ai-harness/DOMAIN_MODEL.md` lists invariant "<text>" but no test in this diff
 > proves it via a public interface. Add a behavior test through `<Aggregate>.<method>`.
 
 ### 3. Bounded-Context Boundaries
 
 - No imports of another context's aggregates/value objects without an explicit translation
   layer.
-- `CONTEXT-MAP.md` defines boundaries and translation style (ACL, shared kernel, published
+- `.ai-harness/CONTEXT-MAP.md` defines boundaries and translation style (ACL, shared kernel, published
   language).
 - Direct import `import { Order } from '../billing/Order'` inside `inventory` is a finding
-  unless `CONTEXT-MAP.md` records an exception.
+  unless `.ai-harness/CONTEXT-MAP.md` records an exception.
 
 Finding template:
 
-> **Critical** — `<file:line>` imports `Order` from `billing` directly. `CONTEXT-MAP.md`
+> **Critical** — `<file:line>` imports `Order` from `billing` directly. `.ai-harness/CONTEXT-MAP.md`
 > requires translation through `BillingAdapter`. Replace with the adapter call.
 
 ### 4. Anti-Corruption Layer

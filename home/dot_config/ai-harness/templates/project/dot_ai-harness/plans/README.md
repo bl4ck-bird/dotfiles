@@ -30,7 +30,7 @@ Prompt:
 
 ```text
 Use write-plan.
-Create docs/plans/YYYY-MM-DD-<feature>.md with acceptance source, file responsibility
+Create .ai-harness/plans/YYYY-MM-DD-<feature>.md with acceptance source, file responsibility
 mapping, TDD steps, verification commands, docs impact, commit/stack strategy, rollback
 notes, and focused review checkpoints.
 ```
@@ -38,7 +38,7 @@ notes, and focused review checkpoints.
 Self-Review prompt:
 
 ```text
-Run write-plan Self-Review on docs/plans/YYYY-MM-DD-<feature>.md.
+Run write-plan Self-Review on .ai-harness/plans/YYYY-MM-DD-<feature>.md.
 Confirm the acceptance source has write-spec Self-Review completed.
 Check file responsibility map (SRP per file), TDD granularity, SOLID
 upstream (DIP / dependency direction), file-size impact at 300/600

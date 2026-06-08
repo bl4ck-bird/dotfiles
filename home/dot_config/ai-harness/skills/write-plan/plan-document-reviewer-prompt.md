@@ -47,15 +47,15 @@ Task tool (general-purpose, or plan-document-reviewer when defined):
     Read directly:
 
     - AGENTS.md
-    - CONTEXT.md
-    - docs/CURRENT.md
-    - docs/AGENT_WORKFLOW.md
-    - docs/ARCHITECTURE.md (when boundaries / runtime / module shape may change)
-    - docs/DOMAIN_MODEL.md (when domain language / invariants matter)
-    - docs/DATA_MODEL.md (when persistence / migration / retention matter)
-    - docs/SECURITY_MODEL.md (when auth / secrets / deletion / sensitive data
+    - .ai-harness/CONTEXT.md
+    - .ai-harness/CURRENT.md
+    - .ai-harness/AGENT_WORKFLOW.md
+    - .ai-harness/ARCHITECTURE.md (when boundaries / runtime / module shape may change)
+    - .ai-harness/DOMAIN_MODEL.md (when domain language / invariants matter)
+    - .ai-harness/DATA_MODEL.md (when persistence / migration / retention matter)
+    - .ai-harness/SECURITY_MODEL.md (when auth / secrets / deletion / sensitive data
       matter)
-    - docs/TESTING_STRATEGY.md (when verification expectations matter)
+    - .ai-harness/TESTING_STRATEGY.md (when verification expectations matter)
     - {EXTRA_CONTEXT_PATHS — additional project docs, or "none"}
 
     ## What To Check
@@ -68,7 +68,7 @@ Task tool (general-purpose, or plan-document-reviewer when defined):
       for TDD steps.
     - No placeholder language ("TBD", "later", "appropriate error handling",
       "write tests for the above").
-    - New identifier names match CONTEXT.md.
+    - New identifier names match .ai-harness/CONTEXT.md.
     - Plan does not copy large sections from the acceptance artifact — it links.
     - A human can inspect the plan without chat history.
     - Acceptance Source named; Acceptance Self-Review note present.
@@ -189,7 +189,7 @@ Task tool (general-purpose, or plan-document-reviewer when defined):
 ## Placeholders
 
 - `{PLAN_PATH}` — path to the plan under review (e.g.
-  `docs/plans/2026-05-14-feature.md`).
+  `.ai-harness/plans/2026-05-14-feature.md`).
 - `{ACCEPTANCE_PATH}` — path to spec / Light Acceptance Brief / issue the plan
   implements.
 - `{AUTHOR_FOCUS}` — author's note about what to look at hardest, or `"none"`.

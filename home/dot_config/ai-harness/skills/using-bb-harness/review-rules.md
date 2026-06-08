@@ -94,8 +94,8 @@ A `No` result is the system working, not defeat. The authoring skill (`write-spe
 Signs the plan really needs revision:
 
 - Acceptance criterion cannot be satisfied with planned file structure.
-- Plan assumes an architecture decision that conflicts with `docs/ARCHITECTURE.md`.
-- Implementation requires a domain change not in `CONTEXT.md` / `docs/DOMAIN_MODEL.md`.
+- Plan assumes an architecture decision that conflicts with `.ai-harness/ARCHITECTURE.md`.
+- Implementation requires a domain change not in `.ai-harness/CONTEXT.md` / `.ai-harness/DOMAIN_MODEL.md`.
 - Two slices write the same file and cannot run in either order.
 
 Escalate, revise the plan, restart from the affected slice. Completed earlier slices stay

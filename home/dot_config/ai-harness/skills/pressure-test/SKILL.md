@@ -31,7 +31,7 @@ designing from a blank page.
 
 If a question can be answered by reading the repo, inspect instead of asking.
 
-- Existing domain terms in `CONTEXT.md` or `docs/DOMAIN_MODEL.md`
+- Existing domain terms in `.ai-harness/CONTEXT.md` or `.ai-harness/DOMAIN_MODEL.md`
 - Existing package structure
 - Existing tests and commands
 - Established UI patterns
@@ -42,7 +42,7 @@ If a question can be answered by reading the repo, inspect instead of asking.
 - Product goal, MVP, non-goals, success criteria clear enough for a spec.
 - Domain terms resolved or marked as open questions.
 - Risky tradeoffs identified.
-- Next artifact obvious: `CONTEXT.md`, acceptance artifact, durable decision, or
+- Next artifact obvious: `.ai-harness/CONTEXT.md`, acceptance artifact, durable decision, or
   implementation plan.
 
 ## Output

@@ -39,12 +39,12 @@ Task tool (general-purpose, or spec-document-reviewer when defined):
     Read directly (not from chat summary):
 
     - AGENTS.md
-    - CONTEXT.md
-    - docs/CURRENT.md
-    - docs/ROADMAP.md (when product scope or milestones relevant)
-    - docs/DOMAIN_MODEL.md (when domain terms or invariants relevant)
-    - docs/DATA_MODEL.md (when persistence, migration, retention relevant)
-    - docs/SECURITY_MODEL.md (when auth, secrets, deletion, sensitive data
+    - .ai-harness/CONTEXT.md
+    - .ai-harness/CURRENT.md
+    - .ai-harness/ROADMAP.md (when product scope or milestones relevant)
+    - .ai-harness/DOMAIN_MODEL.md (when domain terms or invariants relevant)
+    - .ai-harness/DATA_MODEL.md (when persistence, migration, retention relevant)
+    - .ai-harness/SECURITY_MODEL.md (when auth, secrets, deletion, sensitive data
       relevant)
     - {EXTRA_CONTEXT_PATHS — additional project docs, or "none"}
 
@@ -61,11 +61,11 @@ Task tool (general-purpose, or spec-document-reviewer when defined):
     - AFK / HITL labels: realistic?
     - Testing decisions and docs impact: named?
 
-    **Domain alignment** (when CONTEXT.md / docs/DOMAIN_MODEL.md exists)
-    - Every domain term matches CONTEXT.md glossary.
-    - New terms defined and added to CONTEXT.md as acceptance work — not
+    **Domain alignment** (when .ai-harness/CONTEXT.md / .ai-harness/DOMAIN_MODEL.md exists)
+    - Every domain term matches .ai-harness/CONTEXT.md glossary.
+    - New terms defined and added to .ai-harness/CONTEXT.md as acceptance work — not
       silently introduced.
-    - Aggregate boundaries respect bounded contexts in docs/DOMAIN_MODEL.md.
+    - Aggregate boundaries respect bounded contexts in .ai-harness/DOMAIN_MODEL.md.
       Cross-context interactions name the translation layer.
     - Documented invariants the spec touches are listed with how each is proven
       (test or domain event).
@@ -147,7 +147,7 @@ Task tool (general-purpose, or spec-document-reviewer when defined):
 ## Placeholders
 
 - `{SPEC_PATH}` — path to spec under review (e.g.
-  `docs/specs/2026-05-14-feature.md`).
+  `.ai-harness/specs/2026-05-14-feature.md`).
 - `{AUTHOR_FOCUS}` — author's note about what to look at hardest, or `"none"`.
 - `{WEAK_SPOTS}` — sections the author is uncertain about, or `"none"`.
 - `{EXTRA_CONTEXT_PATHS}` — additional project docs, or `"none"`.

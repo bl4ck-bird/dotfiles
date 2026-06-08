@@ -22,8 +22,8 @@ Confirm before editing:
 
 - Current acceptance artifact with acceptance criteria (spec, PRD, issue, review finding, or approved task).
 - Implementation plan with file responsibility mapping and Plan Self-Review done (see `write-plan` Self-Review).
-- Core docs read: `AGENTS.md`, `CONTEXT.md`, `docs/CURRENT.md`, `docs/AGENT_WORKFLOW.md`, current artifact / plan, relevant code.
-- Conditional docs read when relevant: `CONTEXT-MAP.md`, `docs/ARCHITECTURE.md`, `docs/DOMAIN_MODEL.md`, `docs/DATA_MODEL.md`, `docs/SECURITY_MODEL.md`, `docs/TESTING_STRATEGY.md`, durable decisions.
+- Core docs read: `AGENTS.md`, `.ai-harness/CONTEXT.md`, `.ai-harness/CURRENT.md`, `.ai-harness/AGENT_WORKFLOW.md`, current artifact / plan, relevant code.
+- Conditional docs read when relevant: `.ai-harness/CONTEXT-MAP.md`, `.ai-harness/ARCHITECTURE.md`, `.ai-harness/DOMAIN_MODEL.md`, `.ai-harness/DATA_MODEL.md`, `.ai-harness/SECURITY_MODEL.md`, `.ai-harness/TESTING_STRATEGY.md`, durable decisions.
 - Host can dispatch subagents. If not → `executing-plans-inline`.
 - Next task small enough to complete and verify in one pass.
 
@@ -187,7 +187,7 @@ Bad subagent tasks:
 
 ## Handoff
 
-Before clearing the session or pausing long work, write a handoff in `docs/reviews/` with:
+Before clearing the session or pausing long work, write a handoff in `.ai-harness/reviews/` with:
 
 - Current goal.
 - Acceptance artifact and plan paths.

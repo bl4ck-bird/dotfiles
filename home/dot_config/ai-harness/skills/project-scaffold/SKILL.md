@@ -14,47 +14,73 @@ Set up a repo so Claude Code, Codex, and other coding agents share the same dura
 3. Propose scaffold profile and exact file/action list.
 4. Run human decision gate before creating files or changing repo shape.
 5. Create only approved files and directories.
-6. Add `.claude/`, `.codex/`, `.agents/`, `lefthook.yml` only after user approves.
-7. Identify dependency/bootstrap commands when useful; guide user instead of running unless user explicitly asks.
-8. End with short report: created files, skipped existing files, approved setup decisions, recommended next setup.
+6. Merge agent-file entries into `.gitignore` (see Gitignore Policy) — append missing lines, never overwrite.
+7. Add `.claude/`, `.codex/`, `.agents/`, `lefthook.yml` only after user approves.
+8. Identify dependency/bootstrap commands when useful; guide user instead of running unless user explicitly asks.
+9. End with short report: created files, skipped existing files, approved setup decisions, recommended next setup.
 
 ## Scaffold Profiles
 
 Default to smallest profile that preserves restartable context:
 
-- `minimal`: agent instructions, core context, current work, workflow notes.
+- `minimal`: agent instructions, core context, current work, workflow notes, gitignore entries.
 - `product`: `minimal` + roadmap, testing strategy, specs/plans/reviews folders, architecture, domain model.
 - `data-security`: `product` + data and security models for persistence, auth, secrets, deletion, sync, external integrations, sensitive data.
 - `full`: `data-security` + context map and formal decision record template; only when user wants heavier governance skeleton.
 
 ```text
 minimal:
-  AGENTS.md
-  CLAUDE.md
-  CONTEXT.md
-  docs/AGENT_WORKFLOW.md
-  docs/CURRENT.md
+  AGENTS.md                  # project root, gitignored
+  CLAUDE.md                  # project root, gitignored (-> @AGENTS.md)
+  .gitignore                 # merge agent-file entries (see Gitignore Policy)
+  .ai-harness/CONTEXT.md
+  .ai-harness/AGENT_WORKFLOW.md
+  .ai-harness/CURRENT.md
 
 product:
   minimal +
-  docs/TESTING_STRATEGY.md
-  docs/specs/README.md
-  docs/plans/README.md
-  docs/reviews/README.md
-  docs/ROADMAP.md
-  docs/ARCHITECTURE.md
-  docs/DOMAIN_MODEL.md
+  .ai-harness/TESTING_STRATEGY.md
+  .ai-harness/specs/README.md
+  .ai-harness/plans/README.md
+  .ai-harness/reviews/README.md
+  .ai-harness/ROADMAP.md
+  .ai-harness/ARCHITECTURE.md
+  .ai-harness/DOMAIN_MODEL.md
 
 data-security:
   product +
-  docs/DATA_MODEL.md
-  docs/SECURITY_MODEL.md
+  .ai-harness/DATA_MODEL.md
+  .ai-harness/SECURITY_MODEL.md
 
 full:
   data-security +
-  CONTEXT-MAP.md
-  docs/DECISIONS/0000-template.md
+  .ai-harness/CONTEXT-MAP.md
+  .ai-harness/DECISIONS/0000-template.md
 ```
+
+## Gitignore Policy
+
+Agent-facing files are **local context, not committed artifacts**. The repo's `docs/` is reserved
+for human-facing product/user documentation; all agent workflow state lives under `.ai-harness/`.
+Every profile (including `minimal`) merges these entries into the project `.gitignore`:
+
+```gitignore
+# AI harness — local agent context, not committed
+.ai-harness/
+AGENTS.md
+CLAUDE.md
+GEMINI.md
+```
+
+- **Merge, never overwrite.** If `.gitignore` exists, append only the missing lines under the
+  comment header; preserve existing entries and ordering.
+- `AGENTS.md` / `CLAUDE.md` / `GEMINI.md` stay at the repo root (tools require them there) but are
+  ignored — they exist locally for the agent, not for reviewers.
+- `.ai-harness/` holds every harness-generated doc (CONTEXT, CURRENT, specs, plans, reviews,
+  architecture/domain/data/security/testing models, decisions). None of it is committed.
+- Do **not** ignore `docs/` — that is the human documentation path and stays committed.
+- If the user later wants a durable design doc shared with human contributors, they author it under
+  `docs/` directly; the harness does not generate into `docs/`.
 
 ## Human Decision Gate
 
@@ -87,7 +113,8 @@ Harness principle: **trigger automation by hook; judgment lives in skills.** Hoo
 ## Defaults
 
 - `README.md` high-level, onboarding-friendly.
-- Durable design rules in focused docs, not README.
+- `docs/` is human-facing documentation only; agent workflow state lives in `.ai-harness/` and is gitignored (see Gitignore Policy).
+- Durable design rules in focused docs under `.ai-harness/`, not README.
 - Project instructions specific, short enough to read every session.
 - Don't copy global rules into project files unless project needs stricter version.
 - Mark scaffolded docs as `stub` until TODOs resolved. Agents may read stub docs for structure but must not treat TODO content as project truth.

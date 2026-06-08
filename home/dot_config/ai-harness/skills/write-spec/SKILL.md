@@ -12,33 +12,33 @@ Do not create a full spec just to restate an already clear task. A clear issue, 
 ## Save Location
 
 ```text
-docs/specs/YYYY-MM-DD-<feature>.md
+.ai-harness/specs/YYYY-MM-DD-<feature>.md
 ```
 
 Use the project's established location if it has one.
 
-For small well-understood work, use the existing issue, review record, or approved user request as the acceptance source instead of creating a new spec file. `docs/CURRENT.md` may point to the active source but should not replace it.
+For small well-understood work, use the existing issue, review record, or approved user request as the acceptance source instead of creating a new spec file. `.ai-harness/CURRENT.md` may point to the active source but should not replace it.
 
 ## Inputs
 
 **Light artifact mode**: issue, review finding, PRD section, or approved user request is already clear enough to become the acceptance source. Read:
 
-- `CONTEXT.md`
-- `docs/CURRENT.md`
+- `.ai-harness/CONTEXT.md`
+- `.ai-harness/CURRENT.md`
 - The acceptance source: issue, PRD section, review finding, or approved user request
 - Existing code and tests when feature extends current behavior
 
 **Full spec mode**: product scope, domain language, public API, data/storage, auth/security, deletion, sync, external integrations, or user workflow still being decided. Also read:
 
-- `docs/ROADMAP.md`
+- `.ai-harness/ROADMAP.md`
 - Discovery or interview notes
 
 Conditional reads in either mode:
 
-- `CONTEXT-MAP.md`: multiple contexts, apps, packages, or integrations.
-- `docs/DOMAIN_MODEL.md`: domain terms, invariants, or workflows may change.
-- `docs/DATA_MODEL.md`: persistence, migration, retention, deletion, import/export, or backup may change.
-- `docs/SECURITY_MODEL.md`: auth, permissions, secrets, trust boundaries, sensitive data, deletion, or crypto may change.
+- `.ai-harness/CONTEXT-MAP.md`: multiple contexts, apps, packages, or integrations.
+- `.ai-harness/DOMAIN_MODEL.md`: domain terms, invariants, or workflows may change.
+- `.ai-harness/DATA_MODEL.md`: persistence, migration, retention, deletion, import/export, or backup may change.
+- `.ai-harness/SECURITY_MODEL.md`: auth, permissions, secrets, trust boundaries, sensitive data, deletion, or crypto may change.
 - Relevant durable decisions when hard to reverse or surprising.
 
 Idea still ambiguous → run `pressure-test` first. Terms unstable → run `domain-modeling` first.
@@ -49,7 +49,7 @@ Other docs reference this section as "Acceptance Brief Fields (see `write-spec`)
 
 **Callsites that inline field names** (per README Cross-Reference Inlining Policy — keep in sync when editing): `using-bb-harness/SKILL.md` (Acceptance Artifact), `write-plan/SKILL.md` Preconditions (intra-file anchor in Approved Request Anchor section).
 
-Use for non-trivial work when a full spec would only duplicate an already clear request. Source can live in an issue, review record, plan anchor, or short `docs/specs/` note, but must include every field below:
+Use for non-trivial work when a full spec would only duplicate an already clear request. Source can live in an issue, review record, plan anchor, or short `.ai-harness/specs/` note, but must include every field below:
 
 ```markdown
 # <Feature or Change> Acceptance Brief
@@ -160,10 +160,10 @@ Walk this checklist before declaring artifact ready. Domain and acceptance corre
 
 ### Domain Alignment (DDD upstream check)
 
-When `CONTEXT.md` or `docs/DOMAIN_MODEL.md` exists:
+When `.ai-harness/CONTEXT.md` or `.ai-harness/DOMAIN_MODEL.md` exists:
 
-- Every domain term matches `CONTEXT.md` glossary. New terms defined and added to `CONTEXT.md` as part of acceptance work, not silently introduced.
-- Aggregate boundaries match `docs/DOMAIN_MODEL.md`. Spec does not cross a bounded context without naming the translation layer.
+- Every domain term matches `.ai-harness/CONTEXT.md` glossary. New terms defined and added to `.ai-harness/CONTEXT.md` as part of acceptance work, not silently introduced.
+- Aggregate boundaries match `.ai-harness/DOMAIN_MODEL.md`. Spec does not cross a bounded context without naming the translation layer.
 - Documented invariants the spec touches are listed with how each will be proven (test or domain event). Invariants without proof are open questions, not acceptance criteria.
 - Spec uses `entity` vs `value object` vs `aggregate` vocabulary correctly when introducing or changing one.
 

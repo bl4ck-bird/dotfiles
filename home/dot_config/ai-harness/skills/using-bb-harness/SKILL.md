@@ -12,7 +12,7 @@ Universal entry point. Invoke at every session start. If repo references BB Harn
 Session start, before non-trivial work:
 
 1. Check repo root for BB Harness markers:
-   - `AGENTS.md`, `CLAUDE.md`, or `docs/AGENT_WORKFLOW.md` that **mentions BB Harness or uses BB skill names** (`using-bb-harness`, `subagent-driven-development`, `code-quality-review`, etc.).
+   - `AGENTS.md`, `CLAUDE.md`, or `.ai-harness/AGENT_WORKFLOW.md` that **mentions BB Harness or uses BB skill names** (`using-bb-harness`, `subagent-driven-development`, `code-quality-review`, etc.).
 2. **Markers present** — read nearest `AGENTS.md` / `CLAUDE.md`, then proceed to Start or invoke the directly matching skill (e.g. `bug-diagnosis` for a bug, `test-driven-development` for small behavior change).
 3. **Markers absent** — report once: "BB Harness not in this repo. Proceeding with standard agent behavior." Skip rest. Do not force BB workflow on non-adopters.
 4. Trivial questions and pure-conversation replies may skip bootstrap.
@@ -30,7 +30,7 @@ Cheap when BB absent (single grep / file-existence check). Only reliable way to 
 ## Start
 
 1. Read nearest `AGENTS.md` or `CLAUDE.md`.
-2. If present, read `CONTEXT.md`, `docs/CURRENT.md`, `docs/AGENT_WORKFLOW.md`, active acceptance artifact, plan, recent review or handoff note.
+2. If present, read `.ai-harness/CONTEXT.md`, `.ai-harness/CURRENT.md`, `.ai-harness/AGENT_WORKFLOW.md`, active acceptance artifact, plan, recent review or handoff note.
 3. Check available skills for direct match before choosing execution path.
 4. Summarize: current goal, workflow weight, missing decisions/artifacts, next safe action.
 
@@ -55,7 +55,7 @@ If key context missing, ask or propose minimal recovery step. Do not invent prod
 
 Non-trivial work needs reviewed acceptance artifact (spec, PRD, issue, review finding, approved task) before implementation. Use `write-spec` for new specs — its Self-Review owns product clarity and domain alignment. Acceptance Brief Fields (canonical: Goal, Accepted Behavior, Acceptance Criteria, Non-Goals / Stop Conditions, Touched Surfaces, Edge And Error Cases, Docs / Test Impact, Risk Level, Required Reviews, Second Review, AFK / HITL Boundary — full definitions in `write-spec` Light Acceptance Brief).
 
-- Full `docs/specs/` spec: when product scope / domain language / public API / data / storage / auth / security / deletion / sync / external integrations / user workflow still being decided.
+- Full `.ai-harness/specs/` spec: when product scope / domain language / public API / data / storage / auth / security / deletion / sync / external integrations / user workflow still being decided.
 - Already-clear task: issue / review finding / approved request enough when it meets canonical fields. Chat-only → plan must capture them in Approved Request Anchor.
 - Accepted-risk exceptions may skip a normal gate only with explicit user acceptance. Record: skipped gate, reason, risk, compensating check, user acceptance, follow-up/expiry.
 
@@ -148,7 +148,7 @@ Choose next phase, not entire lifecycle:
 After each phase:
 
 1. Record/update durable artifact for that phase when work non-trivial.
-2. Update `docs/CURRENT.md` only when active phase, acceptance artifact/source, plan, blocker, completed slice, verification evidence, or next action materially changes.
+2. Update `.ai-harness/CURRENT.md` only when active phase, acceptance artifact/source, plan, blocker, completed slice, verification evidence, or next action materially changes.
 3. Run narrowest useful verification or explain why none applies.
 4. Decide: continue, ask user, clear context after handoff, or stop.
 5. Recommend one next phase. Two paths equally valid → present at most one alternative.
@@ -170,7 +170,7 @@ After each phase, recommend exactly one next phase, ask concise confirmation in 
 - Load only the skill needed for current phase.
 - Artifact paths over chat summaries.
 - Write handoff before clearing after discovery/spec, plan approval, several implementation tasks, or review fixes.
-- New sessions resume from `AGENTS.md`, `CONTEXT.md`, `docs/CURRENT.md`, `docs/AGENT_WORKFLOW.md`, active acceptance artifact/plan, recent reviews, relevant code.
+- New sessions resume from `AGENTS.md`, `.ai-harness/CONTEXT.md`, `.ai-harness/CURRENT.md`, `.ai-harness/AGENT_WORKFLOW.md`, active acceptance artifact/plan, recent reviews, relevant code.
 
 ## Output
 
