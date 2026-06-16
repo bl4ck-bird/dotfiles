@@ -1,6 +1,7 @@
 {
   "respectGitignore": true,
   "cleanupPeriodDays": 14,
+  "skillListingBudgetFraction": 0.02,
   "attribution": {
     "commit": "Co-Authored-By: Claude <noreply@anthropic.com>",
     "pr": ""
@@ -13,13 +14,9 @@
     ],
     "defaultMode": "bypassPermissions"
   },
-  "extraKnownMarketplaces": {
-    "openai-codex": {
-      "source": {
-        "source": "github",
-        "repo": "openai/codex-plugin-cc"
-      }
-    }
+  "statusLine": {
+    "type": "command",
+    "command": "~/.claude/statusline.sh"
   },
   "enabledPlugins": {
     "codex@openai-codex": true,
@@ -69,13 +66,16 @@
     "telegram@claude-plugins-official": false,
     "superpowers@claude-plugins-official": false
   },
-  "statusLine": {
-    "type": "command",
-    "command": "~/.claude/statusline.sh"
+  "extraKnownMarketplaces": {
+    "openai-codex": {
+      "source": {
+        "source": "github",
+        "repo": "openai/codex-plugin-cc"
+      }
+    }
   },
   "spinnerTipsEnabled": false,
   "alwaysThinkingEnabled": true,
   "effortLevel": "high",
-  "skipDangerousModePermissionPrompt": true,
-  "skillListingBudgetFraction": 0.02
+  "skipDangerousModePermissionPrompt": true
 }
