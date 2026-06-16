@@ -41,6 +41,7 @@ brew:
       - slack
     dev:
       - visual-studio-code
+      - jetbrains-toolbox
       - antigravity
       - orbstack
     personal:
