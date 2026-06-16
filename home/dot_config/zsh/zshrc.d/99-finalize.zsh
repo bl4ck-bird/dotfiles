@@ -16,6 +16,9 @@
 # 4. VS Code / Antigravity의 내장 터미널 창을 연 경우 (이중 실행 방지)
 [[ "$TERM_PROGRAM" == "vscode" || "$TERM_PROGRAM" == "antigravity" ]] && return
 
+# 5. Jetbrains 환경 변수 로더인 경우
+[[ -n "$INTELLIJ_ENVIRONMENT_READER" ]] && return
+
 # ---------------------------------------------------------
 # 위 방어선을 모두 통과했다면 순수 터미널(Ghostty 등) 환경입니다.
 # ---------------------------------------------------------
