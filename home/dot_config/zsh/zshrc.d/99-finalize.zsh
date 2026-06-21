@@ -4,19 +4,22 @@
 
 # [Guard Clauses] 예외 환경에서는 tmux 자동 실행을 즉시 중단(return)합니다.
 
-# 1. 이미 tmux 세션 내부에 있는 경우 (무한 루프 방지)
+# 이미 tmux 세션 내부에 있는 경우 (무한 루프 방지)
 [[ -n "$TMUX" ]] && return
 
-# 2. 사용자 타이핑이 불가능한 비대화형(Non-interactive) 셸인 경우
+# 사용자 타이핑이 불가능한 비대화형(Non-interactive) 셸인 경우
 [[ $- != *i* ]] && return
 
-# 3. VS Code / Antigravity의 백그라운드 환경 변수 로더인 경우
+# SSH 원격 접속이면 패스
+[[ -n "$SSH_CONNECTION" ]] && return
+
+# VS Code / Antigravity의 백그라운드 환경 변수 로더인 경우
 [[ -n "$VSCODE_RESOLVING_ENVIRONMENT" ]] && return
 
-# 4. VS Code / Antigravity의 내장 터미널 창을 연 경우 (이중 실행 방지)
+# VS Code / Antigravity의 내장 터미널 창을 연 경우 (이중 실행 방지)
 [[ "$TERM_PROGRAM" == "vscode" || "$TERM_PROGRAM" == "antigravity" ]] && return
 
-# 5. Jetbrains인  경우
+# Jetbrains인  경우
 [[ -n "$INTELLIJ_ENVIRONMENT_READER" || "$TERMINAL_EMULATOR" == "JetBrains-JediTerm" ]] && return
 
 # ---------------------------------------------------------
