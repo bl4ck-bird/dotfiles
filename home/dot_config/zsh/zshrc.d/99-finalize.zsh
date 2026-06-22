@@ -10,9 +10,6 @@
 # 사용자 타이핑이 불가능한 비대화형(Non-interactive) 셸인 경우
 [[ $- != *i* ]] && return
 
-# SSH 원격 접속이면 패스
-[[ -n "$SSH_CONNECTION" ]] && return
-
 # VS Code / Antigravity의 백그라운드 환경 변수 로더인 경우
 [[ -n "$VSCODE_RESOLVING_ENVIRONMENT" ]] && return
 
