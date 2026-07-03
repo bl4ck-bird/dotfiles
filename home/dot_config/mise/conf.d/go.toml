@@ -1,0 +1,11 @@
+[tools.go]
+version = "latest"
+
+[env]
+GOTOOLCHAIN = "local"
+GOENV = "{{ env.XDG_CONFIG_HOME }}/go/env"
+GOPATH = "{{ env.XDG_DATA_HOME }}/go"
+GOMODCACHE = "{{ env.XDG_DATA_HOME }}/go/pkg/mod"
+GOBIN = "{{ env.XDG_DATA_HOME }}/go/bin"
+GOCACHE = "{{ env.XDG_CACHE_HOME }}/go/build"
+_.path = ["{{ env.XDG_DATA_HOME }}/go/bin"]
