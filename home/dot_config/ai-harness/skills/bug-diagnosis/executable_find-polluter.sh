@@ -11,9 +11,15 @@
 #
 # Prerequisites:
 #   - The project uses `npm test <file>` to run a single test file. Override the
-#     TEST_CMD env var for other runners (pytest, cargo test, go test, etc.).
+#     TEST_CMD env var for other runners that accept a test file path argument.
 #       TEST_CMD="pytest" ./find-polluter.sh '/tmp/leak' 'tests/**/test_*.py'
-#       TEST_CMD="cargo test --" ./find-polluter.sh 'target/leak' 'tests/*.rs'
+#     go test / cargo test address packages / test targets, not file paths —
+#     bisect those manually.
+#
+# Exit codes:
+#   0 = no polluter found
+#   1 = polluter identified (or pre-existing pollution — see message)
+#   2 = usage error
 #
 # Apply verification-before-completion: read the script output in your response,
 # do not assume "ran fine".
@@ -35,7 +41,7 @@ echo "    Test pattern: $TEST_PATTERN"
 echo "    Test command: $TEST_CMD <file>"
 echo
 
-# Clean any pre-existing pollution so the search starts from a known state.
+# Refuse to run if pollution pre-exists so the bisect starts from a known-clean state.
 if [ -e "$POLLUTION_CHECK" ]; then
   echo "❌ Pollution already exists before any test runs:"
   ls -la "$POLLUTION_CHECK"
@@ -60,8 +66,11 @@ TOTAL=$(echo "$TEST_FILES" | wc -l | tr -d ' ')
 echo "Found $TOTAL test files"
 echo
 
+# The while loop runs in a pipeline subshell; every conclusive outcome (polluter
+# found, pre-existing pollution) prints and exits inside the loop with status 1,
+# and `|| exit 1` propagates that status out of the subshell.
 COUNT=0
-for TEST_FILE in $TEST_FILES; do
+printf '%s\n' "$TEST_FILES" | while IFS= read -r TEST_FILE; do
   COUNT=$((COUNT + 1))
 
   if [ -e "$POLLUTION_CHECK" ]; then
@@ -93,7 +102,7 @@ for TEST_FILE in $TEST_FILES; do
   fi
 
   echo "clean"
-done
+done || exit 1
 
 echo
 echo "✅ No polluter found among $TOTAL tests."

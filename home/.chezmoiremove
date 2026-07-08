@@ -1,0 +1,4 @@
+.config/ai-harness/templates/project/docs
+.config/ai-harness/templates/project/docs/**
+.config/ai-harness/templates/project/CONTEXT.md
+.config/ai-harness/templates/project/CONTEXT-MAP.md
