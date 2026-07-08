@@ -77,7 +77,8 @@ Task tool (spec-compliance-reviewer if available, else general-purpose):
     Result: ✅ Spec compliant
     - Acceptance criteria covered: <list>
     - Files inspected: <list>
-    - Verification evidence read: <commands run / outputs read>
+    - Verification evidence read: <verification output quoted in the implementer
+      report / dispatch prompt, plus code and tests read directly>
     ```
 
     or

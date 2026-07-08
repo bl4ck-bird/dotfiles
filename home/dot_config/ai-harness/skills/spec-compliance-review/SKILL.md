@@ -75,6 +75,9 @@ Result: ❌ Issues found
 - Next: implementer fixes; re-run spec-compliance-review.
 ```
 
+Record the verdict at `.ai-harness/reviews/YYYY-MM-DD-<topic>-spec-compliance.md` when it is ❌ or
+when findings must survive the session; a clean ✅ may be recorded in `.ai-harness/CURRENT.md` only.
+
 ## Subagent Dispatch
 
 When running as subagent from `subagent-driven-development`, use template at

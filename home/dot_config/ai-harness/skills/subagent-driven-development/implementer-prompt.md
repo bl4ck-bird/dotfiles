@@ -39,10 +39,13 @@ Task tool (general-purpose):
 
     ## Your Job
 
-    1. Use test-driven-development (RED → verify RED → GREEN → verify GREEN →
-       REFACTOR). No production code change without a failing test first. Apply
-       verification-before-completion at every RED and GREEN. Read failure /
-       passing output in your response — do not rely on memory.
+    1. Use test-driven-development
+       (~/.config/ai-harness/skills/test-driven-development/SKILL.md; RED →
+       verify RED → GREEN → verify GREEN → REFACTOR). No production code change
+       without a failing test first. Apply verification-before-completion
+       (~/.config/ai-harness/skills/verification-before-completion/SKILL.md) at
+       every RED and GREEN. Read failure / passing output in your response — do
+       not rely on memory.
     2. Keep edits inside Allowed Files. If the list is incomplete, stop and report
        DONE_WITH_CONCERNS or NEEDS_CONTEXT — do not silently expand scope.
     3. Run the verification commands below.
@@ -117,7 +120,8 @@ Task tool (general-purpose):
     **Discipline:** avoided overbuilding (YAGNI)? Built only what was requested?
     Stayed in Allowed Files?
 
-    **Testing:** tests verify behavior, not mocks (testing-anti-patterns.md)?
+    **Testing:** tests verify behavior, not mocks
+    (~/.config/ai-harness/skills/test-driven-development/testing-anti-patterns.md)?
     Followed TDD strictly? Read verification output in this response?
 
     Fix issues now before reporting.
@@ -142,12 +146,12 @@ Task tool (general-purpose):
 - `{task-name}` — short imperative name.
 - `{FULL TEXT of task from the plan}` — paste the entire task section including
   TDD steps if specified.
-- `{Scene-setting}` — 2-4 sentences about where this task fits.
+- `{Where this task fits, dependencies, ...}` — 2-4 sentences of scene-setting.
 - `{Bullet list from the acceptance artifact}` — narrowed to this task's scope.
 - `{Allowed Files}` — exact paths from the File Responsibility Map.
 - `{Forbidden Files / Operations}` — optional, when relevant.
 - `{WORKING-DIRECTORY}` — absolute path, usually the worktree root.
-- `{Verification Commands}` — exact commands and expected output where known.
+- `{Exact commands for focused test, ...}` — exact commands and expected output where known.
 
 ## Controller Checklist Before Dispatch
 

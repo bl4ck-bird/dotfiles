@@ -13,7 +13,7 @@ Run multiple investigations / read-only tasks **concurrently** when independent.
 
 Trigger:
 
-- 3+ test files failing with **different** root causes.
+- 2+ test files failing with **different** root causes.
 - Multiple subsystems broken **independently**.
 - Each problem understandable without context from others.
 - No shared state between investigations.
@@ -158,4 +158,4 @@ Dispatch overhead is real. Stay single-agent when:
 
 ## Bottom Line
 
-Breadth tool, not execution model. Use for 3+ unrelated investigations concurrently. Use `subagent-driven-development` for everything flowing through an approved plan.
+Breadth tool, not execution model. Use for 2+ unrelated investigations concurrently. Use `subagent-driven-development` for everything flowing through an approved plan.

@@ -56,14 +56,16 @@ temp dir — `bug-diagnosis` reproduction-loop techniques).
 Use `find-polluter.sh`:
 
 ```bash
-# Default (npm test):
-./find-polluter.sh '.git' 'src/**/*.test.ts'
+# Run from the project root. Default runner: npm test.
+~/.config/ai-harness/skills/bug-diagnosis/find-polluter.sh '.git' 'src/**/*.test.ts'
 
-# Other runners:
-TEST_CMD="pytest"           ./find-polluter.sh '/tmp/leak.json' 'tests/**/test_*.py'
-TEST_CMD="cargo test --"    ./find-polluter.sh 'target/leak'    'tests/*.rs'
-TEST_CMD="go test"          ./find-polluter.sh 'tmp/leak'       './...'
+# Other runners (TEST_CMD must accept a test file path as its argument):
+TEST_CMD="pytest" ~/.config/ai-harness/skills/bug-diagnosis/find-polluter.sh '/tmp/leak.json' 'tests/**/test_*.py'
 ```
+
+`go test` and `cargo test` address packages / test targets (`--test <name>`), not file paths,
+so the script cannot drive them — bisect manually: run each package / test target individually,
+checking the pollution signal between runs.
 
 Runs each test file individually, checks the signal between runs, stops at the first
 polluter.

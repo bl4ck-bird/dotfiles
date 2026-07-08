@@ -60,7 +60,7 @@ Task tool (general-purpose, or plan-document-reviewer when defined):
 
     ## What To Check
 
-    Apply write-plan/SKILL.md Self-Review checks as an outsider.
+    Apply `~/.config/ai-harness/skills/write-plan/SKILL.md` Self-Review checks as an outsider.
 
     **Plan Hygiene**
     - Every acceptance requirement maps to a task or explicit non-goal.
@@ -94,9 +94,10 @@ Task tool (general-purpose, or plan-document-reviewer when defined):
 
     **Domain Alignment**
 
-    Same checks as write-spec spec-document-reviewer-prompt.md Domain Alignment
-    section, applied to plan content (file names, task descriptions, identifier
-    names).
+    Same checks as the Domain Alignment section in
+    `~/.config/ai-harness/skills/write-spec/spec-document-reviewer-prompt.md` —
+    read that section before checking; do not rely on memory. Apply to plan
+    content (file names, task descriptions, identifier names).
 
     **Review Needs**
     - Code-quality follow-on triggers (security surface, High-Risk Surface) named
@@ -168,8 +169,6 @@ Task tool (general-purpose, or plan-document-reviewer when defined):
     - Recommended second-review (Codex): yes / no, with reason
     ```
 
-    Stop after two cycles in the same review — escalate to user (`using-bb-harness/review-rules.md` Review Iteration Pattern + Pre-Implementation Verdicts).
-
     ## Critical Rules
 
     DO:
@@ -203,6 +202,8 @@ If `plan-document-reviewer` is defined in `claude-agents/`, prefer that —
 otherwise `general-purpose`.
 
 ## After The Reviewer Returns
+
+Stop after two cycles in the same review — escalate to user (`using-bb-harness/review-rules.md` Review Iteration Pattern + Pre-Implementation Verdicts).
 
 - **Ready to execute: Yes** → proceed to `subagent-driven-development` or
   `executing-plans-inline`.

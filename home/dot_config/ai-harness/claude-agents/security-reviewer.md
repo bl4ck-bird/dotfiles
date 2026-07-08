@@ -1,6 +1,6 @@
 ---
 name: security-reviewer
-description: Use when reviewing auth, secrets, crypto, permissions, deletion, untrusted input, data exposure, and other security-sensitive changes.
+description: Use when reviewing auth, secrets, crypto, permissions, deletion, untrusted input, data exposure, and other security-sensitive changes. Dispatched as a fresh reviewer subagent by the controller; for the inline skill form see skills/security-review/SKILL.md.
 tools: Read, Grep, Glob
 ---
 

@@ -30,7 +30,8 @@ regardless of project type.
 - Flag undefined terms — new domain words appearing in code without a glossary entry.
 - Test names count. `it('lets a member join a workspace')` must use the same terms.
 
-How to check:
+How to check (reviewers without shell access: replicate with the Grep/Glob tools, or ask the
+dispatching agent to run these and share the output):
 
 ```bash
 # Grep the diff for domain identifiers

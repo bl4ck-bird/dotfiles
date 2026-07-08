@@ -13,7 +13,8 @@ Confirm before starting:
 
 - Goal: concrete outcome.
 - Scope: files, modules, docs, commands the loop may touch.
-- Iteration budget: max loop count or time budget.
+- Iteration budget: max loop count (required). A time budget is advisory only — agents cannot
+  reliably measure wall-clock time across turns.
 - Verification gate: commands/manual checks that prove progress.
 - Review gate: when to run self-review, subagent review, or independent Codex review.
 - Allowed autonomous actions: exact file areas, commands, review/fix scope, whether worker
@@ -82,3 +83,4 @@ Ask before continuing when:
 - review evidence
 - remaining risk
 - next safe action
+- handoff target updated with final state (path)

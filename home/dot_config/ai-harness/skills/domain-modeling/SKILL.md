@@ -28,7 +28,8 @@ If files do not exist, propose initial versions instead of inventing final truth
 
 ## Interview Pattern
 
-One question at a time, only when the answer cannot be inferred from docs or code.
+One question at a time, only when the answer cannot be inferred from docs or code. Soft cap:
+after ~7 questions, summarize resolved/open points and ask whether to continue.
 
 Challenge fuzzy terms immediately: "account", "user", "member", "project", "workspace",
 "payment", "order", "session", "status", "sync", "delete".
@@ -88,4 +89,5 @@ End with:
 - unresolved terms
 - invariants
 - boundary decisions
-- next skill to run
+- next skill to run (return to the calling skill when invoked from a Self-Review; otherwise
+  default to `write-spec`)

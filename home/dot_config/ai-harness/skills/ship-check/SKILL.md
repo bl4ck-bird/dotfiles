@@ -22,11 +22,11 @@ Substantial work should have:
 - `docs-sync` considered.
 - Commit, PR, release, or stacked-branch actions approved when they are part of next step.
 
-## Tiny/Local Pass
+## Trivial/Local Pass
 
-Tiny/local (one bounded module, no product/domain/API/data/security decision changing, no High-Risk Surface): run only steps **1, 3, 9, 11** below. Mark rest as "N/A — tiny/local scope". Do not run full 11-step checklist for changes the Workflow Weight table classifies as Tiny/local.
+Trivial/local (one bounded module, no product/domain/API/data/security decision changing, no High-Risk Surface): run only steps **1, 3, 9, 11** below. Mark rest as "N/A — trivial/local scope". Do not run full 11-step checklist for changes the Workflow Weight table classifies as Trivial/local.
 
-If change set grows past Tiny/local definition, escalate to full checklist before continuing.
+If change set grows past Trivial/local definition, escalate to full checklist before continuing.
 
 ## Checklist
 
@@ -87,7 +87,7 @@ After substantial work, capture one to three short lines:
 
 Promote a rule into host agent's memory system only when non-obvious from code and would help future sessions; host agent (e.g. Claude global `auto memory`) owns format and classification. Otherwise leave the line in the review record.
 
-User has `retro-capture` skill installed → that skill picks up memory candidates and routes through host agent's persistent memory. `retro-capture` is external to BB Harness, so this skill names but does not require it — Retro lines stand on their own either way.
+`retro-capture` (part of BB Harness) picks up memory candidates and routes them through host agent's persistent memory. Memory candidates or retro insights exist → hand them to `retro-capture`; none → Retro lines stand on their own in the review record.
 
 ## Output
 

@@ -28,6 +28,7 @@ Harness-wide canonical list. Other docs reference as "High-Risk Surfaces (see `s
 Any of:
 
 - Change touches a High-Risk Surface.
+- Boundary/dependency-direction change.
 - User asks for independent double-check.
 - Primary review passed but artifact crosses module boundaries primary could not fully inspect.
 
@@ -52,7 +53,7 @@ Self-Review.
 Prefer in order:
 
 1. Plugin-based invocation in the primary agent — invoke an installed different-model reviewer in-process. Do **not** fall back to a same-model subagent here; that is option 3.
-   - **Claude Code**: invoke the Codex plugin. Use `/codex:adversarial-review` for High-Risk Surfaces or when challenging design choices; use `/codex:review` for a plain independent double-check. Pass the change scope (e.g., `--base <ref>`) explicitly and return Codex's output verbatim.
+   - **Claude Code**: invoke the Codex plugin. Use `/codex:adversarial-review` for High-Risk Surfaces or when challenging design choices; use `/codex:review` for a plain independent double-check. Pass the change scope (e.g., `--base <ref>`) explicitly and return Codex's output verbatim (recorded per Output below — verbatim as raw appendix, template filled by the main agent).
    - **Other agents**: use whichever installed plugin or extension runs a different-model review in-process. If none exists, skip to option 2 — do not silently substitute a same-model reviewer subagent.
 2. Separate terminal running another agent's CLI on the same repo, with this skill as the guide.
 3. Human / manual review using the same output format. A same-model reviewer subagent counts as "manual review by the primary agent" — record it as a fallback per the Fallback Record block, not as a true independent review.
@@ -81,7 +82,7 @@ Agreeing with primary? Say so directly. List residual risk primary did not surfa
 
 ## Severity And Result
 
-Same vocabulary as `code-quality-review`:
+Vocabulary SSOT: `using-bb-harness/severity-definitions.md`.
 
 - **Critical (Must Fix)** — blocks shipping.
 - **Important (Should Fix)** — fix before next phase.
@@ -136,4 +137,7 @@ Stay inside the supplied artifact / diff. Same artifacts as the primary review, 
 - Residual risk:
 ```
 
-Store substantial records in `.ai-harness/reviews/YYYY-MM-DD-<topic>-second-review.md`.
+Store substantial records in `.ai-harness/reviews/YYYY-MM-DD-<topic>-second-review.md`. When
+the reviewer's raw output (e.g. Codex verbatim, per Procedure option 1) does not match this
+template, the main agent fills the template fields itself and preserves the reviewer's verbatim
+output as a raw appendix in the same record.

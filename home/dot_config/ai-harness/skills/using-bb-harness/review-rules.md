@@ -41,7 +41,10 @@ All review skills use this gate. Vocabulary: **`Ready to merge?`** with three an
 - **No** — fundamental problem requires plan/acceptance revision, not just code. Escalate to
   user; do not loop.
 
-`spec-compliance-review` is binary: ✅ → `Yes`, ❌ → `With fixes`.
+`spec-compliance-review` is binary: ✅ → `Yes`, ❌ → `With fixes`. Exception: when the ❌
+stems from an artifact-level misunderstanding (spec/plan itself wrong or ambiguous), treat it
+as `No` — escalate immediately to the user / back to `write-spec` instead of burning fix
+cycles.
 
 **Hard stop after 2 cycles** — see above. After two cycles without convergence the result is
 effectively `No` until the user picks a path.

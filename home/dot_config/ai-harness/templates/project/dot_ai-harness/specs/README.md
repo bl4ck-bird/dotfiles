@@ -15,7 +15,7 @@ criteria are still being shaped.
 For non-trivial work that does not need a full spec, the acceptance source must still include the
 canonical fields.
 
-Use the canonical Acceptance Brief fields from `skills/write-spec/SKILL.md` (Light Acceptance Brief
+Use the canonical Acceptance Brief fields from `~/.config/ai-harness/skills/write-spec/SKILL.md` (Light Acceptance Brief
 template). Do not re-list fields here.
 
 Name specs:
@@ -24,7 +24,7 @@ Name specs:
 YYYY-MM-DD-<feature>.md
 ```
 
-Each full spec follows the Full Spec Template in `skills/write-spec/SKILL.md`. Do not re-list fields
+Each full spec follows the Full Spec Template in `~/.config/ai-harness/skills/write-spec/SKILL.md`. Do not re-list fields
 here.
 
 Prompt:
@@ -35,6 +35,10 @@ Turn the resolved context into the lightest acceptance artifact.
 Use .ai-harness/specs/YYYY-MM-DD-<feature>.md only if a full spec is needed.
 Split it into vertical slices with AFK/HITL labels.
 ```
+
+AFK / HITL labels are defined in the Acceptance Brief Fields
+(`~/.config/ai-harness/skills/write-spec/SKILL.md`, Light Acceptance Brief — AFK / HITL Boundary
+field).
 
 Self-Review prompt:
 

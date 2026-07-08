@@ -25,9 +25,11 @@ Inspect existing docs first. Ask only questions that remove real ambiguity.
 
 ## Output Documents
 
-Create or update only artifacts justified by approved scaffold profile and project risk:
+Create or update only artifacts justified by approved scaffold profile (as defined by
+`project-scaffold`; when none exists, default to the lightest artifact set) and project risk:
 
-- `.ai-harness/reviews/YYYY-MM-DD-<topic>-discovery.md` for longer sessions
+- `.ai-harness/reviews/YYYY-MM-DD-<topic>-discovery.md` when the session resolves 3+ decisions
+  or will be cleared
 - `.ai-harness/CURRENT.md` when active phase, next step, blocker, or acceptance artifact/plan changes
 - `.ai-harness/ROADMAP.md` when product scope, milestones, non-goals, or open decisions need durable
   tracking

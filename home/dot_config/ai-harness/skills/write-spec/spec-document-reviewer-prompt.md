@@ -50,7 +50,7 @@ Task tool (general-purpose, or spec-document-reviewer when defined):
 
     ## What To Check
 
-    Apply write-spec/SKILL.md Self-Review checks as an outsider.
+    Apply `~/.config/ai-harness/skills/write-spec/SKILL.md` Self-Review checks as an outsider.
 
     **Product clarity**
     - Goal, problem, users, MVP, non-goals: explicit and unambiguous?
@@ -126,8 +126,6 @@ Task tool (general-purpose, or spec-document-reviewer when defined):
     - Recommended second-review (Codex): yes / no, with reason
     ```
 
-    Stop after two cycles in the same review — escalate to user (`using-bb-harness/review-rules.md` Review Iteration Pattern + Pre-Implementation Verdicts).
-
     ## Critical Rules
 
     DO:
@@ -159,6 +157,8 @@ If `spec-document-reviewer` is defined in `claude-agents/`, prefer that —
 otherwise `general-purpose`.
 
 ## After The Reviewer Returns
+
+Stop after two cycles in the same review — escalate to user (`using-bb-harness/review-rules.md` Review Iteration Pattern + Pre-Implementation Verdicts).
 
 - **Ready to plan: Yes** → proceed to `write-plan`.
 - **Ready to plan: With fixes** → apply `receiving-review`, revise the spec,

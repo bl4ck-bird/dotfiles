@@ -90,7 +90,7 @@ Verify directory is git-ignored before creating:
 git check-ignore -q .worktrees 2>/dev/null || git check-ignore -q worktrees 2>/dev/null
 ```
 
-Not ignored → add to `.gitignore`, commit (small dedicated commit), proceed. Skipping risks committing worktree contents.
+Not ignored → add to `.gitignore`, stage it, and ask the user to approve the small dedicated commit — unless the approved plan already covers it (accepted-risk exception). Skipping risks committing worktree contents.
 
 #### Create The Worktree
 
@@ -184,7 +184,7 @@ Reverse fails — `git branch -d` refuses while worktree references the branch.
 | `worktrees/` exists | Use it (verify ignored). |
 | Both exist | Use `.worktrees/`. |
 | Neither exists | Declared preference, else default `.worktrees/`. |
-| Directory not ignored | Add to `.gitignore` + commit, then proceed. |
+| Directory not ignored | Add to `.gitignore`, stage, get commit approval (unless plan covers it). |
 | Permission error on create | Sandbox fallback, work in place, report. |
 | Tests fail during baseline | Report, distinguish pre-existing from new, ask. |
 | Detached HEAD | Branch creation deferred to `ship-check`. |

@@ -16,7 +16,7 @@ duplicate the acceptance artifact or become line-by-line code prose.
 
 Use the project's established location if it has one.
 
-## Reading Tiers
+## Preconditions
 
 Always read:
 
@@ -126,6 +126,8 @@ Apply file/function size thresholds from `code-quality-review` (File And Complex
 
 Walk this checklist before presenting. Plan correctness owned here, re-verified by `spec-compliance-review` + `code-quality-review` after implementation.
 
+Callsite that inlines these checks (audit when changing): `plan-document-reviewer-prompt.md` — the prompt may add reviewer-only checks on top.
+
 ### Plan Hygiene
 
 - Every acceptance requirement maps to a task or explicit non-goal.
@@ -161,7 +163,7 @@ Two options for a second pair of eyes:
   - Many tasks or large file responsibility map.
   - High-Risk Surface (see `second-review`) touched.
   - Self-Review passed but uncertain about file mapping or verification commands.
-- **`second-review`** (Codex by default) — different-model, fully-independent double-check. Required for High-Risk Surface; otherwise optional. Heavier than same-host reviewer.
+- **`second-review`** (different-model reviewer — see `second-review`) — fully-independent double-check. Required for High-Risk Surface; otherwise optional. Heavier than same-host reviewer.
 
 Neither mandatory — Self-Review alone is default. Pick the one (or both) whose value justifies the time.
 

@@ -31,7 +31,7 @@ next safe action before editing.
 
 ## Workflow Weight
 
-- **Tiny/local**: direct edit or `test-driven-development` + `ship-check`.
+- **Trivial/local**: direct edit or `test-driven-development` + `ship-check`.
 - **Scope review**: 3+ files, uncertain blast radius, or unclear module boundary. Decide if small
   path still fits. Record bounded scope.
 - **Non-trivial**: reviewed acceptance artifact (`write-spec` Self-Review) + compact plan
@@ -95,8 +95,8 @@ Use a full spec when product scope, domain language, API, data/storage, auth/sec
 sync, external integrations, or user workflow is still being decided. Do not create a spec only to
 restate an already clear task.
 
-Use the canonical Acceptance Brief fields from `skills/write-spec/SKILL.md` (Light Acceptance Brief
-template). Do not re-list fields here.
+Use the canonical Acceptance Brief fields from `~/.config/ai-harness/skills/write-spec/SKILL.md`
+(Light Acceptance Brief template). Do not re-list fields here.
 
 ## Project Scaffold Gate
 
@@ -122,13 +122,15 @@ explicitly asked.
 - Plan correctness: `write-plan` Self-Review (Plan Hygiene + Architecture Soundness).
 - Per task: `spec-compliance-review` (binary ✅/❌) first, then `code-quality-review` (Ready to
   merge? Yes / With fixes / No). Both run as fresh reviewer subagents from
-  `subagent-driven-development`.
+  `subagent-driven-development` (or as inline skill invocations when following
+  `executing-plans-inline`).
 - `code-quality-review` is SSOT for DDD operational checks, SOLID, file size, Coverage Matrix, and
   durable docs drift.
 - `security-review` as follow-on when diff touches auth, secrets, crypto, deletion, untrusted input,
   sensitive data, or destructive operation.
 - `second-review` when High-Risk Surface touched, boundary/dependency direction changes, or user
-  requests independent double-check. Codex by default; record fallback when unavailable.
+  requests independent double-check. Different-model reviewer by default (see `second-review`);
+  record fallback when unavailable.
 - `receiving-review` whenever reviewer returns findings — verify before implementing, push back if
   wrong, apply one item at a time.
 
@@ -142,7 +144,7 @@ After each non-trivial phase:
 2. Recommend exactly one next phase when path is clear.
 3. Ask a concise confirmation question when approval is needed.
 
-Default continuation prompts live in `skills/using-bb-harness/SKILL.md`. Project may override here
+Default continuation prompts live in `~/.config/ai-harness/skills/using-bb-harness/SKILL.md`. Project may override here
 when wording must differ from harness default.
 
 Do not auto-advance across setup, dependency execution, hook, delete, git-history, commit/stack,

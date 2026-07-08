@@ -144,7 +144,8 @@ this section names the typical flow so the global instructions stay self-suffici
 
 ### Workflow Weight
 
-- Trivial / local: one bounded module, no product/domain/API/data/security decision.
+- Trivial / local: one bounded module, no product/domain/API/data/security decision
+  (detailed thresholds — ≤ 50 LoC etc. — live in `using-bb-harness` Workflow Weight).
   Direct edit or `test-driven-development` + `ship-check`.
 - Scope review: 3+ files or unclear blast radius. Decide if small path still fits;
   record bounded scope.

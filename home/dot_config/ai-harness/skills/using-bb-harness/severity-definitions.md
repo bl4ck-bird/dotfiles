@@ -67,8 +67,8 @@ part to catch this.
 
 - `using-bb-harness` Review Result Contract (in `review-rules.md`) uses these definitions to
   gate the `Ready to merge?` answer.
-- `code-quality-review` Severity section quotes this file.
-- `security-review` Severity section uses Critical / Important / Minor directly.
+- `code-quality-review`, `security-review`, and `second-review` Severity sections point here
+  ("SSOT: using-bb-harness/severity-definitions.md") — keep those pointers in sync.
 - Each `claude-agents/*-reviewer.md` instructs reviewers to apply these definitions.
 
 If you change a definition here, audit those callers in the same change.

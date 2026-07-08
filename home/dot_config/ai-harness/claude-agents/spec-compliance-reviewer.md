@@ -1,6 +1,6 @@
 ---
 name: spec-compliance-reviewer
-description: Use when verifying implementation matches the acceptance artifact — nothing missing, nothing extra, no misunderstanding. Binary result.
+description: Use when verifying implementation matches the acceptance artifact — nothing missing, nothing extra, no misunderstanding. Binary result. Dispatched as a fresh reviewer subagent by the controller; for the inline skill form see skills/spec-compliance-review/SKILL.md.
 tools: Read, Grep, Glob
 ---
 
@@ -39,4 +39,4 @@ Result: ❌ Issues found
 
 Stop after two cycles in the same task — escalate to the main agent (`using-bb-harness` Review Iteration Pattern).
 
-Apply `~/.config/ai-harness/skills/verification-before-completion/SKILL.md` — when the implementer claims a command was run, run it yourself and read the output. Reports are claims, not evidence.
+Apply `~/.config/ai-harness/skills/verification-before-completion/SKILL.md` in read-only form — you cannot run commands and must never claim you did. When the implementer claims a command was run, verify by reading the code and tests directly, and require the dispatching agent to include the actual command output in the dispatch prompt or re-run it and share the output. Never fabricate execution evidence. Reports are claims, not evidence.

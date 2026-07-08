@@ -118,7 +118,7 @@ Harness principle: **trigger automation by hook; judgment lives in skills.** Hoo
 - Durable design rules in focused docs under `.ai-harness/`, not README.
 - Project instructions specific, short enough to read every session.
 - Don't copy global rules into project files unless project needs stricter version.
-- Mark scaffolded docs as `stub` until TODOs resolved. Agents may read stub docs for structure but must not treat TODO content as project truth.
+- Mark scaffolded docs as `stub` until TODOs resolved. Agents may read stub docs for structure but must not treat TODO content as project truth. Status is recorded as the first body line `Document status: <stub|draft|ready>.` — this is the harness-wide mechanism (`docs-sync` promotes via this line).
 - Dependency installation is user-managed by default. Record suggested commands, package manager assumptions, unresolved choices instead of running installs.
 
 ## Human-Facing vs Agent-Internal Separation
@@ -185,4 +185,7 @@ each task uses test-driven-development, then spec-compliance-review, then code-q
 and an approved commit/stack gate only when needed.
 ```
 
-Use templates from `~/.config/ai-harness/templates/project/` when creating new files.
+Use templates from `~/.config/ai-harness/templates/project/` when creating new files. Note: the
+template dir contains a hidden `.ai-harness/` subdirectory; `cp -r .../project/* dest` silently
+skips it — copy per the profile's file list or use a dotfile-including copy
+(`cp -R .../project/. dest`).

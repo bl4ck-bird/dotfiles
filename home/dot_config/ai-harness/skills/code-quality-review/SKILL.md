@@ -85,6 +85,8 @@ Summary (full in companion):
 
 Long files acceptable when data tables, generated code, test fixtures, or documented framework glue.
 
+**Callsites that inline these thresholds** — audit when changing: `using-bb-harness/SKILL.md` (Workflow Weight), `using-bb-harness/severity-definitions.md`, `second-review/SKILL.md` (Strongly Consider), `write-plan/SKILL.md` (2 places), `write-plan/plan-document-reviewer-prompt.md`, `subagent-driven-development/code-quality-reviewer-prompt.md`.
+
 #### Other Architecture Concerns
 
 - Boundary clarity between domain, application, infrastructure, UI.
@@ -148,7 +150,11 @@ Findings stay inside the diff and the approved acceptance artifact.
 
 Second follow-on justified → name it as a recommendation and ask user. Do not auto-chain.
 
+Exception: when `second-review`'s Required When Available criteria are met (High-Risk Surface etc.), it is exempt from the one-follow-on cap and runs in addition (see `using-bb-harness/review-rules.md` Review Chain Depth Cap).
+
 ## Severity
+
+(SSOT: `using-bb-harness/severity-definitions.md` — keep in sync)
 
 Classify findings using these definitions. Do not promote above real impact.
 
@@ -204,6 +210,12 @@ Lead with strengths (specific, brief), then findings, then result.
 ```
 
 Substantial reviews → save record in `.ai-harness/reviews/YYYY-MM-DD-<topic>-code-quality-review.md`.
+
+## Subagent Dispatch
+
+When running as subagent from `subagent-driven-development`, use template at
+`subagent-driven-development/code-quality-reviewer-prompt.md`. Template names this skill as the
+SSOT and inlines the thresholds and Coverage Matrix requirement.
 
 ## Do Not
 

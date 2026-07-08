@@ -3,6 +3,9 @@
 Document status: stub. TODO claims are not project truth yet. Non-TODO workflow, safety, and quality
 rules apply immediately.
 
+This file, `CLAUDE.md`, `GEMINI.md`, and `.ai-harness/` are gitignored agent context — see
+`project-scaffold` Gitignore Policy.
+
 ## Project Shape
 
 - Product goal: TODO
@@ -69,15 +72,15 @@ unknown until confirmed.
 
 - Prefer vertical slices over horizontal technical phases.
 - Behavior tests exercise public interfaces, user-visible flows, or stable domain boundaries.
-- File and complexity thresholds follow `skills/code-quality-review/SKILL.md` (File And Complexity
-  Thresholds). Do not redefine numbers here.
+- File and complexity thresholds follow `~/.config/ai-harness/skills/code-quality-review/SKILL.md`
+  (File And Complexity Thresholds). Do not redefine numbers here.
 - Use SOLID as concrete checks for responsibility, dependency direction, interface size.
 - Use DDD only where domain complexity justifies it.
 - Do not introduce speculative abstractions.
 
 ## Development Workflow
 
-Use `skills/using-bb-harness/SKILL.md` as routing source. Phase selection follows the workflow
+Use `~/.config/ai-harness/skills/using-bb-harness/SKILL.md` as routing source. Phase selection follows the workflow
 weight defined there.
 
 Project-specific overrides (add only when project diverges from harness default):

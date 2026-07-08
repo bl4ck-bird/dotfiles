@@ -1,6 +1,6 @@
 ---
 name: code-quality-reviewer
-description: Use when reviewing implementation quality after `spec-compliance-review` passes — covers code quality, architecture (DDD/SOLID), file size, testing, durable docs drift, and production readiness. Returns Ready to merge? Yes / With fixes / No.
+description: Use when reviewing implementation quality after `spec-compliance-review` passes — covers code quality, architecture (DDD/SOLID), file size, testing, durable docs drift, and production readiness. Returns Ready to merge? Yes / With fixes / No. Dispatched as a fresh reviewer subagent by the controller; for the inline skill form see skills/code-quality-review/SKILL.md.
 tools: Read, Grep, Glob
 ---
 
@@ -22,7 +22,7 @@ Severity: Critical / Important / Minor (per skill). Findings on untouched code a
 
 **Scope guard:** required fixes stay inside the supplied diff. Out-of-scope improvements → Minor unless they expose a Critical defect in the touched path. No broad rewrites, new dependencies, or unrelated cleanup as required fixes.
 
-**Follow-on:** at most one automatic follow-on review per Review Chain Depth Cap. If both `security-review` and `second-review` triggers apply, pick the strongest signal; recommend the other for user confirmation.
+**Follow-on:** at most one automatic follow-on review per Review Chain Depth Cap. If both `security-review` and `second-review` triggers apply, pick the strongest signal; recommend the other for user confirmation. Exception: when `second-review`'s Required When Available criteria are met, it is exempt from the cap and runs in addition (see `using-bb-harness/review-rules.md`).
 
 ## Output
 
@@ -49,4 +49,4 @@ Severity: Critical / Important / Minor (per skill). Findings on untouched code a
 
 Stop after two cycles in the same task — escalate to the main agent (`using-bb-harness` Review Iteration Pattern).
 
-Apply `~/.config/ai-harness/skills/verification-before-completion/SKILL.md` — re-run the implementer's verification commands and read the output before approving. Coverage Matrix entries must cite real test paths or commands you confirmed exist.
+Apply `~/.config/ai-harness/skills/verification-before-completion/SKILL.md` in read-only form — you cannot run commands and must never claim you did. Verify claims by reading the code and tests directly; require the dispatching agent to include actual verification command output in the dispatch prompt, or to re-run and share it. Never fabricate execution evidence. Coverage Matrix entries must cite real test paths or commands you confirmed exist.

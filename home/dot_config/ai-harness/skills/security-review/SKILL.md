@@ -42,6 +42,8 @@ Lead with findings, ordered by severity.
 
 ### Severity
 
+(SSOT: `using-bb-harness/severity-definitions.md` — keep in sync)
+
 - **Critical (Must Fix)**: exploitable vulnerability, secret leakage, auth bypass, data loss
   risk, destructive operation without approval, crypto / key handling defect.
 - **Important (Should Fix)**: weak validation, missing authorization at right boundary,

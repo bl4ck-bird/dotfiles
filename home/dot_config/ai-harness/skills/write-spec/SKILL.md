@@ -150,6 +150,8 @@ Prefer: "User can create the first workspace with validation and persistence.", 
 
 Walk this checklist before declaring artifact ready. Domain and acceptance correctness owned here, then re-verified by `spec-compliance-review` after implementation.
 
+Callsite that inlines these checks (audit when changing): `spec-document-reviewer-prompt.md` — the prompt may add reviewer-only checks on top.
+
 ### Product Clarity
 
 - Goal, problem, users, MVP, non-goals explicit (or, for Light Acceptance Brief, every canonical field present).
@@ -178,7 +180,7 @@ Two options when author wants a second pair of eyes:
   - High-Risk Surface (`security` / `data-loss` / `money` / `auth` / `crypto` / `deletion` / `core architecture` — canonical list in `second-review`) touched.
   - Product direction, MVP boundary, or core architecture changes.
   - Self-Review passed but author is uncertain.
-- **`second-review`** (Codex by default) — different-model, fully-independent double-check. Required when spec touches High-Risk Surface; otherwise optional. Heavier than same-host reviewer.
+- **`second-review`** (different-model reviewer — see `second-review`) — fully-independent double-check. Required when spec touches High-Risk Surface; otherwise optional. Heavier than same-host reviewer.
 
 Neither is mandatory — Self-Review alone is the default. Pick whichever justifies the time.
 

@@ -10,7 +10,8 @@ Pressure-test the idea before turning it into a spec or code.
 ## Core Rule
 
 Ask one question at a time. Include your recommended answer or tradeoff so the user is not
-designing from a blank page.
+designing from a blank page. Soft cap: after ~7 questions, summarize resolved/open points and
+ask whether to continue.
 
 ## What To Challenge
 
@@ -55,5 +56,9 @@ When done, summarize:
 - Risks
 - Suggested next skill
 - Docs to update
+
+When the session resolves 3+ decisions or precedes a session clear, save the summary to
+`.ai-harness/reviews/YYYY-MM-DD-<topic>-pressure-test.md`. Update `.ai-harness/CURRENT.md` on
+phase change.
 
 Do not create a long spec here. Use `write-spec` next.

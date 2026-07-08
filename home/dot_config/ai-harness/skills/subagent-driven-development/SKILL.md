@@ -7,7 +7,7 @@ description: Use when executing an approved implementation plan task-by-task —
 
 Execute an approved plan one task / vertical slice at a time using fresh subagents. Main agent is **controller**: never inherits worker context, never pauses unnecessarily, never delegates unresolved product / domain / architecture decisions.
 
-Harness's preferred execution model. Use `executing-plans-inline` only when the host cannot dispatch subagents.
+Harness's preferred execution model. Switch conditions: see "When To Use `executing-plans-inline` Instead" below.
 
 ## Why Subagent-Driven
 
@@ -137,7 +137,7 @@ Reviewers always run in fresh subagents — no inheritance of implementer framin
 - **`spec-compliance-review`**: pass acceptance artifact path, diff, implementer claim. Reviewer reads code, not report.
 - **`code-quality-review`**: pass diff, plan task, acceptance artifact, relevant durable docs. Reviewer runs SSOT checks from `code-quality-review`.
 - **`security-review`**: auto-triggered when diff touches security-sensitive surface (auth, secrets, crypto, deletion, untrusted input, sensitive data).
-- **`second-review`**: auto-triggered for High-Risk Surfaces or when user requested independent double-check. Codex is default reviewer.
+- **`second-review`**: auto-triggered for High-Risk Surfaces or when user requested independent double-check. Different-model reviewer by default — see `second-review`.
 
 After reviewer returns findings, implementer subagent (not controller) applies fixes one item at a time per `receiving-review`. Controller re-dispatches reviewer on fixed diff.
 
@@ -216,5 +216,6 @@ Switch when:
 - Host cannot dispatch subagents (no Task tool, no general-purpose agent type).
 - Plan has 1-3 small tasks where dispatch overhead exceeds context-isolation benefit.
 - User explicitly asked to keep execution in main session.
+- Work needs main agent visibility into long-running interactive state (dev server, watched test runner, REPL) across tasks.
 
 Same review gates apply; they run as skill invocations against the main agent's diff rather than as separate subagents.

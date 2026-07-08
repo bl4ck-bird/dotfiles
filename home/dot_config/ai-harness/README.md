@@ -43,10 +43,12 @@ Chezmoi installs `~/.config/ai-harness` as the source of truth, then links agent
 - `~/.codex/AGENTS.md` → `~/.config/ai-harness/AGENTS.md`
 - `~/.claude/CLAUDE.md` → `~/.config/ai-harness/AGENTS.md`
 - `~/.gemini/GEMINI.md` → `~/.config/ai-harness/AGENTS.md`  *(one file serves all three)*
-- `~/.codex/skills` → `~/.config/ai-harness/skills`
+- `~/.codex/skills/<name>` → `~/.config/ai-harness/skills/<name>` *(real directory of per-skill symlinks — Codex auto-creates `.system/` inside its skills dir, which must not pollute the shared SSOT)*
 - `~/.claude/skills` → `~/.config/ai-harness/skills`
 - `~/.gemini/skills` → `~/.config/ai-harness/skills`
 - `~/.claude/agents/<agent>.md` → `~/.config/ai-harness/claude-agents/<agent>.md`
+
+When adding a new skill directory, also add a matching `symlink_<name>.tmpl` under chezmoi `home/dot_codex/skills/`. Claude and Gemini use whole-directory symlinks and need no per-skill entry.
 
 Tool-specific runtime settings stay under their native config directories — Codex uses chezmoi `create_private_` (tool-owned after first create), Claude/Gemini use `private_` (chezmoi-synced).
 
@@ -82,8 +84,10 @@ SSOT lives in one skill, but short canonical lists that **drive model branching 
 | List | SSOT | Inlined at |
 | --- | --- | --- |
 | High-Risk Surfaces (`security` / `data-loss` / `money` / `auth` / `crypto` / `deletion` / `core architecture`) | `skills/second-review/SKILL.md` | `using-bb-harness`, `code-quality-review`, `executing-plans-inline`, `subagent-driven-development`, `write-spec`, `write-plan`, `ship-check`, plus 3 reviewer prompt templates |
-| Acceptance Brief Fields (11 fields: Goal / Accepted Behavior / Acceptance Criteria / Non-Goals / Touched Surfaces / Edge And Error Cases / Docs / Test Impact / Risk Level / Required Reviews / Second Review / AFK / HITL Boundary) | `skills/write-spec/SKILL.md` Light Acceptance Brief | `using-bb-harness`, `write-plan` Preconditions |
+| Acceptance Brief Fields (11 fields: Goal, Accepted Behavior, Acceptance Criteria, Non-Goals / Stop Conditions, Touched Surfaces, Edge And Error Cases, Docs / Test Impact, Risk Level, Required Reviews, Second Review, AFK / HITL Boundary) | `skills/write-spec/SKILL.md` Light Acceptance Brief | `using-bb-harness`, `write-plan` Preconditions |
 | Protected base branches (`main` / `master` / `develop` / `trunk`) | `skills/using-bb-harness/SKILL.md` Branch Policy | `test-driven-development`, `executing-plans-inline`, `subagent-driven-development`, `using-git-worktrees` |
+| SOLID operational checks | `skills/code-quality-review/SKILL.md` | `AGENTS.md` Quality Gates (kept self-sufficient for non-harness projects) |
+| File And Complexity Thresholds (300/600) | `skills/code-quality-review/SKILL.md` | `using-bb-harness/SKILL.md`, `using-bb-harness/severity-definitions.md`, `second-review/SKILL.md`, `write-plan/SKILL.md`, `write-plan/plan-document-reviewer-prompt.md`, `subagent-driven-development/code-quality-reviewer-prompt.md` |
 
 **Inline only short lists, not full definitions.** Severity matrix, Review Iteration Pattern, Scope Guard, Chain Depth Cap, Acceptance Brief Field *full definitions* — these are reference-only, multi-sentence, and stay SSOT-only because callers already inline the binding *behavior* (`Stop after 2 cycles`, `at most one automatic follow-on`, etc.) separately. The full definition then becomes the audit reference, not the live rule.
 
@@ -122,14 +126,16 @@ using-bb-harness
 -> domain-modeling (domain language or boundaries matter)
 -> write-spec (Self-Review: Product Clarity + Domain Alignment)
 -> write-plan (Self-Review: Plan Hygiene + Architecture Soundness)
+-> using-git-worktrees (isolated workspace)
 -> subagent-driven-development as controller
    per task:
      implementer subagent (test-driven-development inside)
      -> spec-compliance-review subagent (binary ✅/❌)
      -> code-quality-review subagent (Yes / With fixes / No)
      -> security-review subagent (when triggered)
-     -> second-review (Codex) (High-Risk Surface or independent double-check)
+     -> second-review (different-model reviewer) (High-Risk Surface or independent double-check)
      -> receiving-review (between reviewer feedback and next fix)
+-> verification-before-completion (every completion claim)
 -> docs-sync
 -> ship-check
 -> commit/stack gate (only when explicitly approved/required)
@@ -162,17 +168,18 @@ Mirror of `skills/using-bb-harness/SKILL.md` Routing. Skill is the source of tru
 | Verify implementation matches acceptance (binary) | `spec-compliance-review` |
 | Review code quality, DDD/SOLID, size, tests, docs drift, prod readiness | `code-quality-review` |
 | Review auth, secrets, crypto, deletion, untrusted input, data loss | `security-review` |
-| Independent double-check (Codex by default) | `second-review` |
+| Independent double-check (different-model reviewer) | `second-review` |
 | Process reviewer feedback (verify, push back, apply one at a time) | `receiving-review` |
 | Sync docs after behavior or workflow changes | `docs-sync` |
 | Final handoff, verification, residual risk check | `ship-check` |
+| `ship-check` or any review reports memory candidates or retro insights that should persist beyond the current session | `retro-capture` |
 | Continue bounded autonomous iterations | `bounded-loop` |
 
 ## Review Routing
 
 Detailed routing: `skills/using-bb-harness/SKILL.md` (Review Routing) and each review skill. Use the lightest review that protects the work.
 
-For independent second review: `second-review` skill (Codex default + fallback procedure).
+For independent second review: `second-review` skill (different-model reviewer default + fallback procedure).
 
 ## Commit And Stack Gate
 

@@ -12,7 +12,7 @@ Universal entry point. Invoke at every session start. If repo references BB Harn
 Session start, before non-trivial work:
 
 1. Check repo root for BB Harness markers:
-   - `AGENTS.md`, `CLAUDE.md`, or `.ai-harness/AGENT_WORKFLOW.md` that **mentions BB Harness or uses BB skill names** (`using-bb-harness`, `subagent-driven-development`, `code-quality-review`, etc.).
+   - `AGENTS.md`, `CLAUDE.md`, or `.ai-harness/AGENT_WORKFLOW.md` that **mentions `BB Harness` or a distinctive BB skill name** (`using-bb-harness`, `subagent-driven-development`). Generic-sounding skill names are not markers — they false-positive on non-adopter repos.
 2. **Markers present** — read nearest `AGENTS.md` / `CLAUDE.md`, then proceed to Start or invoke the directly matching skill (e.g. `bug-diagnosis` for a bug, `test-driven-development` for small behavior change).
 3. **Markers absent** — report once: "BB Harness not in this repo. Proceeding with standard agent behavior." Skip rest. Do not force BB workflow on non-adopters.
 4. Trivial questions and pure-conversation replies may skip bootstrap.
@@ -46,7 +46,7 @@ If key context missing, ask or propose minimal recovery step. Do not invent prod
 
 | Weight | Trigger | Default path |
 | --- | --- | --- |
-| Tiny / local | One bounded module, ≤ 50 LoC, no product / domain / API / data / security decision, no new test target | Direct edit or `test-driven-development` + `ship-check` |
+| Trivial / local | One bounded module, ≤ 50 LoC, no product / domain / API / data / security decision, no new test target | Direct edit or `test-driven-development` + `ship-check` |
 | Scope review | 3+ files, uncertain blast radius, unclear module boundary | Decide if small path still fits; record bounded scope |
 | Non-trivial | Product behavior, user workflow, domain language, public API, persistence, auth, sync, deletion, external integration | Reviewed acceptance artifact (via `write-spec` Self-Review) + compact plan (via `write-plan` Self-Review) + per-task `spec-compliance-review` + `code-quality-review` + docs gates |
 | Risky / substantial | Module boundary or dependency-direction change, refactor crossing 2+ modules, weak tests, 5+ files, 2+ modules, 300/600-line file thresholds, or any High-Risk Surface (`security` / `data-loss` / `money` / `auth` / `crypto` / `deletion` / `core architecture` — canonical list in `second-review`) | Above + `security-review` when triggered + `second-review` required for High-Risk Surface or boundary / dependency-direction change |
@@ -61,17 +61,19 @@ Non-trivial work needs reviewed acceptance artifact (spec, PRD, issue, review fi
 
 ## Review Channels
 
-Harness uses **five** review channels. Upstream ones (spec/plan correctness) live in authoring skills as Self-Review. Implementation-time reviews run as fresh subagents from `subagent-driven-development`.
+Harness uses **four** review channels: `spec-compliance-review`, `code-quality-review`, `security-review`, `second-review`. The two Self-Reviews are authoring-phase gates (spec/plan correctness inside the authoring skill), and `receiving-review` is the procedure for handling any reviewer's feedback — neither is a channel. Implementation-time reviews run as fresh subagents from `subagent-driven-development`.
 
-| Channel | Owner | When |
+All review-related gates:
+
+| Gate | Owner | When |
 | --- | --- | --- |
-| Spec Self-Review | `write-spec` | Before declaring an acceptance artifact ready. Domain alignment, vertical slice quality. |
-| Plan Self-Review | `write-plan` | Before presenting a plan. SOLID, file boundary, file-size impact. |
-| `spec-compliance-review` | reviewer subagent | After each implemented slice. Binary ✅ / ❌. |
-| `code-quality-review` | reviewer subagent | After spec-compliance passes. Code quality, DDD / SOLID, file-size, tests, durable docs drift. Ready to merge? Yes / With fixes / No. |
-| `security-review` | reviewer subagent | Follow-on from `code-quality-review` when security surface touched, or directly when slice is known security-heavy. |
-| `second-review` | different-model agent | High-Risk Surface, explicit double-check request, or boundary / dependency-direction change. |
-| `receiving-review` | authoring skill | Whenever a reviewer returns findings, before applying fixes. |
+| Spec Self-Review (authoring gate) | `write-spec` | Before declaring an acceptance artifact ready. Domain alignment, vertical slice quality. |
+| Plan Self-Review (authoring gate) | `write-plan` | Before presenting a plan. SOLID, file boundary, file-size impact. |
+| `spec-compliance-review` (channel) | reviewer subagent | After each implemented slice. Binary ✅ / ❌. |
+| `code-quality-review` (channel) | reviewer subagent | After spec-compliance passes. Code quality, DDD / SOLID, file-size, tests, durable docs drift. Ready to merge? Yes / With fixes / No. |
+| `security-review` (channel) | reviewer subagent | Follow-on from `code-quality-review` when security surface touched, or directly when slice is known security-heavy. |
+| `second-review` (channel) | different-model agent | High-Risk Surface, explicit double-check request, or boundary / dependency-direction change. |
+| `receiving-review` (feedback procedure) | authoring skill | Whenever a reviewer returns findings, before applying fixes. |
 
 `docs-sync` and `ship-check` are workflow gates, not reviews.
 
@@ -104,7 +106,7 @@ Quick recap:
 
 **Never start implementation on a protected base branch** without explicit user consent. Default protected set: `main`, `master`, `develop`, `trunk`, plus any branch the repo's `AGENTS.md` / `CLAUDE.md` names as base.
 
-- **Before the first code edit** in a session, check `git branch --show-current`. On a protected branch → invoke `using-git-worktrees` and create a feature branch / worktree first. This applies regardless of Workflow Weight — Tiny/local is not an excuse to commit directly to a protected branch.
+- **Before the first code edit** in a session, check `git branch --show-current`. On a protected branch → invoke `using-git-worktrees` and create a feature branch / worktree first. This applies regardless of Workflow Weight — Trivial/local is not an excuse to commit directly to a protected branch.
 - **Exceptions** require explicit user consent in this session ("yes, edit main directly", "this is a hotfix on main"). Record the exception briefly in the response. Project-local instructions that authorize direct base-branch work also count as consent.
 - **Read-only work** (questions, investigation, doc-only navigation without edits) does not trigger this policy.
 - **Branch name**: derive from the task — `<type>/<short-slug>` (e.g. `fix/vscode-comment-newline`, `feat/branch-policy`). Match the project's existing convention when one is visible in `git log` / `git branch -a`.
@@ -141,6 +143,7 @@ Choose next phase, not entire lifecycle:
 | Behavior / architecture / testing / security / workflow changed | `docs-sync` |
 | Work ready to hand off, commit, PR, release | `ship-check` |
 | Commit / stack / PR / release action approved | `ship-check` then commit / stack gate |
+| `ship-check` or any review reports memory candidates / retro insights | `retro-capture` |
 | User approved repeated autonomous progress | `bounded-loop` |
 
 ## Phase Loop

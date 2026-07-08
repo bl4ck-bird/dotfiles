@@ -35,7 +35,8 @@ needs updates:
 - Scaffolded `stub` docs may contain TODOs. TODO claims are not project truth; non-TODO
   workflow, safety, and quality rules still apply.
 - Promote docs from `stub` to `draft`/`ready` only when claims have been reviewed against the
-  repo or confirmed by user.
+  repo or confirmed by user. Status marker mechanism (first body line
+  `Document status: <stub|draft|ready>.`) is defined in `project-scaffold` Defaults.
 
 ## Common Triggers
 
@@ -51,6 +52,9 @@ Update docs when:
   evidence, or next action materially changes.
 
 ## Handoffs
+
+`.ai-harness/reviews/` holds reviews, handoffs, and dated session notes (discovery,
+pressure-test).
 
 Session about to be cleared → add/update handoff in `.ai-harness/reviews/`:
 
