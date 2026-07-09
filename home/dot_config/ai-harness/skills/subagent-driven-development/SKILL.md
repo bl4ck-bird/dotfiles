@@ -143,13 +143,16 @@ After reviewer returns findings, implementer subagent (not controller) applies f
 
 ## Model Selection
 
-Least powerful model that handles the role.
+Least powerful model that handles the role. Subagents inherit the main model unless the controller overrides — pass the `model` override at dispatch time so a heavy main model (Opus/Fable) does not silently bleed into cheap work. This is the main lever for conserving 5-hour / weekly usage limits.
 
-| Task | Model |
+| Task | Model (Claude Code) |
 | --- | --- |
-| Mechanical (isolated function, clear spec, 1-2 files) | cheap / fast |
-| Integration / judgment (multi-file, debugging) | standard |
-| Architecture, design, review | most capable |
+| Read-only retrieval / search / grep / file mapping (no judgment) | `haiku` — dispatch via the `explore-lite` agent (pinned) |
+| Mechanical implementation (isolated function, clear spec, 1-2 files) | `haiku` / `sonnet` |
+| Integration / judgment (multi-file, debugging), spec-compliance review | `sonnet` |
+| Architecture, design, code-quality / security review | `opus` (most capable) |
+
+For read-only investigation on independent tracks (below), prefer `explore-lite` over a full-model `general-purpose` subagent when the work is pure retrieval.
 
 ## Handling Implementer Status
 

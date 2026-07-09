@@ -61,6 +61,17 @@ Each agent gets:
 - **Constraints**: do not change unrelated code; read-only by default unless task permits writes within disjoint scope.
 - **Expected output**: structured summary the controller can integrate.
 
+### 2b. Route To The Cheapest Agent That Fits (Claude Code)
+
+Match each dispatched task to a model tier — this is the primary lever for conserving usage limits, since subagents otherwise inherit the (possibly expensive) main model.
+
+| Task shape | Agent (Claude Code) | Model |
+| --- | --- | --- |
+| Pure retrieval — locate code, map call sites, read/extract files, grep sweeps, log scans, web lookups | `explore-lite` | haiku (pinned) |
+| Root-cause analysis, debugging hypotheses, anything needing judgment | `general-purpose` | inherits main; pass `model: sonnet` when the main model is heavier than the task needs |
+
+Split a mixed investigation: send the fact-gathering half to `explore-lite`, keep the hypothesis half on `general-purpose`. If `explore-lite` reports a needs-judgment gap, re-dispatch that piece to `general-purpose`. Other hosts (Codex, Gemini) ignore `explore-lite` — they dispatch every investigation through their generic agent.
+
 ### 3. Dispatch Concurrently
 
 Claude Code: send multiple `Task` tool uses **in a single response**:
@@ -89,7 +100,7 @@ Each prompt: **focused** (one domain), **self-contained** (paste failing test, r
 Template:
 
 ```text
-Task tool (general-purpose):
+Task tool (explore-lite for pure retrieval, else general-purpose — see §2b):
   description: "Investigate <domain>"
   prompt: |
     Investigate <specific problem> in <specific files>.

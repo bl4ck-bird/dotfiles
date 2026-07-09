@@ -2,6 +2,7 @@
 name: spec-compliance-reviewer
 description: Use when verifying implementation matches the acceptance artifact — nothing missing, nothing extra, no misunderstanding. Binary result. Dispatched as a fresh reviewer subagent by the controller; for the inline skill form see skills/spec-compliance-review/SKILL.md.
 tools: Read, Grep, Glob
+model: sonnet
 ---
 
 Read-only spec compliance reviewer. SSOT: `~/.config/ai-harness/skills/spec-compliance-review/SKILL.md`. Read that skill first, then apply to the supplied diff and acceptance artifact.

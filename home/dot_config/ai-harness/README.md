@@ -32,7 +32,7 @@ Small CLI = TDD + spec-compliance + code-quality + ship. Domain-heavy app = same
 
 - `AGENTS.md` — shared global defaults for coding agents (Claude, Codex, Gemini).
 - `skills/` — executable workflow skills. `using-bb-harness` is bootstrap + router.
-- `claude-agents/` — Claude Code reviewer subagents (thin dispatchers delegating to `skills/<name>-review/SKILL.md`). Three reviewers: `spec-compliance-reviewer`, `code-quality-reviewer`, `security-reviewer`. `second-review` has no Claude subagent — it requires a different-model reviewer (see `skills/second-review`). `receiving-review` is implementer-side behavior, not a subagent.
+- `claude-agents/` — Claude Code named subagents (thin dispatchers). Three reviewers delegating to `skills/<name>-review/SKILL.md`: `spec-compliance-reviewer` (`model: sonnet`), `code-quality-reviewer`, `security-reviewer`. Plus `explore-lite` — a read-only, `model: haiku` retrieval agent for pure fact-gathering (search / grep / read / web lookups), used by `dispatching-parallel-agents` and `subagent-driven-development` to keep cheap work off the main model. Model tiering is Claude-only; other hosts (Codex, Gemini) ignore `claude-agents/`. `second-review` has no Claude subagent — it requires a different-model reviewer (see `skills/second-review`). `receiving-review` is implementer-side behavior, not a subagent.
 - `hooks/` — conservative hook scripts. Not wired globally by default.
 - `templates/project/` — starter project instructions and durable docs. Root-level `AGENTS.md`/`CLAUDE.md` plus an `.ai-harness/` tree (chezmoi source `dot_ai-harness/`) holding CONTEXT and all workflow docs. The single `project/` nest leaves room for future template categories (e.g. `library/`, `service/`, `skill/`) without restructuring.
 
