@@ -72,6 +72,9 @@ Task tool (general-purpose):
     - 작업이 부분적이거나 검증되지 않았는데 DONE으로 보고하는 것. 의심스러우면
       DONE_WITH_CONCERNS, 끝낼 수 없으면 BLOCKED / NEEDS_CONTEXT. 정직한 상태
       보고가 계약이다 — 어차피 컨트롤러가 모든 것을 검증한다.
+    - 주석을 남발하는 것. 기본값은 주석 0 — 이름·구조로 표현 가능하면 주석 대신
+      이름을 고친다. why(제약, 불변식, 비자명한 workaround, 외부 시스템 특이사항)만
+      예외이고, what/튜토리얼/시점 기록 주석은 금지.
 
     ## When You're Over Your Head
 
