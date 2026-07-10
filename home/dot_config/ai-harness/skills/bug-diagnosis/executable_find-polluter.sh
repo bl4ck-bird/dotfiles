@@ -21,7 +21,7 @@
 #   1 = polluter identified (or pre-existing pollution — see message)
 #   2 = usage error
 #
-# Apply verification-before-completion: read the script output in your response,
+# Read the script output in your response before claiming a result,
 # do not assume "ran fine".
 
 set -e

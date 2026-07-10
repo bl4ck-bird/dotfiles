@@ -1,101 +1,76 @@
 ---
 name: second-review
-description: Use when running an independent double-check (Codex by default) on a spec, plan, diff, or security-sensitive change — catches what self-review and the first reviewer missed by reading artifacts in a fresh context.
+description: Use when running an independent double-check (Codex by default) on a spec, plan, diff, or security-sensitive change — catches what self-review and the first reviewer missed by reading artifacts in a fresh context. spec/plan/diff/보안 민감 변경에 대해 독립적인 double-check(기본 Codex)를 실행할 때 사용한다.
 ---
 
 # Second Review
 
-Independent review, fresh context, different model when possible. Purpose: **catch what
-self-review and the first reviewer missed**. Not a rubber stamp. Not a re-run of
-`code-quality-review` by the same model.
+**Intent**: 신선한 컨텍스트의 다른 모델은 저자와 primary reviewer가 공유하는
+사각지대를 잡아낸다 — 동일 모델의 오류 상관관계를 깨는 유일한 채널이다.
+**Boundary**: 요식적인 승인 도장이 아니고, 같은 모델이 하는 `implementation-review`의
+재실행도 아니다; 동일 모델 대체는 기록된 fallback일 뿐 절대 조용한 등가물이 아니다.
+**Verify**: 아래 Output 블록, `.ai-harness/reviews/`에 저장.
 
 ## High-Risk Surfaces (Canonical)
 
-Harness-wide canonical list. Other docs reference as "High-Risk Surfaces (see `second-review`)".
+harness 전체의 정식 목록 — 다른 문서는 "High-Risk Surfaces (see `second-review`)"로
+참조한다:
 
-- security
-- data-loss
-- money
-- auth
-- crypto
-- deletion
-- core architecture
+**security · data-loss · money · auth · crypto · deletion · core architecture**
 
-**Callsites that inline this list** (per README Cross-Reference Inlining Policy — keep in sync when editing): `using-bb-harness/SKILL.md` (Workflow Weight table), `code-quality-review/SKILL.md` (Follow-on table), `executing-plans-inline/SKILL.md` (Required User Checkpoints), `subagent-driven-development/SKILL.md` (Required User Checkpoints), `write-spec/SKILL.md` (Independent Review), `write-plan/SKILL.md` (Preconditions), `ship-check/SKILL.md` (Preconditions), `write-spec/spec-document-reviewer-prompt.md`, `write-plan/plan-document-reviewer-prompt.md`, `subagent-driven-development/code-quality-reviewer-prompt.md`.
+이 목록을 인라인으로 참조하는 콜사이트(동기화 유지): `using-bb-harness/SKILL.md`,
+`implementation-review/SKILL.md`, `executing-plans-inline/SKILL.md`,
+`subagent-driven-development/SKILL.md`, `write-spec/SKILL.md`, `write-plan/SKILL.md`,
+`ship-check/SKILL.md`, spec/plan reviewer 프롬프트들,
+`subagent-driven-development/implementation-reviewer-prompt.md`.
 
-## Required When Available
+## When
 
-Any of:
-
-- Change touches a High-Risk Surface.
-- Boundary/dependency-direction change.
-- User asks for independent double-check.
-- Primary review passed but artifact crosses module boundaries primary could not fully inspect.
-
-## Strongly Consider
-
-**Two or more** triggers, or one trigger on a High-Risk Surface. Single trigger = optional.
-
-- Diff is large, multi-module, hard to inspect, or accepts a 300/600-line file risk.
-- Tests are weak, flaky, slow, expensive, or heavily mocked.
-- Primary agent stuck or changed approach more than once.
-- Bounded automation proposed for broad or user-facing work.
-- Product direction, MVP boundary, persistence, sync, concurrency, external integrations, or
-  broad architecture direction changes.
-
-## Optional For Specs And Plans
-
-Optional unless required criteria met. Authors may request from `write-spec` or `write-plan`
-Self-Review.
+- **Required**: High-Risk Surface를 건드림 · 경계/의존성 방향 변경 · 사용자가
+  독립적인 double-check를 요청 · primary review는 통과했지만 아티팩트가
+  primary가 완전히 검사하지 못한 모듈 경계를 넘나듦.
+- **Strongly consider** (트리거 2개 이상, 또는 High-Risk Surface에서 1개): 대규모/
+  다중 모듈 diff 또는 수용된 300/600줄 위험 · 취약하거나/불안정하거나/과도하게
+  mock된 테스트 · primary agent가 막히거나 접근 방식을 반복적으로 바꿈 · 사용자
+  대면 작업에 대해 bounded automation이 제안됨 · 제품 방향, 영속성(persistence),
+  sync, concurrency, 통합 형태가 바뀜.
+- Required 기준을 충족하지 않는 한 spec과 plan에는 선택 사항.
 
 ## Procedure
 
-Prefer in order:
+순서대로 선호 — 목표는 다른 모델의 리뷰어이며, 어떤 fallback을 썼든 기록한다:
 
-1. Plugin-based invocation in the primary agent — invoke an installed different-model reviewer in-process. Do **not** fall back to a same-model subagent here; that is option 3.
-   - **Claude Code**: invoke the Codex plugin. Use `/codex:adversarial-review` for High-Risk Surfaces or when challenging design choices; use `/codex:review` for a plain independent double-check. Pass the change scope (e.g., `--base <ref>`) explicitly and return Codex's output verbatim (recorded per Output below — verbatim as raw appendix, template filled by the main agent).
-   - **Other agents**: use whichever installed plugin or extension runs a different-model review in-process. If none exists, skip to option 2 — do not silently substitute a same-model reviewer subagent.
-2. Separate terminal running another agent's CLI on the same repo, with this skill as the guide.
-3. Human / manual review using the same output format. A same-model reviewer subagent counts as "manual review by the primary agent" — record it as a fallback per the Fallback Record block, not as a true independent review.
+1. **primary agent 안에서의 플러그인 호출.** Claude Code: Codex 플러그인 —
+   High-Risk Surface나 설계 이의 제기에는 `/codex:adversarial-review`, 단순
+   double-check에는 `/codex:review`; 변경 범위를 명시적으로 전달하고(예:
+   `--base <ref>`) Codex의 출력을 그대로 raw appendix로 보존한다. 이 단계에서
+   동일 모델 subagent로 대체하지 않는다.
+2. 이 스킬을 가이드로 삼아, 같은 저장소에서 다른 에이전트의 CLI를 실행하는 별도
+   터미널.
+3. 같은 출력 형식을 따르는 사람 / 수동 리뷰. 동일 모델 리뷰어 subagent도 수동
+   리뷰로 취급한다 — Fallback Record로 기록한다.
 
-Different-model reviewer is the goal. Record any fallback.
+리뷰어는 채팅이 아니라 아티팩트를 읽는다: `AGENTS.md`, `.ai-harness/CONTEXT.md` /
+`CURRENT.md` / `AGENT_WORKFLOW.md`, 수락 아티팩트, plan, primary review 기록, diff,
+테스트 증거.
 
-Reviewer reads artifacts, not chat:
+## Focus (not duplicating `implementation-review`)
 
-- `AGENTS.md`, `.ai-harness/CONTEXT.md`, `.ai-harness/CURRENT.md`, `.ai-harness/AGENT_WORKFLOW.md`
-- Acceptance artifact, plan, primary review records, durable decisions
-- Changed files or diff
-- Test and verification evidence
+저자와 primary reviewer가 공유하는 사각지대 · 이의 제기 없이 수용된 수락 갭 ·
+주어진 것으로 취급된 아키텍처/경계 결정 · 커버리지보다 단언이 약한 테스트 ·
+"괜찮아 보인다"로 넘어간 security/data-loss/money 경로 · durable docs 대비
+plan-vs-reality drift. primary review에 동의한다면? 그렇다고 직접 밝히고, primary가
+드러내지 못한 잔여 위험을 나열한다.
 
-## What The Independent Reviewer Looks For
+## Severity, Result, Scope
 
-Not duplicating `code-quality-review`. Focus:
-
-- **Blind spots** primary reviewer shares with author (same model, framing, skim).
-- **Acceptance gaps** primary accepted without challenge.
-- **Architecture / boundary decisions** primary treated as given.
-- **Test gaps** — coverage present but assertion weak.
-- **Security / data-loss / money** paths where primary used "looks fine".
-- **Plan vs reality drift** primary did not check against durable docs.
-
-Agreeing with primary? Say so directly. List residual risk primary did not surface.
-
-## Severity And Result
-
-Vocabulary SSOT: `using-bb-harness/severity-definitions.md`.
-
-- **Critical (Must Fix)** — blocks shipping.
-- **Important (Should Fix)** — fix before next phase.
-- **Minor (Nice To Have)** — does not block.
-
-Result: **Ready to merge: Yes / With fixes / No**.
-
-Stop after two cycles in same phase if findings still surfacing — escalate. See
-`using-bb-harness` Review Iteration Pattern.
+Severity SSOT: `using-bb-harness/severity-definitions.md`. Result: **Ready to merge:
+Yes / With fixes / No**; 두 사이클 후 중단, 에스컬레이션(`using-bb-harness` Review
+Iteration Pattern). Scope: 제공된 아티팩트/diff 범위 안에 머문다; 발견은 file:line을
+인용한다; 새로운 제품 동작, 의존성, 광범위한 재작성을 필수 수정으로 요구하지 않는다;
+범위 밖 하드닝은 건드린 경로에서 Critical 결함을 드러내지 않는 한 Minor.
 
 ## Fallback Record
-
-If unavailable:
 
 ```text
 Second review: unavailable
@@ -105,17 +80,8 @@ Accepted risk: <what could be missed>
 User accepted proceeding: <yes/no>
 ```
 
-Do not approve Critical-risk work without explicit user acceptance when independent review is
-unavailable.
-
-## Scope Discipline
-
-Stay inside the supplied artifact / diff. Same artifacts as the primary review, fresh eyes — do not expand scope or audit untouched code.
-
-- Findings cite file:line in the diff or section:line in the artifact.
-- No proposing new product behavior, new dependencies, or broad rewrites as required fixes.
-- Out-of-scope hardening or improvements are Minor unless they expose a Critical defect in the touched path.
-- YAGNI applies. Speculative future-proofing is Minor at best.
+독립적인 리뷰를 받을 수 없는 상황에서 Critical 위험이 있는 작업을 사용자의 명시적
+수용 없이 승인하지 않는다.
 
 ## Output
 
@@ -137,7 +103,6 @@ Stay inside the supplied artifact / diff. Same artifacts as the primary review, 
 - Residual risk:
 ```
 
-Store substantial records in `.ai-harness/reviews/YYYY-MM-DD-<topic>-second-review.md`. When
-the reviewer's raw output (e.g. Codex verbatim, per Procedure option 1) does not match this
-template, the main agent fills the template fields itself and preserves the reviewer's verbatim
-output as a raw appendix in the same record.
+규모가 있는 기록은 `.ai-harness/reviews/YYYY-MM-DD-<topic>-second-review.md`에
+저장한다. 리뷰어의 raw 출력이 이 템플릿과 맞지 않으면, 메인 에이전트가 템플릿을
+채우고 원문 출력은 같은 기록 안에 raw appendix로 남긴다.

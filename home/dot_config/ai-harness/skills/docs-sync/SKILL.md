@@ -1,76 +1,51 @@
 ---
 name: docs-sync
-description: Use when project documentation may need updates after code, architecture, scope, testing, security, or user-facing behavior changes.
+description: Use when project documentation may need updates after code, architecture, scope, testing, security, or user-facing behavior changes. 코드/아키텍처/범위/테스트/보안/사용자 노출 동작이 변경된 뒤 프로젝트 문서 업데이트가 필요할 때 사용한다.
 ---
 
 # Docs Sync
 
-Keep durable docs aligned with project state.
+**Intent**: durable docs가 프로젝트 실제 상태와 일치하고, 세션 산출물 모두가 routing table이
+지정한 바로 그 장소에 도착한다. **Boundary**: README는 high-level이고 사용자 노출 중심을 유지;
+spec과 plan은 single-work-item 문서를 유지; 오래된 주장은 caveat이 아니라 제거; `stub` 문서는
+저장소 대비 검증되거나 사용자가 확인한 뒤에만 `draft`/`ready`로 승격(상태 마커 메커니즘:
+`project-scaffold` Defaults). **Verify**: 보고서에 업데이트된 문서, 의도적으로 변경하지 않은 문서,
+남은 문서화 위험을 나열한다.
 
-Triggered from `ship-check` Preconditions when behavior, architecture, testing, security, or
-user-facing behavior changed. May also be invoked directly when user notes drift.
-`code-quality-review` durable-docs-drift overlaps — that review flags drift *during code
-review*; this skill *resolves* drift after acceptance.
+동작/아키텍처/테스트/보안/사용자 노출 동작이 변경되면 `ship-check`에서 트리거된다; 눈에 띈 drift에
+대해 직접 호출되기도 한다. `implementation-review`는 리뷰 중 문서 drift를 *발견(flag)*하고, 이
+스킬은 그것을 *해결(resolve)*한다.
 
-## Check
+## Routing Rules (what goes where)
 
-Review changed files, identify durable concerns touched, decide whether any candidate doc
-needs updates:
+콘텐츠 유형별로 라우팅한다 — 후보 문서를 나열하지 않는다:
 
-- `README.md`, `AGENTS.md`, `CLAUDE.md`, `.ai-harness/CONTEXT.md`, `.ai-harness/CONTEXT-MAP.md`
-- `.ai-harness/AGENT_WORKFLOW.md`, `.ai-harness/CURRENT.md`, `.ai-harness/ROADMAP.md`
-- `.ai-harness/ARCHITECTURE.md`, `.ai-harness/DOMAIN_MODEL.md`, `.ai-harness/DATA_MODEL.md`
-- `.ai-harness/SECURITY_MODEL.md`, `.ai-harness/TESTING_STRATEGY.md`
-- `.ai-harness/DECISIONS/`, `.ai-harness/specs/`, `.ai-harness/plans/`, `.ai-harness/reviews/`
-- feature specs and implementation plans
+| Content produced this session | Destination |
+| --- | --- |
+| 되돌리기 어려운 결정(저장 구조, 인증 구조, 외부 의존성, 도메인 경계) | `.ai-harness/adr/NNNN-<title>.md` (MADR) — 보통 `write-spec`/`write-plan`이 생성; 누락됐다면 여기서 생성 |
+| 작업 기록, 세션 서사, 리뷰 결과, handoff | `.ai-harness/reviews/YYYY-MM-DD-<topic>-*.md` |
+| 도메인 용어 추가/변경/폐기 | `.ai-harness/CONTEXT.md` (정식 glossary) |
+| 제품 범위, 마일스톤, non-goal 변경 | `.ai-harness/ROADMAP.md` (`product-discovery` 실행 후 존재) |
+| 아키텍처 / data / security / testing 관심사 결정 | 해당 model 문서 — 이번 세션에서 결정됐다면 지금 생성 |
+| 현재 phase, acceptance source, plan, blocker, verification, next action | `.ai-harness/CURRENT.md` (하한/상한은 아래) |
+| 사용자 노출 동작 변경 | `README.md` / `docs/` (사람이 쓰는 어휘만) |
 
-## Rules
+### CURRENT.md Hard Caps (enforced here and at `ship-check`)
 
-- README stays high-level and user-facing.
-- `.ai-harness/CONTEXT.md` owns bounded-context vocabulary and canonical domain terms.
-- Architecture, domain, data, security, testing rules live in focused docs.
-- Specs and plans describe a single work item; not long-term source of truth.
-- Remove stale claims instead of adding caveats around them.
-- No placeholders, future-tense promises, or vague sync notes in `ready` docs.
-- Scaffolded `stub` docs may contain TODOs. TODO claims are not project truth; non-TODO
-  workflow, safety, and quality rules still apply.
-- Promote docs from `stub` to `draft`/`ready` only when claims have been reviewed against the
-  repo or confirmed by user. Status marker mechanism (first body line
-  `Document status: <stub|draft|ready>.`) is defined in `project-scaffold` Defaults.
-
-## Common Triggers
-
-Update docs when:
-
-- Product goal, MVP boundary, or non-goals change.
-- Domain term added, renamed, split, or deprecated.
-- Domain invariant or workflow changes.
-- New external dependency, runtime surface, adapter, or storage model introduced.
-- Test commands, test strategy, or verification expectations change.
-- Review finds a durable architecture, security, or data decision hidden only in chat.
-- Active phase, acceptance artifact/source, plan, blocker, completed slice, verification
-  evidence, or next action materially changes.
+파일 전체 ≤ **80줄**; Done 섹션 ≤ **최근 5개 항목**. 초과분은 위 표를 따라 이관 — 결정 형태 →
+`adr/`, 작업 로그 형태 → `reviews/` handoff. 이 마이그레이션은 `ship-check`에서 필수이며 선택적
+정리가 아니다.
 
 ## Handoffs
 
-`.ai-harness/reviews/` holds reviews, handoffs, and dated session notes (discovery,
-pressure-test).
-
-Session about to be cleared → add/update handoff in `.ai-harness/reviews/`:
-
-- current goal
-- completed work
-- decisions made
-- verification evidence
-- next safe action
-
-Update `.ai-harness/CURRENT.md` with active phase and next recommended action when changed. Same
-session continuing immediately → update once at end of phase, not after every step.
+세션이 곧 clear될 예정 → `.ai-harness/reviews/`에 handoff를 추가/갱신: 현재 goal, 완료된 작업,
+결정 사항, 검증 근거, 다음 안전 액션. `.ai-harness/CURRENT.md`는 실질적 변경이 있을 때만 갱신 —
+같은 세션이 계속되는 경우 → phase 종료 시 한 번.
 
 ### `.ai-harness/CURRENT.md` Template (SSOT)
 
-Canonical skeleton. Other skills reference this; do not redefine the format elsewhere.
-Keep it short — it points to artifacts, it does not duplicate them. One line per field.
+정식 골격 — 다른 스킬은 이것을 참조하며, 다른 곳에서 재정의하지 않는다. 아티팩트를 가리킬 뿐
+복제하지 않는다; 필드당 한 줄.
 
 ```markdown
 # CURRENT — <project> 진행 상태
@@ -89,10 +64,9 @@ Keep it short — it points to artifacts, it does not duplicate them. One line p
 _Updated: <YYYY-MM-DD> · <session/agent>_
 ```
 
-- Create on first non-trivial phase boundary (or at `project-scaffold` time).
-- Fields map 1:1 to the update triggers above (Active phase, acceptance artifact/source,
-  plan, blocker, completed slice, verification evidence, next action).
+첫 non-trivial phase 경계(또는 scaffold 시점)에 생성한다. 필드는 update trigger와 1:1 대응하며,
+위의 상한이 적용된다.
 
 ## Output
 
-Report docs updated, docs intentionally left unchanged, and remaining documentation risks.
+업데이트된 문서 · 의도적으로 변경하지 않은 문서 · 남은 문서화 위험.

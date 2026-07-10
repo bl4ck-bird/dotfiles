@@ -15,8 +15,9 @@ if git rev-parse --is-inside-work-tree >/dev/null 2>&1; then
        AGENTS.md CLAUDE.md .ai-harness/AGENT_WORKFLOW.md 2>/dev/null; then
     printf '\n'
     printf 'BB Harness detected. Before any non-trivial action, invoke `using-bb-harness`\n'
-    printf 'to verify the next phase, or invoke the directly matching skill when the task\n'
-    printf 'obviously maps to one (e.g., `bug-diagnosis` for a bug, `test-driven-development` for a\n'
-    printf 'small behavior change). Skipping is only valid for trivial questions.\n'
+    printf 'to pick the workflow path (light / standard / high-risk — decided once per session),\n'
+    printf 'or invoke the directly matching skill when the task obviously maps to one\n'
+    printf '(e.g., `bug-diagnosis` for a bug, `test-driven-development` for a light behavior\n'
+    printf 'change). Skipping is only valid for trivial questions.\n'
   fi
 fi

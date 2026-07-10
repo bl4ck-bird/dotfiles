@@ -1,142 +1,69 @@
 ---
 name: using-git-worktrees
-description: Use when starting a vertical slice that needs isolation from the current workspace, before executing a multi-task plan, or when the host environment has not already provided an isolated workspace.
+description: Use when starting a vertical slice that needs isolation from the current workspace, before executing a multi-task plan, or when the host environment has not already provided an isolated workspace. 현재 workspace로부터 격리가 필요한 vertical slice를 시작할 때, multi-task plan 실행 전, 또는 host 환경이 격리된 workspace를 아직 제공하지 않았을 때 사용한다.
 ---
 
 # Using Git Worktrees
 
-Ensure work happens in an isolated workspace. Prefer host-native worktree tooling. Fall back to manual `git worktree add` only when no native tool exists. Never fight the harness.
+**Intent**: 구현은 격리된, clean-baseline workspace에서 이루어진다. **Boundary**: 하네스와 절대
+싸우지 않는다 — 먼저 기존 격리를 탐지하고, host-native 도구를 우선하며, 아무것도 없을 때만
+`git worktree`로 폴백한다; cleanup은 생성자만 수행한다. **Verify**: 새 workspace에서 baseline
+check를 실행하고 최신 출력을 읽는다.
 
-Harness-wide SSOT for worktree creation, detection, and cleanup. Other skills (`subagent-driven-development` Workspace Isolation, `ship-check` Finishing Options) reference this file.
+Worktree 생성, 탐지, cleanup의 하네스 전역 SSOT — `subagent-driven-development`와 `ship-check`가
+이 파일을 참조한다.
 
-**Core principle**: detect existing isolation first → use native tools → fall back to git. Owner-of-creation owns cleanup.
+## When
 
-## When To Use
+- 보호된 base branch에서 시작하는 모든 코드 변경 작업(규칙 SSOT: `using-bb-harness` Branch
+  Policy — 모든 Workflow Path에 적용).
+- multi-task plan(`subagent-driven-development` / `executing-plans-inline`), 광범위한 refactor,
+  또는 사용자가 branch/PR로 리뷰 가능하길 원하는 모든 slice 이전.
 
-- Before any code-modifying work starts on a protected base branch (`main`, `master`, `develop`, `trunk`). See `using-bb-harness` Branch Policy — this applies regardless of Workflow Weight.
-- Before `subagent-driven-development` or `executing-plans-inline` starts a multi-task plan.
-- Broad refactors crossing module boundaries.
-- Any vertical slice the user wants reviewable as a branch / PR.
-- When `test-driven-development` is about to modify production code.
-
-Skip when:
-
-- Host already created an isolated workspace (Step 0 detects this).
-- Current branch is already a non-protected feature branch with scope matching the task.
-- User explicitly consented to work directly on a protected branch this session (record the exception).
-- Work is read-only (questions, investigation, no edits).
+건너뛰는 경우: Step 0에서 기존 격리를 탐지 · 이미 일치하는 non-protected feature branch에 있음 ·
+사용자가 이번 세션에서 보호된 branch 작업에 명시적으로 동의(기록할 것) · 작업이 read-only.
 
 ## Step 0 — Detect Existing Isolation
-
-Check before creating anything.
 
 ```bash
 GIT_DIR=$(cd "$(git rev-parse --git-dir)" 2>/dev/null && pwd -P)
 GIT_COMMON=$(cd "$(git rev-parse --git-common-dir)" 2>/dev/null && pwd -P)
-BRANCH=$(git branch --show-current)
+# Submodule guard — a submodule also has GIT_DIR != GIT_COMMON:
+git rev-parse --show-superproject-working-tree 2>/dev/null   # path → submodule → normal repo
 ```
 
-**Submodule guard**: `GIT_DIR != GIT_COMMON` is also true in a submodule. Verify:
+`GIT_DIR != GIT_COMMON`이고 submodule이 아니면 → 이미 linked worktree 안에 있음: 경로와 branch를
+보고하고(detached HEAD → "branch creation deferred to `ship-check` Finishing Options"로 명시)
+Step 2로 건너뛴다. 그 외: 격리 없음 → 선언된 preference가 없다면 생성 전에 동의를 구한다; 사용자가
+거절하면 → 그 자리에서 작업, Step 2.
 
-```bash
-# If this returns a path, you are in a submodule — treat as a normal repo.
-git rev-parse --show-superproject-working-tree 2>/dev/null
-```
+## Step 1 — Create
 
-- **`GIT_DIR != GIT_COMMON` and not a submodule**: already in a linked worktree. Skip to Step 3. Do not create another.
-- **`GIT_DIR == GIT_COMMON` or in submodule**: normal repo checkout.
+**1a. Host-native tool 우선**(Claude Code `EnterWorktree`, `/worktree`, Codex helper, project
+script) — placement, branch 생성, registration, cleanup을 이 도구가 소유한다. native tool이 있는데
+raw `git worktree add`를 쓰면 phantom state가 생기고 `ship-check` cleanup provenance가 깨진다.
 
-Report with branch state:
+**1b. Git fallback**(1a가 적용되지 않을 때만):
 
-- On branch: "Already in isolated workspace at `<path>` on branch `<name>`."
-- Detached HEAD: "Already in isolated workspace at `<path>` (detached HEAD, externally managed). Branch creation deferred to `ship-check` Finishing Options."
+- Directory: `AGENTS.md`/`CLAUDE.md`/`.ai-harness/AGENT_WORKFLOW.md`/chat에 선언된 preference가
+  우선; 없으면 기존 `.worktrees/`(선호) 또는 `worktrees/`; 없으면 project root의 기본값
+  `.worktrees/`. global worktree 경로 없음 — project-local이어야 project tooling이 찾을 수 있다.
+- Safety: 디렉터리가 git-ignore 되어 있는지 확인(`git check-ignore -q .worktrees`); ignore되지
+  않았으면 → `.gitignore`에 추가, stage, 작은 커밋에 대한 승인을 요청(승인된 plan이 이를 커버하지
+  않는 한).
+- Create: `git worktree add "$LOCATION/$BRANCH_NAME" -b "$BRANCH_NAME" && cd`로 진입. Permission
+  error(sandbox) → 보고하고 그 자리에서 작업.
 
-No isolation and no declared preference → ask consent before creating. Honor declared preference without asking. User declines → work in place, skip to Step 3.
+## Step 2 — Project Setup (user-managed)
 
-## Step 1 — Create An Isolated Workspace
+manifest를 탐지하고 install 명령을 *제안*한다(`npm install`, `cargo build`, `uv sync`,
+`go mod download`); 사용자가 이번 세션의 setup을 승인했을 때만 실행한다.
 
-Two mechanisms. Try in order.
+## Step 3 — Verify Clean Baseline
 
-### 1a. Host-Native Worktree Tool (preferred)
-
-If host provides a worktree facility (Claude Code `EnterWorktree` tool, `/worktree` slash command, Codex helper, project-specific script), use it and skip to Step 3.
-
-Native tools handle placement, branch creation, registration, and cleanup automatically. Using `git worktree add` when native tool exists creates phantom state, breaks `ship-check` cleanup provenance.
-
-### 1b. Git Worktree Fallback
-
-Use only when Step 1a does not apply.
-
-#### Directory Selection
-
-Priority. Explicit user preference always wins.
-
-1. **Declared preference** in `AGENTS.md`, `CLAUDE.md`, `.ai-harness/AGENT_WORKFLOW.md`, or chat. Use without asking.
-2. **Existing project-local directory**:
-   ```bash
-   ls -d .worktrees 2>/dev/null     # preferred (hidden)
-   ls -d worktrees 2>/dev/null      # alternative
-   ```
-   Both exist → `.worktrees` wins.
-3. **Project-local default**: `.worktrees/` at project root.
-
-BB Harness does **not** use a global worktree path (e.g. `~/.config/superpowers/worktrees/`). Project-local keeps the workspace discoverable by project tooling and lefthook hooks.
-
-#### Safety Verification (project-local only)
-
-Verify directory is git-ignored before creating:
-
-```bash
-git check-ignore -q .worktrees 2>/dev/null || git check-ignore -q worktrees 2>/dev/null
-```
-
-Not ignored → add to `.gitignore`, stage it, and ask the user to approve the small dedicated commit — unless the approved plan already covers it (accepted-risk exception). Skipping risks committing worktree contents.
-
-#### Create The Worktree
-
-```bash
-LOCATION=".worktrees"                                  # or chosen path
-path="$LOCATION/$BRANCH_NAME"
-git worktree add "$path" -b "$BRANCH_NAME"
-cd "$path"
-```
-
-**Sandbox fallback**: `git worktree add` fails with permission error → tell user the sandbox blocked creation, working in place. Continue with Step 3 in current directory.
-
-## Step 2 — (reserved)
-
-Step 2 upstream aligned project setup with worktree creation. In BB Harness, dependency installation is user-managed by default (`project-scaffold` Defaults). Go to Step 3.
-
-## Step 3 — Project Setup (User-Managed)
-
-Auto-detection allowed; *running* installs is not, unless user explicitly authorized this session.
-
-Suggest and assume:
-
-```bash
-# Detect manifests and propose commands; do not execute without approval.
-[ -f package.json ]   && echo "Suggested: npm install (or pnpm/yarn)"
-[ -f Cargo.toml ]     && echo "Suggested: cargo build"
-[ -f pyproject.toml ] && echo "Suggested: uv sync (or poetry install)"
-[ -f go.mod ]         && echo "Suggested: go mod download"
-```
-
-User already approved running setup commands for this session (e.g., `subagent-driven-development` Workspace Isolation Baseline-first rule) → run them.
-
-## Step 4 — Verify Clean Baseline
-
-Run narrowest meaningful test suite, type check, or lint:
-
-```bash
-# Use the project-appropriate command. Apply verification-before-completion —
-# read the output in this response.
-npm test / cargo test / pytest -x / go test ./...
-```
-
-- **Pass**: report ready.
-- **Fail**: distinguish pre-existing from regression caused by worktree creation. Ask user before proceeding — never silently start on a red baseline.
-
-### Report Format
+가장 좁은 의미 있는 suite/typecheck/lint를 실행하고 이 응답 안에서 출력을 읽는다. 실패 →
+pre-existing인지 regression인지 구분하고, 진행 전에 물어본다 — red baseline에서 조용히 시작하지
+않는다.
 
 ```text
 Worktree ready at <full-path>
@@ -145,77 +72,23 @@ Baseline: <N> tests, <M> failures (pre-existing / new / clean)
 Ready to: <next skill or action>
 ```
 
-## Cleanup
+## Cleanup (executed at `ship-check` Finishing Options)
 
-Cleanup happens at `ship-check` Finishing Options (Merge or Discard). Rules:
-
-- **Cleanup ownership**: only the creator removes it. Worktrees created via this skill are owned by this skill (cleaned by `ship-check`).
-- **Project-local provenance**: `.worktrees/` or `worktrees/` paths (this skill's paths) are owned by BB Harness. Cleanup allowed.
-- **Host-owned provenance**: worktrees outside those paths are owned by the host (native tool or external agent). Do not remove — host owns lifecycle.
-
-Cleanup steps (from `ship-check`):
+- Provenance: 이 스킬이 생성한 경로(`.worktrees/`, `worktrees/`)만 제거할 수 있다; host가 소유한
+  worktree는 host의 lifecycle을 따른다.
+- 항상 먼저 main repo root로 `cd`한다 — worktree 안에서 `git worktree remove`를 실행하면 조용히
+  실패한다:
 
 ```bash
 MAIN_ROOT=$(git -C "$(git rev-parse --git-common-dir)/.." rev-parse --show-toplevel)
-cd "$MAIN_ROOT"
-git worktree remove "$WORKTREE_PATH"
-git worktree prune
+cd "$MAIN_ROOT" && git worktree remove "$WORKTREE_PATH" && git worktree prune
 ```
 
-Never run `git worktree remove` from inside the worktree being removed — silent fail. Always `cd` to main repo root first.
+- Merge order: merge 성공 → worktree 제거 → branch 삭제(worktree가 참조하는 동안은
+  `git branch -d`가 거부한다).
 
-Order for merge:
+## Never
 
-1. Merge succeeds.
-2. Cleanup worktree.
-3. Delete branch (`git branch -d`).
-
-Reverse fails — `git branch -d` refuses while worktree references the branch.
-
-## Quick Reference
-
-| Situation | Action |
-| --- | --- |
-| Already in linked worktree | Skip creation (Step 0). |
-| In a submodule | Treat as normal repo (Step 0 guard). |
-| Host-native worktree tool available | Use it (Step 1a). |
-| No native tool | Git worktree fallback (Step 1b). |
-| `.worktrees/` exists | Use it (verify ignored). |
-| `worktrees/` exists | Use it (verify ignored). |
-| Both exist | Use `.worktrees/`. |
-| Neither exists | Declared preference, else default `.worktrees/`. |
-| Directory not ignored | Add to `.gitignore`, stage, get commit approval (unless plan covers it). |
-| Permission error on create | Sandbox fallback, work in place, report. |
-| Tests fail during baseline | Report, distinguish pre-existing from new, ask. |
-| Detached HEAD | Branch creation deferred to `ship-check`. |
-
-## Common Mistakes
-
-- **Fighting the harness**: `git worktree add` when a native tool exists. → Use native.
-- **Skipping Step 0**: nested worktree inside existing one. → Always detect first.
-- **Skipping ignore verification**: worktree contents tracked, polluting `git status`. → Always `git check-ignore` first.
-- **Running install without approval**: violates user-managed dependency rule. → Suggest; do not execute.
-- **Cleaning up host-owned worktrees**: leaves host with phantom state. → Only clean paths this skill created.
-- **Removing worktree from inside it**: silent failure. → `cd` to main repo root first.
-
-## Red Flags
-
-Never:
-
-- Create a worktree when Step 0 detects existing isolation.
-- Use `git worktree add` when a native worktree tool is available.
-- Skip Step 1a by jumping to Step 1b.
-- Create a project-local worktree without verifying it is git-ignored.
-- Skip baseline test verification.
-- Proceed silently with failing baseline tests.
-- Run `git worktree remove` from inside the worktree being removed.
-- Remove a worktree this skill did not create.
-
-Always:
-
-- Run Step 0 detection first.
-- Prefer host-native tools over the git fallback.
-- Verify directory is ignored for project-local worktrees.
-- Read fresh baseline test output in this response (per `verification-before-completion`).
-- Distinguish pre-existing failures from regressions.
-- Honor cleanup provenance.
+탐지된 격리 위에 worktree를 생성 · native tool을 우회해 raw git 사용 · git-ignore 체크 건너뛰기 ·
+baseline verification을 건너뛰거나 무시 · 이 스킬이 생성하지 않은 worktree를 제거 · worktree
+안에서 `git worktree remove` 실행.

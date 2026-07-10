@@ -1,172 +1,82 @@
 ---
 name: dispatching-parallel-agents
-description: Use when 2+ genuinely independent investigations, bug repros, or read-only research tasks can run concurrently without shared state — for breadth, not for plan execution. Plan-task execution stays in subagent-driven-development.
+description: Use when 2+ genuinely independent investigations, bug repros, or read-only research tasks can run concurrently without shared state — for breadth, not for plan execution. Plan-task execution stays in subagent-driven-development. 진짜로 독립적인 조사·버그 재현·read-only 리서치 작업 2개 이상을 공유 상태 없이 동시에 실행할 때 사용한다(범위 확장 목적, plan 실행 목적 아님).
 ---
 
 # Dispatching Parallel Agents
 
-Run multiple investigations / read-only tasks **concurrently** when independent. Each agent gets own context, scope, return format. Controller integrates.
+**Intent**: 동시적 breadth — 독립적인 조사들이 각자의 context, scope, return format을 가지고
+병렬로 실행되며, controller가 통합한다. **Boundary**: plan 실행에는 절대 사용하지 않는다(그것은
+`subagent-driven-development`이며, 슬라이스별 리뷰와 함께 순차 실행); 같은 파일에 대한 병렬 쓰기
+절대 금지; fresh verification 없이 subagent 보고서에 따라 행동하지 않는다. **Verify**: 발견사항은
+충돌 여부를 교차 검증하고, controller는 행동하기 전에 결정적 repro를 직접 재실행한다.
 
-**Not** an alternative execution model for plan tasks — `subagent-driven-development` dispatches sequentially with two-stage review. Parallel dispatch handles the *other* case: 2+ unrelated bugs, 2+ disjoint code areas, 2+ independent test failures with different root causes.
+## When
 
-## When To Use
+2개 이상의 문제가 **서로 다른 근본 원인**을 가지고, **서로의 context 없이도** 이해 가능하며,
+공유 상태가 없을 때 사용한다 — 예: 관련 없는 실패 테스트 파일들, 독립적으로 깨진 서브시스템들,
+서로 다른 관심사에 걸친 read-only 리서치. 두 도메인이 왜 무관한지 설명할 수 없다면 → 관련 있다고
+간주하고 agent 1개로 처리한다. 도메인이 agent 1개로 충분히 작을 때, 조사들이 대부분의 상태를
+공유할 때, 이미 답을 대부분 알고 있을 때는 건너뛴다 — dispatch 오버헤드는 실재한다.
 
-Trigger:
-
-- 2+ test files failing with **different** root causes.
-- Multiple subsystems broken **independently**.
-- Each problem understandable without context from others.
-- No shared state between investigations.
-- Read-only research across distinct concerns.
-
-Do **not** use when:
-
-- Failures related — fixing one might fix others.
-- Investigation needs full system state in one place.
-- Agents would write to same files (conflicts).
-- Task is plan execution — that's `subagent-driven-development`.
-
-## Use Case Boundary (vs Subagent-Driven-Development)
-
-| Aspect | `dispatching-parallel-agents` | `subagent-driven-development` |
+| Aspect | this skill | `subagent-driven-development` |
 | --- | --- | --- |
-| Purpose | Independent investigations / research | Sequential plan task implementation |
-| Concurrency | Parallel (concurrent) | Sequential (one task at a time) |
-| Write scope | Read-only or disjoint reads | Each task writes; never parallel writes |
-| Review | Controller integrates, no formal review | Two-stage review per task |
-| Triggered by | Multiple unrelated symptoms | Approved plan with tasks |
+| Purpose | 독립적 조사 / 리서치 | 순차적 plan-task 구현 |
+| Concurrency | Parallel | Sequential |
+| Write scope | Read-only or disjoint | 각 task가 쓰기; 절대 병렬 아님 |
+| Review | Controller integrates | 슬라이스별 `implementation-review` |
 
-Unsure? Most plan-execution work → `subagent-driven-development`. Parallel dispatch is the *exception* when controller needs concurrent breadth, not depth.
+## Dispatch
 
-## The Pattern
+1. **독립 도메인별로 그룹화** — 도메인당 agent 1개, 각각 구체적인 scope, 명확한 goal,
+   제약(기본은 read-only), 구조화된 return format을 가진다. 범용 복사-붙여넣기 프롬프트 금지.
+2. **적합한 가장 저렴한 agent로 라우팅**(Claude Code; 주요 사용량 제한 레버):
 
-### 1. Identify Independent Domains
-
-Group failures/questions by what they need to look at. Example:
-
-- File A tests: tool approval flow
-- File B tests: batch completion behavior
-- File C tests: abort functionality
-
-Each independent — fixing tool approval does not affect abort tests.
-
-Cannot articulate why two domains are *unrelated*? Treat as related, use one agent.
-
-### 2. Craft Focused Agent Tasks
-
-Each agent gets:
-
-- **Specific scope**: one test file, one subsystem, one question.
-- **Clear goal**: "Find root cause of X" or "Map all call sites of Y".
-- **Constraints**: do not change unrelated code; read-only by default unless task permits writes within disjoint scope.
-- **Expected output**: structured summary the controller can integrate.
-
-### 2b. Route To The Cheapest Agent That Fits (Claude Code)
-
-Match each dispatched task to a model tier — this is the primary lever for conserving usage limits, since subagents otherwise inherit the (possibly expensive) main model.
-
-| Task shape | Agent (Claude Code) | Model |
+| Task shape | Agent | Model |
 | --- | --- | --- |
-| Pure retrieval — locate code, map call sites, read/extract files, grep sweeps, log scans, web lookups | `explore-lite` | haiku (pinned) |
-| Root-cause analysis, debugging hypotheses, anything needing judgment | `general-purpose` | inherits main; pass `model: sonnet` when the main model is heavier than the task needs |
+| 순수 조회 — 코드 위치 찾기, call site 매핑, grep/log 스윕, 웹 조회 | `explore-lite` | haiku (pinned) |
+| 근본 원인 분석, 가설, 판단 | `general-purpose` | main을 상속; main model이 task를 초과할 때 `model: sonnet` 전달 |
 
-Split a mixed investigation: send the fact-gathering half to `explore-lite`, keep the hypothesis half on `general-purpose`. If `explore-lite` reports a needs-judgment gap, re-dispatch that piece to `general-purpose`. Other hosts (Codex, Gemini) ignore `explore-lite` — they dispatch every investigation through their generic agent.
+   혼합 조사는 분리: 사실 → `explore-lite`, 가설 → `general-purpose`. 병렬 dispatch가 없는 host는
+   같은 프롬프트를 순차 실행한다.
+3. **동시 dispatch** — Claude Code: 한 응답에 여러 Task 호출. 병렬 dispatch가 없는 host: 같은
+   프롬프트를 순차 실행하고 순서대로 병합.
 
-### 3. Dispatch Concurrently
-
-Claude Code: send multiple `Task` tool uses **in a single response**:
+Prompt template:
 
 ```text
-Task("Investigate agent-tool-abort.test.ts failures")
-Task("Investigate batch-completion-behavior.test.ts failures")
-Task("Investigate tool-approval-race-conditions.test.ts failures")
-```
-
-Other harnesses (Codex, Gemini, generic CLI): follow the platform's parallel dispatch idiom if one exists; otherwise dispatch sequentially (one investigator at a time, same prompt structure) and merge results in the same order. The investigation-per-domain pattern still applies — only the concurrency mechanism changes.
-
-### 4. Integrate Results
-
-When agents return:
-
-1. Read each summary.
-2. Verify findings do not conflict — resolve before acting.
-3. Decide which findings need follow-up (route through `subagent-driven-development` or `test-driven-development`).
-4. Run full verification after integration (`verification-before-completion`).
-
-## Agent Prompt Structure
-
-Each prompt: **focused** (one domain), **self-contained** (paste failing test, relevant file, error), **specific about output**.
-
-Template:
-
-```text
-Task tool (explore-lite for pure retrieval, else general-purpose — see §2b):
+Task tool (explore-lite for pure retrieval, else general-purpose):
   description: "Investigate <domain>"
   prompt: |
     Investigate <specific problem> in <specific files>.
 
     ## Context
-
     {Background, related code, what is already known}
 
     ## What To Find
-
     1. Root cause (file:line, mechanism).
     2. Reproduction (smallest failing input or test).
-    3. Affected scope (which other tests / call sites depend on this).
-    4. Hypothesis for the fix (do NOT apply it — return the analysis).
+    3. Affected scope (other tests / call sites).
+    4. Hypothesis for the fix (do NOT apply it).
 
     ## Constraints
-
-    - Do NOT modify code. This is investigation only.
-    - Stay inside: <file list>. Do not read outside this scope unless you can justify
-      a single specific reason.
-    - Apply verification-before-completion when running any repro command — read the
-      output in your response.
+    - Do NOT modify code. Investigation only.
+    - Stay inside: <file list>.
+    - When running any repro command, read the output in your response.
 
     ## Return Format
-
-    - Root cause: <one paragraph>
-    - Repro: <command or test snippet>
-    - Affected scope: <list>
-    - Suggested fix: <one paragraph>
-    - Files inspected: <list>
+    Root cause / Repro / Affected scope / Suggested fix / Files inspected.
 ```
 
-Customize per domain. Do not send all agents the same generic prompt.
+## Integrate
 
-## Output To Controller
+각 요약을 읽는다 → 충돌 해결(두 agent가 의견이 다르면 보통 한쪽이 사실을 잘못 알고 있다는 뜻이다
+— 재-dispatch하지 말고 논쟁이 되는 사실을 직접 재확인) → 후속 작업은
+`subagent-driven-development`나 `test-driven-development`로 라우팅 → 전체 검증을 실행하고
+출력을 읽는다. agent 1개가 BLOCKED → 더 많은 context로 재-dispatch; 쓸모없는 결과 → 더 날카로운
+프롬프트로 단일 교체.
 
-After integration:
+## Output
 
-- Number of agents dispatched and domains.
-- Per-domain findings (one block per agent).
-- Cross-cutting observations.
-- Recommended next step: sequential fix via `subagent-driven-development` / single-domain fix via `test-driven-development` / additional investigation (BLOCKED or NEEDS_CONTEXT).
-
-## Anti-Patterns
-
-- **Dispatching for plan execution**: parallel implementers cause write conflicts. Plan tasks run sequentially via `subagent-driven-development`.
-- **Vague prompts** ("look into the test failures"): each agent needs specific domain and return format.
-- **Letting agents share state**: each has own context. Don't assume one saw what another did.
-- **Skipping integration**: dispatching 3 agents, trusting all reports without cross-checking. Read each, verify no conflicts, act.
-- **Parallel writes**: two agents on same files → second overwrites first. Disjoint write scope or all read-only.
-- **Forgetting `verification-before-completion`**: reports are claims. Controller runs repro itself before acting.
-
-## When Parallel Dispatch Is Not Worth It
-
-Dispatch overhead is real. Stay single-agent when:
-
-- 2 domains small, one agent holds both.
-- Investigations share enough state that "saving context" is a wash.
-- Controller already has answer for 2 of 3 domains.
-
-## Failure Modes
-
-- One agent BLOCKED: re-dispatch with more context. Others still valid.
-- Two agents disagree: read both. Usually one wrong about a fact other has right. Re-check disputed fact yourself, not re-dispatch.
-- Agent returns nothing useful: prompt too vague. Re-craft with sharper scope, dispatch single replacement (not all).
-
-## Bottom Line
-
-Breadth tool, not execution model. Use for 2+ unrelated investigations concurrently. Use `subagent-driven-development` for everything flowing through an approved plan.
+dispatch된 agent와 도메인 · 도메인별 발견사항 · cross-cutting observation · 권장 다음 단계
+(SDD를 통한 순차적 fix / TDD를 통한 단일 도메인 fix / 추가 조사).

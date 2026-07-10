@@ -1,43 +1,43 @@
 # Test Pollution
 
-Load when:
+다음일 때 로드:
 
-- A test creates files, directories, DB rows, or external state that survives the test.
-- Suite leaves artifacts in the source tree (`.git`, `tmp/`, leaked fixtures).
-- Tests pass in isolation but fail in suite (or vice versa).
-- One test corrupts the environment for the next.
+- 테스트가 파일, 디렉터리, DB 행, 또는 외부 상태를 만들고 그것이 테스트 이후에도 남는다.
+- 스위트가 소스 트리에 산출물을 남긴다(`.git`, `tmp/`, 유출된 픽스처).
+- 테스트가 단독으로는 통과하지만 스위트에서는 실패한다(또는 그 반대).
+- 한 테스트가 다음 테스트를 위한 환경을 오염시킨다.
 
-If symptoms point elsewhere (deterministic logic bug, missing impl), use main `bug-diagnosis`
-without this file.
+증상이 다른 곳을 가리킨다면(결정적 로직 버그, 구현 누락) 이 파일 없이 메인
+`bug-diagnosis`를 사용한다.
 
 ## What This File Owns
 
-The "which test is polluting?" investigation + the bisection tool. Defense against
-re-pollution lives in `defense-in-depth.md` (Layer 3 environment guards).
+"어떤 테스트가 오염시키는가?"라는 조사 작업과 이분 탐색 도구. 재오염 방어는
+`defense-in-depth.md`(Layer 3 환경 가드)에 있다.
 
 ## Symptoms
 
 | Symptom | Likely cause |
 | --- | --- |
-| `.git` appears in `packages/<x>/` after tests | Test ran `git init` with empty/wrong `cwd` |
-| Random files in `tmp/`, `dist/`, project root | Test wrote outside its sandbox |
-| Unexpected DB rows after suite | Test seeded without cleanup |
-| Passes alone, fails in suite | Earlier test changed shared state |
-| Fails alone, passes in suite | Earlier test sets up state this test expects (hidden coupling) |
-| CI passes, local fails (or vice versa) | Environment-specific leak |
+| 테스트 후 `packages/<x>/`에 `.git`이 나타남 | 테스트가 비어있거나 잘못된 `cwd`로 `git init`을 실행함 |
+| `tmp/`, `dist/`, 프로젝트 루트에 무작위 파일 | 테스트가 샌드박스 밖에 파일을 씀 |
+| 스위트 후 예상치 못한 DB 행 | 테스트가 정리 없이 시딩함 |
+| 단독으로는 통과, 스위트에서는 실패 | 이전 테스트가 공유 상태를 변경함 |
+| 단독으로는 실패, 스위트에서는 통과 | 이전 테스트가 이 테스트가 기대하는 상태를 준비함(숨은 결합) |
+| CI는 통과, 로컬은 실패(또는 반대) | 환경 특이적 누수 |
 
 ## Investigation Process
 
 ### 1. Identify The Pollution Signal
 
-Pick a specific, observable artifact checkable with a single shell command:
+단일 셸 명령으로 확인 가능한, 구체적이고 관찰 가능한 산출물을 고른다:
 
-- File path (`/tmp/leak.json`, `packages/core/.git`).
-- DB row (`SELECT * FROM sessions WHERE user_id = 'test-leak'`).
-- Process (`pgrep -f leaked-server`).
-- Port (`lsof -iTCP:8080`).
+- 파일 경로(`/tmp/leak.json`, `packages/core/.git`).
+- DB 행(`SELECT * FROM sessions WHERE user_id = 'test-leak'`).
+- 프로세스(`pgrep -f leaked-server`).
+- 포트(`lsof -iTCP:8080`).
 
-"The tests are weird" is not a signal.
+"테스트가 이상하다"는 신호가 아니다.
 
 ### 2. Confirm Deterministic Repro
 
@@ -48,12 +48,12 @@ Pick a specific, observable artifact checkable with a single shell command:
 4. Repeat once more. Same result?
 ```
 
-If non-deterministic, raise the repro rate first (parallel workers, slow network, smaller
-temp dir — `bug-diagnosis` reproduction-loop techniques).
+비결정적이라면 재현율을 먼저 끌어올린다(병렬 워커, 느린 네트워크, 더 작은 임시
+디렉터리 — `bug-diagnosis` 재현 루프 기법).
 
 ### 3. Bisect To Find The Polluter
 
-Use `find-polluter.sh`:
+`find-polluter.sh`를 사용한다:
 
 ```bash
 # Run from the project root. Default runner: npm test.
@@ -63,34 +63,34 @@ Use `find-polluter.sh`:
 TEST_CMD="pytest" ~/.config/ai-harness/skills/bug-diagnosis/find-polluter.sh '/tmp/leak.json' 'tests/**/test_*.py'
 ```
 
-`go test` and `cargo test` address packages / test targets (`--test <name>`), not file paths,
-so the script cannot drive them — bisect manually: run each package / test target individually,
-checking the pollution signal between runs.
+`go test`와 `cargo test`는 파일 경로가 아니라 패키지/테스트 타깃(`--test <name>`)을
+대상으로 하므로 스크립트로 구동할 수 없다 — 수동으로 이분 탐색한다: 각 패키지/테스트
+타깃을 개별 실행하며 실행 사이에 오염 신호를 확인한다.
 
-Runs each test file individually, checks the signal between runs, stops at the first
-polluter.
+각 테스트 파일을 개별 실행하고 실행 사이에 신호를 확인해 최초 오염원에서 멈춘다.
 
-If "no polluter found":
+"오염원 없음"이라면:
 
-- Pollution is from a **combination** (setup hook + later test). Run full suite, watch signal
-  mid-run.
-- Pollution is from a **shared fixture / global hook** (Vitest `setup.ts`, Jest `globalSetup`,
-  Pytest `conftest.py`, Rust `mod tests { fn setup() }`). Audit those first.
-- Runner caches mask the polluter. Disable parallelism/caching once:
+- 오염이 **조합**(설정 훅 + 이후 테스트)에서 발생함. 전체 스위트를 실행하며 실행 도중
+  신호를 관찰한다.
+- 오염이 **공유 픽스처/전역 훅**(Vitest `setup.ts`, Jest `globalSetup`, Pytest
+  `conftest.py`, Rust `mod tests { fn setup() }`)에서 발생함. 이것들을 먼저 감사한다.
+- 러너 캐시가 오염원을 가림. 병렬성/캐싱을 한 번 비활성화한다:
   `npm test -- --no-cache --runInBand`, `pytest -p no:cacheprovider`,
   `cargo test -- --test-threads=1`.
 
 ### 4. Find The Root Cause
 
-Switch to `root-cause-tracing.md`: read the test file, trace the call chain to the polluting
-operation, identify the original trigger (empty parameter, missing teardown, etc.).
+`root-cause-tracing.md`로 전환한다: 테스트 파일을 읽고, 오염 연산까지 콜 체인을
+추적하고, 원래 트리거(빈 파라미터, 누락된 teardown 등)를 식별한다.
 
 ### 5. Fix At Root + Add Defense
 
-1. Fix at source (`root-cause-tracing.md` "Fix At Source").
-2. Add validation layers via `defense-in-depth.md` so the bug cannot reappear via another
-   path.
-3. Apply `verification-before-completion`: re-run `find-polluter.sh` → "No polluter found".
+1. 소스에서 수정한다(`root-cause-tracing.md` "Fix At Source").
+2. `defense-in-depth.md`를 통해 검증 레이어를 추가해 다른 경로로도 버그가 재발할 수
+   없게 한다.
+3. 최신 출력으로 검증한다: `find-polluter.sh`를 재실행 → "오염원 없음(No polluter
+   found)".
 
 ## Common Polluter Mechanisms
 
@@ -102,8 +102,8 @@ await execFileAsync('git', ['init'], { cwd: projectDir });  // projectDir = ''
 // Empty cwd → process.cwd() → source tree
 ```
 
-Fix: validate `cwd` at the public API boundary (Layer 1). Environment guard: refuse `git
-init` outside `tmpdir` during tests (Layer 3).
+수정: 공개 API 경계에서 `cwd`를 검증한다(Layer 1). 환경 가드: 테스트 중 `tmpdir` 밖에서의
+`git init`을 거부한다(Layer 3).
 
 ### Fixture Accessed Before `beforeEach`
 
@@ -117,7 +117,7 @@ test('thing', () => {
 });
 ```
 
-Fix: convert fixture to a getter that throws if accessed before initialization.
+수정: 픽스처를 초기화 전 접근 시 예외를 던지는 getter로 변환한다.
 
 ### Cleanup Only On Success
 
@@ -130,7 +130,7 @@ test('does thing', async () => {
 });
 ```
 
-Fix: `afterEach` / `try`-`finally`, not inline.
+수정: 인라인이 아니라 `afterEach`/`try`-`finally`를 사용한다.
 
 ### External Process Spawned, Never Killed
 
@@ -141,23 +141,24 @@ const server = spawn('node', ['server.js']);
 // server still running after the test
 ```
 
-Fix: track PID, kill in `afterEach`. Layer 3 guard: in CI, refuse to spawn long-running
-processes from tests without explicit allowlist.
+수정: PID를 추적하고 `afterEach`에서 죽인다. Layer 3 가드: CI에서는 명시적 허용 목록
+없이 테스트가 장시간 실행 프로세스를 스폰하는 것을 거부한다.
 
 ### DB Rows Seeded But Not Removed
 
-Fix: transactional tests (begin/rollback) or fixture-scoped cleanup. Layer 3 guard: refuse
-non-test DB connections from test runs.
+수정: 트랜잭션 테스트(begin/rollback) 또는 픽스처 범위 정리. Layer 3 가드: 테스트
+실행에서 비테스트 DB 연결을 거부한다.
 
 ## When Pollution Is Acceptable
 
-Some pollution is load-bearing: build artifacts in `target/`/`dist/`, coverage, logs. Signal
-is "did *unintended* state leak?" Check: is it in `.gitignore`? Yes → fine. No → leaked.
+일부 오염은 필요하다: `target/`/`dist/`의 빌드 산출물, 커버리지, 로그. 신호는
+"*의도하지 않은* 상태가 유출됐는가?"다. 확인: `.gitignore`에 있는가? 예 → 문제없음.
+아니오 → 유출됨.
 
 ## Hand-Off
 
-After find-polluter + root-cause-tracing + defense-in-depth:
+find-polluter + root-cause-tracing + defense-in-depth 이후:
 
-1. Apply `verification-before-completion` — re-run `find-polluter.sh`.
-2. Return to `bug-diagnosis` SKILL.md step 9-10 (verify, clean instrumentation, update
-   durable docs if the bug exposed a project-wide rule).
+1. `find-polluter.sh`를 재실행하고 출력을 읽는다.
+2. `bug-diagnosis` SKILL.md 9-10단계로 복귀한다(검증, 계측 정리, 버그가 프로젝트 전역
+   규칙을 드러냈다면 durable docs 갱신).

@@ -1,180 +1,99 @@
 ---
 name: using-bb-harness
-description: Use when starting any session before non-trivial work — checks the repo for BB Harness markers and routes to the right phase. Falls back to standard agent behavior when the repo does not reference the harness, so it is safe to invoke universally.
+description: Use when starting any session before non-trivial work — checks the repo for BB Harness markers, picks one of three workflow paths, and routes to the right phase. Falls back to standard agent behavior when the repo does not reference the harness, so it is safe to invoke universally. 사소하지 않은 작업 전 모든 세션 시작 시 사용한다 — 저장소에서 BB Harness 마커를 확인하고, 세 워크플로 경로 중 하나를 선택하며, 올바른 단계로 라우팅한다. 하네스를 참조하지 않는 저장소에서는 표준 에이전트 동작으로 폴백하므로 어디서나 안전하게 호출할 수 있다.
 ---
 
 # Using BB Harness
 
-Universal entry point. Invoke at every session start. If repo references BB Harness, route to right phase. If not, self-disable in one line; agent proceeds with standard behavior.
+보편적 진입점(universal entry point)이다. **Intent**: 사용자가 스킬명을 지정하지 않아도 모든
+세션이 올바른 컨텍스트를 로드한 채 올바른 워크플로 경로에 도달한다. **Boundary**: 하네스를
+채택하지 않은 저장소에 강제로 적용하지 않는다; 컨텍스트 공백을 메우기 위해
+제품·도메인·아키텍처·안전 관련 결정을 임의로 지어내지 않는다. **Verify**: 아래 Output 블록이
+어떤 편집보다도 먼저 생성된다.
 
-## Bootstrap Rule
+## Bootstrap
 
-Session start, before non-trivial work:
+1. 저장소 루트 마커를 확인한다: `AGENTS.md`, `CLAUDE.md`, 또는 `.ai-harness/AGENT_WORKFLOW.md`가
+   `BB Harness` 또는 구별되는 BB 스킬명(`using-bb-harness`, `subagent-driven-development`)을
+   언급하는지 확인한다. 일반적인 스킬명은 마커로 인정하지 않는다.
+2. 마커가 있으면 → 가장 가까운 `AGENTS.md` / `CLAUDE.md`를 먼저 읽고, 이어서
+   `.ai-harness/CONTEXT.md`, `.ai-harness/CURRENT.md`, `.ai-harness/AGENT_WORKFLOW.md`, 진행
+   중인 인수 아티팩트/플랜, 최근 핸드오프를 읽는다. 아래 Workflow Path에서 경로를 선택한다.
+   작업이 명백히 하나의 스킬에 대응하면(버그는 `bug-diagnosis`, 가벼운 동작 변경은
+   `test-driven-development`) 해당 스킬을 바로 호출한다.
+3. 마커가 없으면 → 한 번만 보고한다: "BB Harness not in this repo. Proceeding with standard agent
+   behavior." 여기서 멈춘다.
+4. 사소한 질문과 순수 대화는 부트스트랩을 건너뛴다.
 
-1. Check repo root for BB Harness markers:
-   - `AGENTS.md`, `CLAUDE.md`, or `.ai-harness/AGENT_WORKFLOW.md` that **mentions `BB Harness` or a distinctive BB skill name** (`using-bb-harness`, `subagent-driven-development`). Generic-sounding skill names are not markers — they false-positive on non-adopter repos.
-2. **Markers present** — read nearest `AGENTS.md` / `CLAUDE.md`, then proceed to Start or invoke the directly matching skill (e.g. `bug-diagnosis` for a bug, `test-driven-development` for small behavior change).
-3. **Markers absent** — report once: "BB Harness not in this repo. Proceeding with standard agent behavior." Skip rest. Do not force BB workflow on non-adopters.
-4. Trivial questions and pure-conversation replies may skip bootstrap.
+핵심 컨텍스트가 없으면 → 질문하거나 최소한의 복구 단계를 제안한다.
 
-Cheap when BB absent (single grep / file-existence check). Only reliable way to make BB repos get the right workflow without user typing skill name every session.
+## Workflow Path
 
-## Skill-First Rule
+**세 가지 경로. 세션 시작 시 한 번 결정하고 그 후 고정한다** — 범위가 선택한 경로를 명백히
+벗어날 때만 재결정한다(에스컬레이션을 한 줄로 기록한다).
 
-- Start with `using-bb-harness` when current phase unclear.
-- Task matches a skill directly → use that skill, don't rephrase its procedure in chat.
-- Use next relevant skill at each phase boundary.
-- Smallest set of skills that materially protects the work.
-- If a relevant skill is skipped for small/local task, state reason briefly.
-
-## Start
-
-1. Read nearest `AGENTS.md` or `CLAUDE.md`.
-2. If present, read `.ai-harness/CONTEXT.md`, `.ai-harness/CURRENT.md`, `.ai-harness/AGENT_WORKFLOW.md`, active acceptance artifact, plan, recent review or handoff note.
-3. Check available skills for direct match before choosing execution path.
-4. Summarize: current goal, workflow weight, missing decisions/artifacts, next safe action.
-
-If key context missing, ask or propose minimal recovery step. Do not invent product, domain, architecture, or safety decisions.
-
-## Evidence Gate
-
-- Trivial edits: inspect target file + adjacent context before editing.
-- Behavior / API / dependency / data / security / infrastructure changes: trace execution path, call sites, constraints, regression surface first.
-- Next action would change behavior, API/UX, naming, persistence, auth, dependency, config, compatibility, product scope, domain language outside approved plan → ask first.
-
-## Workflow Weight
-
-| Weight | Trigger | Default path |
+| Path | Criteria | Chain |
 | --- | --- | --- |
-| Trivial / local | One bounded module, ≤ 50 LoC, no product / domain / API / data / security decision, no new test target | Direct edit or `test-driven-development` + `ship-check` |
-| Scope review | 3+ files, uncertain blast radius, unclear module boundary | Decide if small path still fits; record bounded scope |
-| Non-trivial | Product behavior, user workflow, domain language, public API, persistence, auth, sync, deletion, external integration | Reviewed acceptance artifact (via `write-spec` Self-Review) + compact plan (via `write-plan` Self-Review) + per-task `spec-compliance-review` + `code-quality-review` + docs gates |
-| Risky / substantial | Module boundary or dependency-direction change, refactor crossing 2+ modules, weak tests, 5+ files, 2+ modules, 300/600-line file thresholds, or any High-Risk Surface (`security` / `data-loss` / `money` / `auth` / `crypto` / `deletion` / `core architecture` — canonical list in `second-review`) | Above + `security-review` when triggered + `second-review` required for High-Risk Surface or boundary / dependency-direction change |
+| **light** | 단일 범위가 명확한 모듈; 제품/도메인/API/데이터/보안 관련 결정 없음 | 직접 편집 또는 `test-driven-development` → `ship-check` |
+| **standard** | 그 외의 모든 사소하지 않은 작업(제품 동작, 사용자 워크플로, 도메인 언어, 퍼블릭 API, 퍼시스턴스, 동기화, 외부 연동) | `write-spec` (Self-Review) → `write-plan` (Self-Review) → 실행 → 슬라이스별 `implementation-review` → `ship-check` |
+| **high-risk** | High-Risk Surface(`security` / `data-loss` / `money` / `auth` / `crypto` / `deletion` / `core architecture` — 정규 목록은 `second-review`에 있음) 또는 경계/의존성 방향 변경 | standard + `security-review`(트리거된 경우) + `second-review`(필수) |
 
-## Acceptance Artifact
+light와 standard 중 확신이 서지 않으면(파일 3개 이상, 영향 범위 불명확) standard를 선택한다 —
+가벼운 스펙/플랜이 무제한 편집보다 저렴하다.
 
-Non-trivial work needs reviewed acceptance artifact (spec, PRD, issue, review finding, approved task) before implementation. Use `write-spec` for new specs — its Self-Review owns product clarity and domain alignment. Acceptance Brief Fields (canonical: Goal, Accepted Behavior, Acceptance Criteria, Non-Goals / Stop Conditions, Touched Surfaces, Edge And Error Cases, Docs / Test Impact, Risk Level, Required Reviews, Second Review, AFK / HITL Boundary — full definitions in `write-spec` Light Acceptance Brief).
+standard/high-risk 체인에서는: `write-spec`은 Light Acceptance Brief 또는 full spec 중 하나를
+만든다(기준은 `write-spec` Modes — 이미 명확한 요청에 full spec을 강제하지 않는다); 실행 전에
+`using-git-worktrees`; `subagent-driven-development`(호스트가 서브에이전트를 디스패치할 수
+없거나 작은 작업 1~3개인 경우 `executing-plans-inline`); durable docs를 건드렸다면 `ship-check`
+전에 `docs-sync`.
 
-- Full `.ai-harness/specs/` spec: when product scope / domain language / public API / data / storage / auth / security / deletion / sync / external integrations / user workflow still being decided.
-- Already-clear task: issue / review finding / approved request enough when it meets canonical fields. Chat-only → plan must capture them in Approved Request Anchor.
-- Accepted-risk exceptions may skip a normal gate only with explicit user acceptance. Record: skipped gate, reason, risk, compensating check, user acceptance, follow-up/expiry.
+예외 사항, 모든 경로에 적용: 신규/미구성 저장소 → 먼저 `project-scaffold` · 방향이나 용어가
+미확정 → `write-spec` 전에 `product-discovery` / `pressure-test` / `domain-modeling` ·
+버그/플레이키 테스트/회귀 → 구현 변경 전에 `bug-diagnosis` · 독립적인 읽기 전용 조사 2건 이상 →
+`dispatching-parallel-agents` · 리뷰어가 발견 사항을 반환 → 수정 전에 `receiving-review` ·
+사용자 승인된 자율 반복 → `bounded-loop` · 메모리 후보/회고 인사이트 → `retro-capture`.
 
 ## Review Channels
 
-Harness uses **four** review channels: `spec-compliance-review`, `code-quality-review`, `security-review`, `second-review`. The two Self-Reviews are authoring-phase gates (spec/plan correctness inside the authoring skill), and `receiving-review` is the procedure for handling any reviewer's feedback — neither is a channel. Implementation-time reviews run as fresh subagents from `subagent-driven-development`.
+네 개의 관측 지점: 스펙 → 플랜 → 구현(슬라이스) → 교차 모델. 세 개의 채널:
+`implementation-review`(**Spec compliant ✅/❌** + **Ready to merge? Yes / With fixes / No**,
+한 번의 패스, 슬라이스마다 새 서브에이전트), `security-review`, `second-review`(둘 다
+**Yes / With fixes / No**). Self-Review는 `write-spec` / `write-plan` 내부의 작성 게이트이고;
+`receiving-review`는 피드백 절차이며; `docs-sync` / `ship-check`는 리뷰가 아니라 워크플로
+게이트다.
 
-All review-related gates:
-
-| Gate | Owner | When |
-| --- | --- | --- |
-| Spec Self-Review (authoring gate) | `write-spec` | Before declaring an acceptance artifact ready. Domain alignment, vertical slice quality. |
-| Plan Self-Review (authoring gate) | `write-plan` | Before presenting a plan. SOLID, file boundary, file-size impact. |
-| `spec-compliance-review` (channel) | reviewer subagent | After each implemented slice. Binary ✅ / ❌. |
-| `code-quality-review` (channel) | reviewer subagent | After spec-compliance passes. Code quality, DDD / SOLID, file-size, tests, durable docs drift. Ready to merge? Yes / With fixes / No. |
-| `security-review` (channel) | reviewer subagent | Follow-on from `code-quality-review` when security surface touched, or directly when slice is known security-heavy. |
-| `second-review` (channel) | different-model agent | High-Risk Surface, explicit double-check request, or boundary / dependency-direction change. |
-| `receiving-review` (feedback procedure) | authoring skill | Whenever a reviewer returns findings, before applying fixes. |
-
-`docs-sync` and `ship-check` are workflow gates, not reviews.
-
-## Review Rules
-
-Iteration, stop conditions, recommendations, severity definitions live in companion files:
-
-- `review-rules.md` — Review Iteration Pattern, Result Contract, Chain Depth Cap (1 automatic follow-on), Scope Guard, "plan needs revision" handoff, receiving-feedback ordering. **Hard stop after 2 cycles** here.
-- `severity-definitions.md` — Critical / Important / Minor with examples, Untouched-Code Rule, "do not promote" guidance.
-
-Other review skills and `claude-agents/*-reviewer.md` reference these companions as SSOT. Do not duplicate.
-
-Quick recap:
-
-- spec-compliance: binary ✅ / ❌.
-- code-quality / security / second: Ready to merge **Yes / With fixes / No**.
-- Hard stop after **2** review-fix cycles per channel — escalate, no auto third cycle.
-- Findings outside touched surface default to **Minor** unless change makes them unsafe.
-- At most **1** automatic follow-on review per channel; `second-review` exempt when Required When Available criteria met.
-
-## Execution Model
-
-- Small / local behavior change: `test-driven-development` then `ship-check`.
-- Reviewed multi-task plan, host supports subagents: `subagent-driven-development` as controller; each task = fresh implementer subagent + `spec-compliance-review` + `code-quality-review`.
-- Reviewed plan, host cannot dispatch subagents, or only 1-3 small tasks where dispatch overhead not worth it: `executing-plans-inline`. Same review gates as skill invocations against main agent's diff. Switch back to subagent-driven mid-plan if self-review weakens.
-- Workspace isolation for multi-task execution: `using-git-worktrees`.
-- Controller does not pause between tasks unless Required User Checkpoint applies (see `subagent-driven-development`).
+구속력 있는 규칙(SSOT: 이 디렉터리의 `review-rules.md`, `severity-definitions.md` — 다른 곳에
+중복 작성 금지): 채널당 리뷰-수정 사이클 **2**회 후 하드 스톱; 다룬 영역(touched surface) 밖의
+발견 사항은 기본적으로 **Minor**; 채널당 자동 후속 리뷰는 최대 **1**회(`second-review`는
+Required 기준을 충족하면 예외).
 
 ## Branch Policy
 
-**Never start implementation on a protected base branch** without explicit user consent. Default protected set: `main`, `master`, `develop`, `trunk`, plus any branch the repo's `AGENTS.md` / `CLAUDE.md` names as base.
+이번 세션에서 사용자의 명시적 동의 없이는 **보호된 베이스 브랜치**(`main`, `master`,
+`develop`, `trunk`, 또는 저장소 지침이 베이스로 지정한 브랜치)에서 구현을 시작하지 않는다.
+첫 코드 편집 전에 `git branch --show-current`로 확인한다; 보호된 브랜치라면 light 경로에서도
+먼저 `using-git-worktrees`를 호출한다. 읽기 전용 작업은 예외다. 브랜치명: `<type>/<short-slug>`,
+프로젝트 컨벤션을 따른다. 마무리는 `ship-check`의 Finishing Options를 거친다 — 조용한
+commit-and-push는 없다.
 
-- **Before the first code edit** in a session, check `git branch --show-current`. On a protected branch → invoke `using-git-worktrees` and create a feature branch / worktree first. This applies regardless of Workflow Weight — Trivial/local is not an excuse to commit directly to a protected branch.
-- **Exceptions** require explicit user consent in this session ("yes, edit main directly", "this is a hotfix on main"). Record the exception briefly in the response. Project-local instructions that authorize direct base-branch work also count as consent.
-- **Read-only work** (questions, investigation, doc-only navigation without edits) does not trigger this policy.
-- **Branch name**: derive from the task — `<type>/<short-slug>` (e.g. `fix/vscode-comment-newline`, `feat/branch-policy`). Match the project's existing convention when one is visible in `git log` / `git branch -a`.
-- **At finish time**: `ship-check` Finishing Options presents merge / push+PR / keep / discard. Do not silently commit-and-push from a feature branch without going through that gate.
+## Evidence Gate
 
-Implementation skills (`test-driven-development`, `executing-plans-inline`, `subagent-driven-development`) restate this as a precondition so the rule is in context when work actually starts.
-
-**Callsites that inline the protected-branch list** (per README Cross-Reference Inlining Policy — keep in sync when editing): `test-driven-development/SKILL.md` (Branch Precondition), `executing-plans-inline/SKILL.md` (Workspace Isolation), `subagent-driven-development/SKILL.md` (Workspace Isolation), `using-git-worktrees/SKILL.md` (When To Use).
-
-## Routing
-
-Choose next phase, not entire lifecycle:
-
-| Situation | Next skill |
-| --- | --- |
-| New or unscaffolded repo | `project-scaffold` |
-| Product brainstorming, goal, MVP, users, non-goals unclear | `product-discovery` |
-| Idea, spec, or plan needs pressure testing | `pressure-test` |
-| Domain terms, contexts, invariants, hard-to-reverse decisions unclear | `domain-modeling` |
-| Goal clear but no acceptance artifact or slices | `write-spec` |
-| Acceptance artifact ready, implementation path unclear | `write-plan` |
-| Reviewed plan has multiple tasks, host supports subagents | `subagent-driven-development` |
-| Reviewed plan, host cannot dispatch subagents or 1-3 small tasks | `executing-plans-inline` |
-| Small behavior change or single implementation task | `test-driven-development` |
-| Isolated worktree needed before execution | `using-git-worktrees` |
-| 2+ independent investigations / bug repros / read-only research that can run concurrently | `dispatching-parallel-agents` |
-| Bug, flaky test, regression | `bug-diagnosis` |
-| Verifying a completion claim ("done", "fixed", "passes") with fresh evidence | `verification-before-completion` |
-| Verifying implementation matches acceptance | `spec-compliance-review` |
-| Reviewing implementation quality / architecture / tests / docs | `code-quality-review` |
-| Security / data-loss / destructive / auth / secrets / crypto / untrusted-input risk | `security-review` |
-| Independent double-check required or requested | `second-review` |
-| Receiving review feedback, before applying fixes | `receiving-review` |
-| Behavior / architecture / testing / security / workflow changed | `docs-sync` |
-| Work ready to hand off, commit, PR, release | `ship-check` |
-| Commit / stack / PR / release action approved | `ship-check` then commit / stack gate |
-| `ship-check` or any review reports memory candidates / retro insights | `retro-capture` |
-| User approved repeated autonomous progress | `bounded-loop` |
+light 편집 → 대상 파일 + 인접 컨텍스트를 먼저 살펴본다. 동작/API/의존성/데이터/보안/인프라
+변경 → 실행 경로, 호출부, 제약, 회귀 범위를 먼저 추적한다. 다음 행동이 승인된 플랜 밖에서
+동작, API/UX, 네이밍, 퍼시스턴스, 인증, 의존성, 설정, 호환성, 범위, 도메인 언어를 변경한다면 →
+먼저 질문한다.
 
 ## Phase Loop
 
-After each phase:
-
-1. Record/update durable artifact for that phase when work non-trivial.
-2. Update `.ai-harness/CURRENT.md` only when active phase, acceptance artifact/source, plan, blocker, completed slice, verification evidence, or next action materially changes.
-3. Run narrowest useful verification or explain why none applies.
-4. Decide: continue, ask user, clear context after handoff, or stop.
-5. Recommend one next phase. Two paths equally valid → present at most one alternative.
-6. Do not advance when approval required for git setup, dependency execution, hooks, deletion, commit/stack actions, history rewrite, broad scope expansion, or unresolved product/domain/architecture decisions.
-
-## Continuation
-
-After each phase, recommend exactly one next phase, ask concise confirmation in user's language (Korean default per global `AGENTS.md`). If user already approved end-to-end bounded goal, continue inside approved scope and stop conditions instead of asking after every safe phase.
-
-## Parallel Work
-
-- Scope in main agent first. Don't delegate before reading enough artifacts to split work clearly.
-- Parallel tool calls for small independent reads/searches.
-- Subagents for substantial independent tracks with distinct concerns and clear return formats.
-- Single focused reviewer subagent OK for named review concern; exploratory batches usually have 2+ independent tracks.
-
-## Context Control
-
-- Load only the skill needed for current phase.
-- Artifact paths over chat summaries.
-- Write handoff before clearing after discovery/spec, plan approval, several implementation tasks, or review fixes.
-- New sessions resume from `AGENTS.md`, `.ai-harness/CONTEXT.md`, `.ai-harness/CURRENT.md`, `.ai-harness/AGENT_WORKFLOW.md`, active acceptance artifact/plan, recent reviews, relevant code.
+각 단계 이후: 해당 단계의 durable artifact와 `.ai-harness/CURRENT.md`를 갱신한다(실질적 변경일
+때만); 가장 좁은 범위의 유용한 검증을 실행하거나 해당 없는 이유를 말한다; 다음 단계를 정확히
+하나만 추천한다. 승인이 필요한 행동(git 설정, 의존성 실행, 훅, 삭제, commit/stack, 히스토리
+재작성, 범위 확장, 미해결된 제품/도메인/아키텍처 결정)에서는 멈춘다. 사용자가 승인한
+엔드투엔드 bounded goal은 각 단계마다 묻지 않고 그 범위 안에서 계속 진행한다. 현재 단계의
+스킬만 로드한다; 채팅 요약이 아니라 아티팩트 경로를 전달한다; 컨텍스트를 지우기 전에 핸드오프를
+작성한다.
 
 ## Output
 
-Return: context read, workflow weight, selected next skill, current and next recommended phase, required artifact or approval, next safe action.
+편집 전에 보고한다: 읽은 컨텍스트, 워크플로 경로, 선택한 다음 스킬, 필요한 아티팩트 또는
+승인, 다음 안전한 행동.

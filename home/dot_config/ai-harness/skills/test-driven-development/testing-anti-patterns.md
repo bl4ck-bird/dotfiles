@@ -1,183 +1,65 @@
 # Testing Anti-Patterns
 
-Load when writing/changing tests, adding mocks, or tempted to add test-only methods to
-production code.
+테스트를 작성/변경하거나, 목을 추가하거나, 프로덕션 코드에 테스트 전용 메서드를
+추가하고 싶을 때 로드한다. **Core principle**: 목이 하는 일이 아니라 코드가 하는
+일을 테스트하라. 엄격한 TDD는 다섯 가지 모두를 방지한다 — 각각은 건너뛴 Red-Green-
+Refactor 단계를 나타내는 신호다.
 
-**Core principle**: test what the code does, not what the mocks do.
-
-Following strict TDD prevents these — each anti-pattern signals a skipped Red-Green-Refactor
-step.
-
-## The Iron Laws
+## Iron Laws
 
 ```text
 1. NEVER test mock behavior.
 2. NEVER add test-only methods to production classes.
 3. NEVER mock without understanding the dependency chain.
 4. NEVER use partial mocks of structures you do not fully understand.
-5. NEVER claim "done" without tests written first (per TDD Iron Law).
+5. NEVER claim "done" without tests written first (TDD Iron Law).
 ```
 
-## Anti-Pattern 1: Testing Mock Behavior
+## The Five, With Gates
 
-```typescript
-// ❌ BAD — asserting the mock exists
-expect(screen.getByTestId('sidebar-mock')).toBeInTheDocument();
+**1. 목 동작 테스트하기** — 목이 존재한다고 단언하는 것(`getByTestId('sidebar-mock')`)은
+아무것도 증명하지 않는다. 실제 컴포넌트의 동작을 테스트하거나, 격리를 위해 목이
+필요하다면 목이 있는 상태에서 *부모의* 동작을 테스트하라 — 목 자체에 대해 절대
+단언하지 마라.
+*Gate*: 목 요소에 대해 단언하기 전에 — 실제 동작인가 목의 존재인가? 목의 존재라면
+→ 단언을 삭제하거나 목을 제거하라.
 
-// ✅ GOOD — test real behavior, or do not mock it
-render(<Page />);
-expect(screen.getByRole('navigation')).toBeInTheDocument();
-```
+**2. 프로덕션 내 테스트 전용 메서드** — 테스트만 호출하는 메서드(예: 정리용으로만
+쓰이는 `Session.destroy()`)는 프로덕션을 오염시키고, 프로덕션 오용 위험을 높이며,
+YAGNI를 위반한다. 테스트 정리는 테스트 유틸리티에 둔다.
+*Gate*: 프로덕션 클래스에 메서드를 추가하기 전에 — 테스트에서만 쓰이는가? →
+테스트 유틸리티로. 이 클래스가 그 리소스의 라이프사이클을 소유하는가? → 아니면
+잘못된 클래스다.
 
-If the component must be mocked for isolation, test the parent's behavior with the mock
-present — never assert on the mock.
+**3. 이해 없이 모킹하기** — 상위 레벨 목은 테스트가 의존하는 부작용을 제거할 수
+있다(예: `discoverAndCacheTools`를 모킹하면 중복 `addServer`가 던지도록 만드는
+설정 쓰기가 사라진다); 그러면 테스트는 잘못된 이유로 통과한다.
+*Gate*: 모킹하기 전에 — 실제 메서드는 어떤 부작용을 가지며, 이 테스트가 그중
+무엇에 의존하는가? 의존한다면 더 아래를 모킹하거나(느리거나 외부적인 연산만)
+동작을 보존하는 더블을 사용하라. 확신이 없다면 → 먼저 실제 구현에 대해 실행해
+보고, 최소한으로 모킹하라. "안전을 위해 모킹"은 위험 신호다.
 
-### Gate
+**4. 불완전한 목** — 부분 응답 목은 다운스트림 코드가 누락된 필드를 읽을 때
+깨지거나, 구조적 가정을 조용히 숨긴다. 실제 구조를 완전히 미러링하라.
+*Gate*: 목 응답을 만들기 전에 — 실제 응답을 확인하고(문서 / 캡처된 호출), 다운
+스트림이 소비할 수 있는 모든 필드를 포함하라.
 
-```text
-BEFORE asserting on any mock element:
-  Am I testing real behavior or mock existence?
-  IF mock existence: STOP — delete assertion or unmock.
-```
+**5. 사후 테스트** — "구현 완료, 테스트 준비됨"은 TDD 사이클을 건너뛴 것이다.
+테스트 → 실패 → 구현 → 통과 → 리팩터 → 그다음 완료를 주장한다.
 
-## Anti-Pattern 2: Test-Only Methods In Production
+## Over-Complex Mocks
 
-```typescript
-// ❌ BAD — destroy() only used by tests, pollutes production class
-class Session {
-  async destroy() { await this._workspaceManager?.destroyWorkspace(this.id); }
-}
-
-// ✅ GOOD — test utilities own test cleanup
-export async function cleanupSession(session: Session) {
-  const workspace = session.getWorkspaceInfo();
-  if (workspace) await workspaceManager.destroyWorkspace(workspace.id);
-}
-```
-
-Pollutes production, dangerous if called from production, violates YAGNI, confuses object
-lifecycle with entity lifecycle.
-
-### Gate
-
-```text
-BEFORE adding any method to a production class:
-  Only used by tests? → put in test utilities.
-  Does this class own this resource's lifecycle? → if no, wrong class.
-```
-
-## Anti-Pattern 3: Mocking Without Understanding
-
-```typescript
-// ❌ BAD — mock removes the side effect the test depends on
-vi.mock('ToolCatalog', () => ({ discoverAndCacheTools: vi.fn().mockResolvedValue(undefined) }));
-await addServer(config);
-await addServer(config);  // should throw — but mock removed config-write side effect
-
-// ✅ GOOD — mock at the correct level (only the slow op)
-vi.mock('MCPServerManager');
-```
-
-Over-mocking "to be safe" breaks actual behavior; test passes for the wrong reason or fails
-mysteriously.
-
-### Gate
-
-```text
-BEFORE mocking any method:
-  1. What side effects does the real method have?
-  2. Does this test depend on any of those?
-  3. Do I fully understand what the test needs?
-
-  IF the test depends on side effects:
-    Mock at a lower level (slow/external op), OR use a test double that preserves
-    necessary behavior — NOT the high-level method the test depends on.
-
-  IF unsure: run with real implementation FIRST, observe, then minimal mocking.
-
-  Red flags: "mock to be safe", "might be slow, better mock", mocking without
-  understanding the dependency chain.
-```
-
-## Anti-Pattern 4: Incomplete Mocks
-
-```typescript
-// ❌ BAD — partial mock missing fields downstream code uses
-const mockResponse = { status: 'success', data: { userId: '123' } };
-// breaks when code accesses response.metadata.requestId
-
-// ✅ GOOD — mirror real API completely
-const mockResponse = {
-  status: 'success',
-  data: { userId: '123', name: 'Alice' },
-  metadata: { requestId: 'req-789', timestamp: 1234567890 },
-};
-```
-
-Partial mocks hide structural assumptions, fail silently when code consumes omitted fields,
-produce false confidence.
-
-**Iron rule:** mock the *complete* data structure as it exists in reality.
-
-### Gate
-
-```text
-BEFORE creating a mock response:
-  1. Examine actual response (docs / examples / captured real call).
-  2. Include ALL fields downstream might consume.
-  3. Verify mock matches real schema completely.
-  IF uncertain: include all documented fields.
-```
-
-## Anti-Pattern 5: Tests As Afterthought
-
-```text
-✅ Implementation complete
-❌ No tests written
-"Ready for testing"
-```
-
-Testing is part of implementation. Apply the TDD cycle from parent `SKILL.md`:
-test → fail → implement → pass → refactor → THEN claim complete.
-
-## When Mocks Become Too Complex
-
-Warning signs: mock setup longer than test logic; mocking everything to pass; mocks missing
-methods real components have; test breaks when mock changes.
-
-Ask: "Do we need a mock here?" Integration with real components is often simpler.
-
-## TDD Prevents These
-
-1. Write test first → forces thought about what is being tested.
-2. Watch it fail → confirms real behavior is exercised.
-3. Minimal impl → no test-only methods creep in.
-4. Real deps first → see what the test needs before mocking.
-
-Testing mock behavior = TDD violated (mocks added without watching test fail against real
-code first).
+경고 신호: 목 설정이 테스트 로직보다 길다; 목에 실제 컴포넌트가 가진 메서드가
+없다; 목이 바뀌면 테스트가 깨진다; 목이 왜 필요한지 설명할 수 없다. 실제
+컴포넌트를 쓰는 통합 테스트가 더 단순한지 자문하라 — 대체로 그렇다.
 
 ## Quick Reference
 
 | Anti-pattern | Fix |
 | --- | --- |
-| Assert on mock elements | Test the real component or unmock it |
-| Test-only methods in production | Move to test utilities |
-| Mock without understanding | Understand deps first, mock minimally |
-| Incomplete mocks | Mirror real API completely |
-| Tests as afterthought | TDD — tests first |
-| Over-complex mocks | Consider integration tests with real components |
-
-## Red Flags
-
-- Assertion checks for `*-mock` test IDs.
-- Methods only called in test files.
-- Mock setup is more than half the test.
-- Test fails when the mock is removed.
-- Cannot explain why the mock is needed.
-- Mocking "just to be safe".
-
-## Bottom Line
-
-**Mocks isolate, they are not the thing tested.** If TDD reveals you are testing mock
-behavior, test real behavior or question why you are mocking at all.
+| 목 요소에 단언하기 | 실제 컴포넌트를 테스트하거나 목을 제거 |
+| 프로덕션 내 테스트 전용 메서드 | 테스트 유틸리티로 이동 |
+| 이해 없이 모킹 | 먼저 의존성을 이해하고, 최소한으로 모킹 |
+| 불완전한 목 | 실제 구조를 완전히 미러링 |
+| 사후 테스트 | TDD — 테스트를 먼저 |
+| 과도하게 복잡한 목 | 실제 컴포넌트로 통합 테스트 |

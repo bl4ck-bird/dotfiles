@@ -3,7 +3,7 @@
 Document status: stub. TODO claims are not project truth yet. Non-TODO workflow, safety, and quality
 rules apply immediately.
 
-Bounded-context glossary and durable domain language for agents and humans.
+에이전트와 사람을 위한 bounded-context 용어집과 지속적인(durable) 도메인 언어.
 
 ## Product Goal
 
@@ -37,6 +37,6 @@ TODO
 
 ## Agent Notes
 
-- Use terms from this file in specs, plans, tests, and UI copy when relevant.
-- If a term is overloaded, stop and resolve it before implementation.
-- Update this file inline when a term is clarified.
+- 관련 있을 때 이 파일의 용어를 spec, 플랜, 테스트, UI 카피에 사용한다.
+- 용어가 overloaded되어 있으면, 구현 전에 멈추고 해결한다.
+- 용어가 명확해지면 이 파일을 즉시(inline) 갱신한다.

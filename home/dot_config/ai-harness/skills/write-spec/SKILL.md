@@ -1,55 +1,35 @@
 ---
 name: write-spec
-description: Use when converting resolved product context, PRDs, feature ideas, issues, or review findings into an acceptance artifact, acceptance criteria, and vertical implementation slices. Direction must already be settled — run product-discovery / domain-modeling first if not.
+description: Use when converting resolved product context, PRDs, feature ideas, issues, or review findings into an acceptance artifact, acceptance criteria, and vertical implementation slices. Direction must already be settled — run product-discovery / domain-modeling first if not. 확정된 제품 컨텍스트나 이슈, 리뷰 발견 사항을 수용 아티팩트와 수직 슬라이스로 변환할 때 사용한다.
 ---
 
 # Write Spec
 
-Turn resolved context into the lightest acceptance artifact that can be implemented and reviewed. Then split into vertical slices.
+**Intent**: 구현 및 리뷰가 가능한 가장 가벼운 수용 아티팩트를 수직 슬라이스로 나눈 것.
+**Boundary**: 이미 명확한 작업을 재서술하려고 풀 스펙을 만들지 않는다; Self-Review 없이 아티팩트를
+준비 완료로 선언하지 않는다; 방향이 아직 모호하면 먼저 `pressure-test` / `domain-modeling`을
+실행한다. **Verify**: Self-Review 체크리스트 통과; 모든 Acceptance Brief 필드 존재; 되돌리기
+어려운 결정에는 ADR 작성.
 
-Do not create a full spec just to restate an already clear task. A clear issue, PRD, review finding, or approved user request may suffice when acceptance criteria and risk are already explicit.
+## Modes And Inputs
 
-## Save Location
-
-```text
-.ai-harness/specs/YYYY-MM-DD-<feature>.md
-```
-
-Use the project's established location if it has one.
-
-For small well-understood work, use the existing issue, review record, or approved user request as the acceptance source instead of creating a new spec file. `.ai-harness/CURRENT.md` may point to the active source but should not replace it.
-
-## Inputs
-
-**Light artifact mode**: issue, review finding, PRD section, or approved user request is already clear enough to become the acceptance source. Read:
-
-- `.ai-harness/CONTEXT.md`
-- `.ai-harness/CURRENT.md`
-- The acceptance source: issue, PRD section, review finding, or approved user request
-- Existing code and tests when feature extends current behavior
-
-**Full spec mode**: product scope, domain language, public API, data/storage, auth/security, deletion, sync, external integrations, or user workflow still being decided. Also read:
-
-- `.ai-harness/ROADMAP.md`
-- Discovery or interview notes
-
-Conditional reads in either mode:
-
-- `.ai-harness/CONTEXT-MAP.md`: multiple contexts, apps, packages, or integrations.
-- `.ai-harness/DOMAIN_MODEL.md`: domain terms, invariants, or workflows may change.
-- `.ai-harness/DATA_MODEL.md`: persistence, migration, retention, deletion, import/export, or backup may change.
-- `.ai-harness/SECURITY_MODEL.md`: auth, permissions, secrets, trust boundaries, sensitive data, deletion, or crypto may change.
-- Relevant durable decisions when hard to reverse or surprising.
-
-Idea still ambiguous → run `pressure-test` first. Terms unstable → run `domain-modeling` first.
+- **Light artifact mode** (default): 명확한 이슈, 리뷰 발견 사항, PRD 섹션, 또는 승인된 요청이
+  수용 소스가 된다. 동작을 확장할 때는 `.ai-harness/CONTEXT.md`, `.ai-harness/CURRENT.md`,
+  소스, 기존 코드/테스트를 읽는다.
+- **Full spec mode** (`.ai-harness/specs/YYYY-MM-DD-<feature>.md`): 제품 범위, 도메인 언어,
+  공개 API, 데이터/스토리지, 인증/보안, 삭제, 동기화, 외부 통합, 또는 사용자 워크플로가 아직
+  결정 중일 때. `.ai-harness/ROADMAP.md`와 디스커버리 노트도 함께 읽는다.
+- 어느 모드든: 해당 문서가 존재하고 관련 영역을 다룰 때 모델 문서(`DOMAIN_MODEL`, `DATA_MODEL`,
+  `SECURITY_MODEL`, `CONTEXT-MAP`)와 관련 ADR을 읽는다.
+- 채팅으로만 존재하는 요청 → 플랜은 아래 필드를 Approved Request Anchor에 기록해야 한다.
 
 ## Light Acceptance Brief
 
-Other docs reference this section as "Acceptance Brief Fields (see `write-spec`)" instead of re-listing fields. Harness-wide canonical field set lives here.
-
-**Callsites that inline field names** (per README Cross-Reference Inlining Policy — keep in sync when editing): `using-bb-harness/SKILL.md` (Acceptance Artifact), `write-plan/SKILL.md` Preconditions (intra-file anchor in Approved Request Anchor section).
-
-Use for non-trivial work when a full spec would only duplicate an already clear request. Source can live in an issue, review record, plan anchor, or short `.ai-harness/specs/` note, but must include every field below:
+하네스 전역에서 쓰이는 표준 필드 집합 — 다른 문서는 필드를 다시 나열하는 대신 "Acceptance
+Brief Fields (see `write-spec`)"를 참조한다. 필드명을 인라인으로 사용하는 콜사이트(동기화
+유지): `using-bb-harness/SKILL.md`, `write-plan/SKILL.md` Preconditions. 아래 필드는 모두
+수용 소스(이슈, 리뷰 기록, 플랜 앵커, 또는 짧은 `.ai-harness/specs/` 노트)에 필수로 존재해야
+한다:
 
 ```markdown
 # <Feature or Change> Acceptance Brief
@@ -83,17 +63,6 @@ Use for non-trivial work when a full spec would only duplicate an already clear 
 
 ## AFK / HITL Boundary
 ```
-
-## Edit-On-Findings Mode
-
-When the spec is revised because `spec-compliance-review` found drift, or user changed scope, update the existing artifact at the same path. Do not create a new spec file or restart. Address each finding, preserve unchanged sections, re-run Self-Review. See `using-bb-harness` Review Iteration Pattern.
-
-## Application Rules
-
-- Light acceptance source (issue, PRD section, review finding, approved user task) must include every field above. Self-Review (Product Clarity + Domain Alignment) always required; `second-review` only when Self-Review triggers apply.
-- Full spec mode required when product scope, domain language, public API, data/storage, auth/security, deletion, sync, external integrations, or user workflow is still being decided. Run full Self-Review on result.
-- Request lives only in chat → implementation plan must capture every field in an "Approved Request Anchor" section.
-- Other skills/docs link here; field changes happen only here.
 
 ## Full Spec Template
 
@@ -131,68 +100,54 @@ When the spec is revised because `spec-compliance-review` found drift, or user c
 
 ## Vertical Slice Rules
 
-A slice should:
+슬라이스는 처음부터 끝까지 리뷰 가능한 하나의 동작을 전달하고, 필요한 모든 레이어를 포함하며,
+수용 기준과 테스트 기대치를 갖고, 하나의 집중된 플랜에 담길 만큼 작으며, **AFK**(에이전트가
+단독으로 완료) 또는 **HITL**(사용자 판단, 취향, 자격 증명, 배포, 수동 검증이 필요)로
+라벨링된다. 수평 슬라이스("DB / API / UI 구축")는 피한다; "사용자가 검증과 영속성을 갖춘 첫
+워크스페이스를 생성할 수 있다"와 같은 형태를 선호한다.
 
-- Deliver one behavior or decision reviewable end to end.
-- Include all necessary layers for that behavior.
-- Have acceptance criteria.
-- Include test expectations.
-- Be small enough for one focused implementation plan.
-- Be labeled AFK or HITL:
-  - AFK: agent can complete without user input.
-  - HITL: requires user decision, product taste, credentials, deployment, or manual validation.
+## ADR Output Contract
 
-Avoid horizontal slices: "Create database schema", "Build API", "Build UI", "Add tests".
+되돌리기 어려운 결정(스토리지 구조, 인증 구조, 외부 의존성, 도메인 경계)을 확정하는 스펙은
+이 스킬 출력의 일부로 `.ai-harness/adr/NNNN-<title>.md`(MADR; 템플릿은
+`adr/0000-template.md`)를 작성하고 스펙에서 링크한다. 그런 결정이 없으면 → ADR 없음.
+안전망 게이트는 `ship-check`가 담당한다.
 
-Prefer: "User can create the first workspace with validation and persistence.", "User can see reconciliation mismatch details and retry the import."
+## Edit-On-Findings Mode
+
+`implementation-review`가 스펙 드리프트를 발견했거나 사용자가 범위를 변경해서 스펙을 수정하는
+경우 → 같은 경로의 기존 아티팩트를 업데이트한다(새 파일 없음, 재시작 없음), 각 발견 사항을
+처리하고, 변경되지 않은 섹션은 보존하며, Self-Review를 재실행한다.
 
 ## Self-Review
 
-Walk this checklist before declaring artifact ready. Domain and acceptance correctness owned here, then re-verified by `spec-compliance-review` after implementation.
+아티팩트를 준비 완료로 선언하기 전에 점검한다; 이후 `implementation-review`가 다시
+검증한다. 이 체크를 인라인으로 사용하는 콜사이트: `spec-document-reviewer-prompt.md`.
 
-Callsite that inlines these checks (audit when changing): `spec-document-reviewer-prompt.md` — the prompt may add reviewer-only checks on top.
+**Product Clarity** — 목표/문제/사용자/MVP/비목표가 명시적임(또는 모든 Brief 필드가 존재);
+수용 기준이 공개 인터페이스나 사용자에게 보이는 흐름을 통해 테스트 가능함; 슬라이스가
+수직적임; AFK/HITL 라벨이 현실적임; 테스트 및 문서 영향이 명시됨.
 
-### Product Clarity
+**Domain Alignment** (`.ai-harness/CONTEXT.md` / `DOMAIN_MODEL.md`가 존재할 때) — 모든
+도메인 용어가 글로서리와 일치함, 새 용어는 수용 작업으로 `CONTEXT.md`에 추가됨; 애그리게잇
+경계가 `DOMAIN_MODEL.md`를 존중함, 컨텍스트 간 상호작용은 변환 계층을 명시함; 다루는 불변식이
+증명 방법(테스트 또는 도메인 이벤트)과 함께 나열됨 — 증명되지 않은 불변식은 기준이 아니라
+미해결 질문임; 엔티티 / 값 객체 / 애그리게잇 어휘가 올바르게 사용됨. 순수 UI/CRUD/글루 →
+`N/A — non-domain change`로 표기.
 
-- Goal, problem, users, MVP, non-goals explicit (or, for Light Acceptance Brief, every canonical field present).
-- Acceptance criteria testable through public interface or user-visible flow, not implementation notes.
-- Vertical slices deliver reviewable behavior, not horizontal layers.
-- AFK / HITL labels realistic.
-- Testing and docs impact named.
+## Independent Review (optional)
 
-### Domain Alignment (DDD upstream check)
+- `spec-document-reviewer-prompt.md`(이 디렉터리) — 같은 호스트에서 새로운 시각으로 보는
+  서브에이전트. 다음의 경우 가치가 있다: 새로운/이름이 바뀐 도메인 언어, High-Risk Surface
+  (정규 목록은 `second-review`에 있음), 제품 방향이나 아키텍처 변경, 또는 Self-Review 후에도
+  작성자가 확신이 없을 때.
+- `second-review` — 다른 모델을 이용한 재검증; 스펙이 High-Risk Surface를 다룰 때는 필수,
+  그 외에는 선택.
 
-When `.ai-harness/CONTEXT.md` or `.ai-harness/DOMAIN_MODEL.md` exists:
-
-- Every domain term matches `.ai-harness/CONTEXT.md` glossary. New terms defined and added to `.ai-harness/CONTEXT.md` as part of acceptance work, not silently introduced.
-- Aggregate boundaries match `.ai-harness/DOMAIN_MODEL.md`. Spec does not cross a bounded context without naming the translation layer.
-- Documented invariants the spec touches are listed with how each will be proven (test or domain event). Invariants without proof are open questions, not acceptance criteria.
-- Spec uses `entity` vs `value object` vs `aggregate` vocabulary correctly when introducing or changing one.
-
-Purely UI / CRUD / glue work with low domain complexity → mark `N/A — non-domain change` and skip.
-
-### Independent Review
-
-Two options when author wants a second pair of eyes:
-
-- **`spec-document-reviewer-prompt.md`** (in this directory) — same-host subagent re-reads spec and project context independently. Use when:
-  - Domain language being introduced or renamed.
-  - High-Risk Surface (`security` / `data-loss` / `money` / `auth` / `crypto` / `deletion` / `core architecture` — canonical list in `second-review`) touched.
-  - Product direction, MVP boundary, or core architecture changes.
-  - Self-Review passed but author is uncertain.
-- **`second-review`** (different-model reviewer — see `second-review`) — fully-independent double-check. Required when spec touches High-Risk Surface; otherwise optional. Heavier than same-host reviewer.
-
-Neither is mandatory — Self-Review alone is the default. Pick whichever justifies the time.
-
-Otherwise, next gate is `spec-compliance-review` after implementation.
+Self-Review 단독이 기본값이다. 구현 후 다음 게이트: `implementation-review`.
 
 ## Output
 
-Report:
-
-- artifact path or source
-- slices
-- AFK/HITL split
-- review needs
-- recommended first plan or review path
-- one next-phase question, such as whether to proceed to write-plan
+보고: 아티팩트 경로 또는 소스 · 슬라이스 · 생성된 ADR(또는 "none — no hard-to-reverse
+decision") · AFK/HITL 분할 · 필요한 리뷰 · 권장 다음 단계 · 다음 단계 질문 하나(예:
+`write-plan`으로 진행할지?).

@@ -1,205 +1,101 @@
 ---
 name: test-driven-development
-description: Use when implementing any feature, behavior change, or refactor — write the failing test first, watch it fail for the right reason, then write the minimal code to pass. For bug fixes, run `bug-diagnosis` first to reproduce; then return here for the regression test and fix.
+description: Use when implementing any feature, behavior change, or refactor — write the failing test first, watch it fail for the right reason, then write the minimal code to pass. For bug fixes, run `bug-diagnosis` first to reproduce; then return here for the regression test and fix. 기능, 동작 변경, 리팩터를 구현할 때 사용한다 — 실패 테스트를 먼저 작성하고 올바른 이유로 실패하는지 확인한 뒤 최소 코드로 통과시킨다.
 ---
 
 # Test-Driven Development (TDD)
 
-Write the test first. Watch it fail. Write minimal code to pass.
-
-**Core principle**: if you did not watch the test fail, you do not know if it tests the right thing.
-
-**Violating the letter of the rules is violating the spirit of the rules.**
+**Intent**: 모든 프로덕션 코드 변경은 먼저 실패하는 것을 관찰한 테스트로 증명된다 —
+테스트가 실패하는 것을 보지 않았다면, 그것이 올바른 것을 테스트하는지 알 수 없다.
+**Boundary**: 실패 테스트 없이 프로덕션 코드를 변경하지 않는다; 이 응답에서 방금 읽은
+결과 없이 RED나 GREEN을 주장하지 않는다.
+**Verify**: 아래 Output 블록이 각 동작에 대한 RED와 GREEN 증거를 담는다.
 
 ## When To Use
 
-**Always** — new features, bug fixes (regression test fails before fix), behavior changes (API/UX/domain), behavior-preserving refactors (green baseline first).
-
-**Exceptions** — explicit user approval + recorded residual-risk note:
-
-- Throwaway prototype.
-- Generated code, pure docs, or mechanical config with no test harness.
-- Emergency fix with documented residual risk.
-
-Thinking "skip TDD just this once"? That is rationalization, not pragmatism.
+항상 — 새 기능, 버그 수정(수정 전 회귀 테스트가 실패함), 동작 변경, 동작 보존 리팩터
+(먼저 green 베이스라인). 예외는 명시적인 사용자 승인 + 기록된 잔존 리스크 노트가
+필요하다: 일회성 프로토타입, 생성된 코드 / 순수 문서 / 테스트 하네스가 없는 기계적
+설정, 긴급 수정. 그 기록 없이 "이번만 TDD 건너뛰기"는 합리화일 뿐이다.
 
 ## Branch Precondition
 
-Before the RED step (and before any production code edit), check the current branch. **Never start implementation on a protected base branch** (`main`, `master`, `develop`, `trunk`, or any branch named as base in the repo's `AGENTS.md` / `CLAUDE.md`) without explicit user consent in this session. On a protected branch → invoke `using-git-worktrees` first and create a feature branch / worktree. Applies regardless of Workflow Weight — even Trivial/local fixes follow this rule.
+첫 프로덕션 편집 전에 현재 브랜치를 확인한다. 보호된 base 브랜치에 있다면 먼저
+`using-git-worktrees`를 호출한다 — 전체 규칙은 `using-bb-harness` Branch Policy에
+있으며 가벼운 수정에도 적용된다. RED 테스트는 사이클의 첫 커밋 아티팩트다; base가
+아니라 피처 브랜치에서 작성한다.
 
-**Why here**: the RED test is the first artifact committed in a TDD cycle. Authoring it on a protected branch means either an unreviewable direct push or a messy mid-cycle branch rewrite. Branch first, then RED. Full rule: `using-bb-harness` Branch Policy.
-
-## The Iron Law
-
-```text
-NO PRODUCTION CODE CHANGE WITHOUT A FAILING TEST FIRST
-```
-
-Wrote code before the test? **Delete it.** Do not keep it as reference, do not adapt it, do not look at it. Implement fresh from the test.
-
-## Red-Green-Refactor
+## The Cycle
 
 ```text
-RED  → Verify RED  → GREEN  → Verify GREEN  → REFACTOR  → Verify  → next
- ↑         ↓                       ↓                        ↓
- │    wrong failure            still failing             broke green
- │         ↓                       ↓                        ↓
- └── rewrite test ──────── fix implementation ───── revert refactor
+RED → Verify RED → GREEN → Verify GREEN → REFACTOR → Verify → next behavior
 ```
 
-### 1. RED — Write One Failing Behavior Test
+- **RED** — 공개 인터페이스, 사용자에게 보이는 흐름, 또는 안정적인 도메인 경계를
+  통한 하나의 집중된 실패 테스트. 테스트당 하나의 동작; 이름은 동작을 설명함; 실제
+  코드 경로 사용, 불가피할 때만 모킹(`testing-anti-patterns.md`).
+- **Verify RED** — 테스트를 실행하고 이 응답에서 결과를 읽는다. 기대한 이유로
+  *실패*해야 한다(에러가 아니라). 이미 통과한다면 → 기존 동작을 테스트하는 것이니
+  테스트를 고친다. 에러가 나면 → 올바른 이유로 실패할 때까지 고친다. 이 신선한
+  증거 규칙은 이 스킬과 `ship-check`가 소유하며, 하네스 전반의 모든 "완료 / 수정됨
+  / 통과" 주장에 적용된다.
+- **GREEN** — 통과하는 가장 단순한 구현. 요청받지 않은 옵션, 플래그, "하는 김에"
+  정리는 없다.
+- **Verify GREEN** — 테스트와 좁은 회귀(인접 테스트, 관련 모듈)를 실행하고 결과를
+  읽는다. 대상이 실패하면 → 테스트가 아니라 코드를 고친다. 다른 것이 실패하면 →
+  지금 고친다; green 베이스라인은 타협 불가다.
+- **REFACTOR** — green 이후에만, 새 동작 없이, 이후 다시 검증한다. 게이트는 아래
+  참고.
 
-One focused test through a public interface, user-visible flow, or stable domain boundary.
-
-- One behavior per test. Test name contains "and"? Split.
-- Name describes behavior, not implementation.
-- Real code paths. No mocks unless unavoidable (`testing-anti-patterns.md`).
-
-### 2. Verify RED — Watch It Fail
-
-**Mandatory. Apply `verification-before-completion`.**
-
-```bash
-npm test path/to/test.ts -t "behavior name"
-```
-
-Confirm:
-
-- Test fails (not errors).
-- Failure message matches the expected reason — feature missing, value mismatch.
-- Fails for the right reason, not a typo / missing import / unrelated bug.
-
-**Passes already?** Testing existing behavior. Fix the test.
-**Errors?** Fix the error, re-run until it fails for the right reason.
-
-### 3. GREEN — Minimal Code
-
-Simplest implementation that passes the test. No unrequested options, flags, knobs, or "while I'm here" cleanups.
-
-### 4. Verify GREEN — Watch It Pass
-
-**Mandatory. Apply `verification-before-completion`.**
-
-```bash
-npm test path/to/test.ts -t "behavior name"
-# plus narrow regression: nearby tests, related modules
-```
-
-Confirm: target test passes, other tests still pass, output is clean.
-
-**Target fails?** Fix the code, not the test.
-**Others fail?** Fix now — green baseline is non-negotiable.
-
-### 5. REFACTOR — Clean Up
-
-After green only. Keep tests green. No new behavior. See **Refactor Gate** below.
-
-### 6. Verify After Refactor
-
-Rerun focused verification with fresh output. Refactor only counts when the test is still green.
-
-## Vertical, Not Horizontal
-
-```text
-WRONG: test1, test2, test3 → impl1, impl2, impl3
-RIGHT: test1 → impl1 → test2 → impl2 → test3 → impl3
-```
-
-Writing all tests before any implementation is planning, not TDD.
+수직으로 인터리브한다: 테스트 → 구현 → 테스트 → 구현. 구현 전에 모든 테스트를
+작성하는 것은 TDD가 아니라 계획이다. 테스트보다 먼저 존재하는 코드는 검증된 의미가
+없다 — 남아 있던 코드를 적응시키지 말고 테스트부터 사이클을 시작한다; 코드를
+적응시키는 것은 여분의 단계가 붙은 사후 테스트일 뿐이다.
 
 ## Refactor Gate
 
-After GREEN, before next RED:
+GREEN 이후, 다음 RED 전에:
 
-- Changed module has one primary reason to change.
-- Domain/application logic does not depend on UI/framework/storage/network/filesystem unless the project intentionally uses that shape.
-- Interfaces stay small and caller-focused.
-- Extract duplication only when the extraction clarifies a real concept.
-- Apply file/function size thresholds from `code-quality-review` (File And Complexity Thresholds).
-
-Refactor only after green. Rerun focused verification after.
+- 변경된 모듈이 변경 이유를 하나만 유지한다.
+- 도메인/애플리케이션 로직이 프로젝트가 의도적으로 그 형태를 쓰지 않는 한 UI/프레임워크/
+  스토리지/네트워크/파일시스템과 독립적으로 유지된다.
+- 인터페이스는 작고 호출자 중심으로 유지된다; 실제 개념을 명명할 때만 중복을 추출한다.
+- 파일/함수 크기 임계값: `implementation-review`(File And Complexity Thresholds).
 
 ## Good Tests
 
-Prefer:
+선호: 공개 인터페이스와 사용자에게 보이는 동작, `.ai-harness/CONTEXT.md`의 프로젝트
+도메인 언어, 내부 리팩터에도 살아남는 테스트, 불변식과 엣지 케이스, 버그에 대한 회귀
+커버리지. 피할 것: 프라이빗 헬퍼나 파일 레이아웃 단언, 테스트 대상 동작을 모킹으로
+치워버림, 구현 세부사항 중복, 더 작은 공개 인터페이스가 있는데도 넓은 픽스처 사용.
+카탈로그: `testing-anti-patterns.md` — 테스트를 작성/변경하거나, 목을 추가하거나,
+프로덕션 코드에 테스트 전용 메서드를 추가하고 싶을 때 로드한다.
 
-- Public interfaces or user-visible behavior.
-- Project domain language from `.ai-harness/CONTEXT.md`.
-- Survive internal refactors.
-- Protect invariants and edge cases.
-- Cover regression behavior for bugs.
+## Bug Fixes — Red-Green-Revert
 
-Avoid:
-
-- Assert private helper names or file layout.
-- Mock away the behavior being tested.
-- Duplicate implementation details.
-- Pass without proving new behavior.
-- Require broad fixtures when a smaller public interface exists.
-
-Catalog: `testing-anti-patterns.md`.
-
-## Rationalizations And Reality
-
-| Excuse | Reality |
-| --- | --- |
-| "Too simple to test" | Simple code breaks. Test takes 30 seconds. |
-| "I'll test after" | Tests passing immediately prove nothing. Bias toward what you built, not what is required. |
-| "Already manually tested" | Ad-hoc ≠ systematic. No record, can't re-run, forgotten under pressure. |
-| "Deleting X hours is wasteful" | Sunk-cost fallacy. Unverified code is debt. |
-| "Keep as reference" | You will adapt it. That is testing after. Delete means delete. |
-| "Need to explore first" | Fine. Throw the exploration away. Start with TDD. |
-| "Test hard = design unclear" | Listen to the test. Hard to test = hard to use. |
-| "TDD will slow me down" | TDD is faster than debugging in production. |
-| "Manual test faster" | Manual does not prove edge cases. You will re-test every change. |
-| "Existing code has no tests" | You are touching it. Add tests for the part you touch. |
-| "Spirit not ritual" | Tests-after answer "what does this do?" Tests-first answer "what should this do?" Different artifact. |
-
-## Red Flags — STOP And Start Over
-
-- Code written before the test.
-- Test added after the implementation.
-- Test passes immediately on first run.
-- Cannot explain why the test failed at RED.
-- Tests added "later".
-- Rationalizing "just this once".
-- Skipping `verification-before-completion` at RED or GREEN.
-
-## Bug Fixes
-
-Run `bug-diagnosis` first to reproduce, form hypotheses, clean up instrumentation. Return here for red-green-refactor with a regression test that fails before the fix. Apply Red-Green-Revert per `verification-before-completion`:
+`bug-diagnosis`를 먼저 실행하고(재현, 가설 수립, 계측 정리), 여기로 돌아온다. 회귀
+테스트는 수정을 되돌렸을 때 실패해야만 수정을 증명한 것이다:
 
 ```text
-1. Write the regression test.
-2. Run on the fix → PASS.
-3. Revert the fix.
-4. Run → MUST FAIL for the right reason.
-5. Restore the fix.
-6. Run → PASS.
+1. Write the regression test.  2. Run on the fix → PASS.  3. Revert the fix.
+4. Run → MUST FAIL for the right reason.  5. Restore the fix.  6. Run → PASS.
 ```
 
-Skip 3-4 and regression coverage is unverified.
+3-4를 건너뛰면 회귀 커버리지는 검증되지 않은 것이다.
 
-## Refactors
+## Refactors (behavior-preserving)
 
-Behavior-preserving:
+먼저 green 베이스라인(스위트를 실행하고 결과를 읽는다); 공개 동작 테스트는 변경되지
+않음; 책임, 의존성 방향, 네이밍, 테스트 용이성을 개선하는 작은 단계; 위험한 추출마다
+집중 체크.
 
-- Establish a green baseline first (`verification-before-completion` reads the output).
-- Keep public behavior tests unchanged.
-- Small steps that improve responsibility, dependency direction, naming, or testability.
-- Focused checks after each risky extraction.
+## Red Flags — stop and restart the cycle
+
+테스트 전 코드 · 첫 실행에 테스트가 통과함 · RED 실패를 설명할 수 없음 · "테스트는
+나중에" · 이 응답에서 방금 읽은 결과 없이 RED/GREEN을 주장함.
 
 ## Output
 
-Per completed behavior:
-
-- Test added or updated.
-- RED evidence (failure message read in this response).
-- Implementation summary.
-- GREEN evidence (passing output read in this response).
-- Refactor performed or skipped (with reason).
-- Remaining test gaps.
-
-## Companion Reference
-
-- `testing-anti-patterns.md` — anti-patterns: testing mock behavior, test-only methods in production, mocking without understanding, incomplete mocks, integration tests as afterthought. Load when writing/changing tests, adding mocks, or tempted to add test-only methods to production code.
+완료된 동작마다: 추가/수정된 테스트 · RED 증거(이 응답에서 읽은 실패 메시지) · 구현
+요약 · GREEN 증거(이 응답에서 읽은 통과 결과) · 리팩터 완료 또는 생략(이유) · 남은
+테스트 갭.

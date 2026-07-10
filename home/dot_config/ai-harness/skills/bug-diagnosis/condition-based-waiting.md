@@ -1,22 +1,21 @@
 # Condition-Based Waiting
 
-Flaky tests often guess at timing with arbitrary delays — passes on fast machines, fails
-under load or in CI.
+플레이키 테스트는 흔히 임의의 지연으로 타이밍을 추측한다 — 빠른 머신에서는 통과하지만
+부하가 걸리거나 CI에서는 실패한다.
 
-**Core principle**: wait for the actual condition you care about, not a guess about how long
-it takes.
+**Core principle**: 걸리는 시간을 추측하지 말고, 실제로 신경 쓰는 조건을 기다린다.
 
 ## When To Use
 
-- Tests use arbitrary delays (`setTimeout`, `sleep`, `time.sleep()`).
-- Tests are flaky — pass sometimes, fail under load or parallel runs.
-- Tests time out unpredictably.
-- Code waits for async operations to complete.
+- 테스트가 임의의 지연(`setTimeout`, `sleep`, `time.sleep()`)을 사용한다.
+- 테스트가 플레이키하다 — 부하나 병렬 실행에서 가끔 실패한다.
+- 테스트가 예측 불가능하게 타임아웃된다.
+- 코드가 비동기 연산 완료를 기다린다.
 
 ## When *Not* To Use
 
-- Testing actual timing behavior (debounce intervals, throttle windows, scheduled ticks). The
-  timeout is the unit under test — document *why* the duration is what it is.
+- 실제 타이밍 동작(디바운스 간격, 스로틀 윈도, 스케줄된 틱)을 테스트할 때. 타임아웃
+  자체가 테스트 대상이다 — 지속 시간이 왜 그 값인지 문서화한다.
 
 ## Core Pattern
 
@@ -36,11 +35,11 @@ expect(result).toBeDefined();
 
 | Scenario | Pattern |
 | --- | --- |
-| Wait for an event | `waitFor(() => events.find(e => e.type === 'DONE'))` |
-| Wait for a state | `waitFor(() => machine.state === 'ready')` |
-| Wait for a count | `waitFor(() => items.length >= 5)` |
-| Wait for a file | `waitFor(() => fs.existsSync(path))` |
-| Complex condition | `waitFor(() => obj.ready && obj.value > 10)` |
+| 이벤트 대기 | `waitFor(() => events.find(e => e.type === 'DONE'))` |
+| 상태 대기 | `waitFor(() => machine.state === 'ready')` |
+| 개수 대기 | `waitFor(() => items.length >= 5)` |
+| 파일 대기 | `waitFor(() => fs.existsSync(path))` |
+| 복합 조건 | `waitFor(() => obj.ready && obj.value > 10)` |
 
 ## Reference Implementation
 
@@ -62,15 +61,16 @@ async function waitFor<T>(
 }
 ```
 
-Build domain-specific helpers on top (`waitForEvent`, `waitForEventCount`,
-`waitForEventMatch`) so tests express *what* they wait for, not *how long*.
+그 위에 도메인 특화 헬퍼(`waitForEvent`, `waitForEventCount`, `waitForEventMatch`)를
+만들어, 테스트가 *얼마나 오래*가 아니라 *무엇을* 기다리는지 표현하게 한다.
 
-For Python/Go/Rust use idiomatic equivalents (Python: `asyncio.wait_for` + polling helper,
-Go: `for { select }` with `time.After`, Rust: `tokio::time::timeout` around polling loop).
+Python/Go/Rust에서는 관용적 대응물을 사용한다(Python: `asyncio.wait_for` + 폴링 헬퍼,
+Go: `time.After`와 함께 `for { select }`, Rust: 폴링 루프를 감싸는
+`tokio::time::timeout`).
 
 ## When An Arbitrary Timeout Is Justified
 
-The unit under test *is* a timer.
+테스트 대상 자체가 타이머일 때.
 
 ```typescript
 await waitForEvent(manager, 'TOOL_STARTED');  // condition first
@@ -78,36 +78,37 @@ await new Promise(r => setTimeout(r, 200));    // documented timed behavior
 // 200ms = 2 ticks at 100ms — duration is part of the spec.
 ```
 
-Requirements:
+요건:
 
-1. Wait for the triggering condition first.
-2. Duration based on a documented interval, not a guess.
-3. Comment explains *why* the duration is what it is.
+1. 트리거 조건을 먼저 기다린다.
+2. 지속 시간은 추측이 아니라 문서화된 간격에 근거한다.
+3. 지속 시간이 왜 그 값인지 주석으로 설명한다.
 
 ## Common Mistakes
 
-- **Polling too fast** (`setTimeout(check, 1)`). → Poll every 10 ms.
-- **No timeout**. Loop runs forever when condition never fires. → Always include timeout +
-  clear error message.
-- **Caching stale state outside the loop**. → Call the getter inside the loop.
-- **Polling for derived state** when underlying event is observable. → Wait for the event.
-- **Timeout too short**. Condition fires after 5 s, timeout is 1 s. → Generous vs expected
-  latency, short enough to fail fast.
+- **너무 빠른 폴링**(`setTimeout(check, 1)`). → 10ms 간격으로 폴링한다.
+- **타임아웃 없음**. 조건이 절대 발생하지 않으면 루프가 영원히 돈다. → 항상 타임아웃과
+  명확한 에러 메시지를 포함한다.
+- **루프 밖에서 오래된 상태를 캐싱**. → getter를 루프 안에서 호출한다.
+- 기저 이벤트를 관찰할 수 있는데 **파생 상태를 폴링**. → 이벤트를 기다린다.
+- **타임아웃이 너무 짧음**. 조건이 5초 후 발생하는데 타임아웃은 1초. → 예상 지연 대비
+  여유 있게, 하지만 빠르게 실패할 만큼 짧게.
 
 ## Real-World Impact
 
-Representative session converting 15 flaky tests across 3 files:
+3개 파일에 걸친 플레이키 테스트 15개를 변환한 대표 세션:
 
-- Pass rate: 60% → 100%.
-- Execution time: 40% faster (no fixed long sleeps).
-- Race conditions: 0.
+- 통과율: 60% → 100%.
+- 실행 시간: 40% 단축(고정된 긴 sleep 없음).
+- 경쟁 상태: 0건.
 
 ## Hand-Off
 
-After converting to condition-based waiting:
+조건 기반 대기로 전환한 후:
 
-1. Apply `verification-before-completion` — run the test (under load if project has stress
-   mode) before claiming fixed.
-2. If a Layer 3 environment guard (`defense-in-depth.md`) is relevant — e.g., waiter masks a
-   real race in production — add the guard *in production*, not only in tests.
-3. Return to `bug-diagnosis` SKILL step 8-10 (fix, verify, clean up).
+1. 고쳤다고 주장하기 전에 테스트를 실행하고(프로젝트에 스트레스 모드가 있다면 부하
+   상태에서) 최신 출력을 읽는다.
+2. Layer 3 환경 가드(`defense-in-depth.md`)가 관련 있다면 — 예를 들어 waiter가
+   프로덕션의 실제 경쟁 상태를 가리고 있다면 — 가드를 테스트뿐 아니라 *프로덕션에도*
+   추가한다.
+3. `bug-diagnosis` SKILL 8-10단계로 복귀한다(수정, 검증, 정리).

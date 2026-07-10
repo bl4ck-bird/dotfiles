@@ -1,133 +1,115 @@
 ---
 name: ship-check
-description: Use when preparing to hand off, commit, merge, open a PR, or release after implementation and focused reviews.
+description: Use when preparing to hand off, commit, merge, open a PR, or release after implementation and focused reviews. 구현과 집중 리뷰 이후 handoff/commit/merge/PR/release를 준비할 때 사용한다.
 ---
 
 # Ship Check
 
-Final readiness pass before handing work back, committing, stacking, opening a PR, or shipping.
+**Intent**: 오래된 근거, 미검토 위험, 하네스 어휘 유출 상태로는 아무것도 배포하지 않는다.
+**Boundary**: 명시적 사용자 승인, 프로젝트 로컬 요구사항, 또는 승인된 bounded goal 없이는
+commit/push/PR/history 액션을 수행하지 않는다; 기존에 있던 실패를 이번 변경 탓으로 돌리지 않는다;
+필수 리뷰를 수행할 수 없었던 경우 조용히 통과시키지 않는다. **Verify**: 모든 체크리스트 주장은 이
+응답 안에서 읽은 명령 출력으로 뒷받침된다.
 
-## Preconditions
+## Preconditions (standard / high-risk paths)
 
-Substantial work should have:
+기준(criteria)이 있는 acceptance artifact(Self-Review 완료) · plan 또는 소규모 작업 근거 · 동작이
+바뀐 경우 TDD 또는 회귀 커버리지 · 슬라이스별 `implementation-review` 통과(Spec compliant ✅,
+Ready to merge: Yes — 수정 후 재실행일 수도 있음) · `security-review` 실행 또는 트리거되지 않았음을
+명시 · High-Risk Surface에 대한 `second-review` 실행(정식 목록은 `second-review`) 또는 대체 조치
+기록 · 리뷰어 수정사항에 `receiving-review` 적용 · `docs-sync` 검토 · 다음 단계로 commit/PR/release
+액션이 승인됨.
 
-- Acceptance artifact with criteria (spec, PRD, issue, review finding, approved task). Artifact's Self-Review (see `write-spec` / `write-plan`) completed.
-- Implementation plan or clear small-task rationale.
-- TDD or regression coverage where behavior changed.
-- `spec-compliance-review` returned ✅ Spec compliant for each implemented slice.
-- `code-quality-review` returned Ready to merge: Yes (or With fixes followed by applied fixes + re-run returning Yes).
-- `security-review` run when security-sensitive surface touched, or explicitly noted as not triggered.
-- `second-review` run when High-Risk Surface (`security` / `data-loss` / `money` / `auth` / `crypto` / `deletion` / `core architecture` — canonical list in `second-review`) touched or user requested independent double-check, or fallback recorded per `second-review` Fallback Record.
-- `receiving-review` applied when fixes taken from any reviewer (one item at a time, YAGNI checked).
-- `docs-sync` considered.
-- Commit, PR, release, or stacked-branch actions approved when they are part of next step.
+필수 리뷰를 사용할 수 없는 경우 → 이유, 대체 리뷰, 수용한 위험, 명시적 사용자 수락을 기록한다 —
+조용한 통과 금지.
 
-## Trivial/Local Pass
+## Light Pass
 
-Trivial/local (one bounded module, no product/domain/API/data/security decision changing, no High-Risk Surface): run only steps **1, 3, 9, 11** below. Mark rest as "N/A — trivial/local scope". Do not run full 11-step checklist for changes the Workflow Weight table classifies as Trivial/local.
-
-If change set grows past Trivial/local definition, escalate to full checklist before continuing.
+light 경로(하나의 bounded module, product/domain/API/data/security 결정 없음, High-Risk Surface
+없음): **1, 3, 12, 14**단계만 실행하고 나머지는 "N/A — light scope"로 표시한다. 변경 범위가 light를
+벗어나면 계속하기 전에 전체 체크리스트로 격상한다.
 
 ## Checklist
 
-1. Inspect `git status` and confirm change set is scoped to request.
-2. Read relevant diff and ensure no unrelated user changes were reverted.
-3. Run narrowest meaningful tests, type checks, linters, or build checks. Apply `verification-before-completion` — "green" claims require fresh output read in this response, not remembered prior run.
-4. Run `docs-sync` if behavior, architecture, tests, security, or user-facing behavior changed — or note "no durable docs touched". Skip the run only when the change set demonstrably touches no durable concern.
-5. Confirm `docs-sync` produced an up-to-date `.ai-harness/CURRENT.md` (fields and update triggers defined in `docs-sync` Handoffs).
-6. Confirm `spec-compliance-review` and `code-quality-review` were run with passing results, and `security-review` was run or explicitly noted as not triggered.
-7. Run or request `second-review` for required High-Risk Surface changes, or note why optional independent double-check is not needed.
-8. Confirm no source file crossed file-size thresholds from `code-quality-review` (File And Complexity Thresholds) without review.
-9. Confirm validation was not gamed by weakening assertions, narrowing coverage, skipping relevant checks, or changing tests to match broken behavior.
-10. Decide commit status: not requested, ready to commit, committed, or blocked.
-11. Summarize result with verification evidence and residual risk.
+1. `git status` — 변경 범위가 요청 범위와 일치하는지 확인.
+2. diff를 읽는다 — 관련 없는 사용자 변경사항이 되돌려지지 않았는지 확인.
+3. 가장 좁은 의미 있는 tests/typecheck/lint/build를 실행한다. **"Green"이라는 판단은 이 응답 안에서
+   명령을 실행하고 그 최신 출력을 읽었을 때만 성립한다** — 기억에 의존한 실행이나 구현자의 말만으로는
+   안 된다. 이 체크리스트의 모든 완료 주장에 적용된다.
+4. 동작/아키텍처/테스트/보안/사용자 노출 동작이 변경된 경우 `docs-sync` 실행 — 아니면 "no durable
+   docs touched"로 명시.
+5. `.ai-harness/CURRENT.md`가 최신 상태인지(필드는 `docs-sync` Handoffs 기준).
+6. **CURRENT.md 상한**: 80줄 초과 또는 Done 항목 5개 초과 → `docs-sync` Routing Rules에 따라
+   초과분을 지금 이관한다(결정 사항 → `adr/`, 작업 기록 → `reviews/`). 선택적 정리가 아니라 필수.
+7. **ADR 안전망**: 이번 작업에서 확정된 되돌리기 어려운 결정(저장 구조, 인증 구조, 외부 의존성,
+   도메인 경계)이 있는데 `adr/NNNN-*.md`가 없다면 → 지금 생성(MADR).
+8. `.ai-harness/ROADMAP.md`(존재하는 경우)가 여전히 배포된 범위와 일치하는지 — 마일스톤/non-goal이
+   바뀌었으면 갱신.
+9. 슬라이스별 `implementation-review` 결과 확인; `security-review` 실행 또는 트리거되지 않았음을
+   명시.
+10. 필수 High-Risk 변경에 대해 `second-review` 실행, 또는 선택적으로 건너뛴 이유 명시.
+11. `implementation-review`의 File And Complexity Thresholds를 넘긴 소스 파일이 미검토 상태로
+    남지 않았는지.
+12. 검증이 조작되지 않았는지: assertion 약화, 커버리지 축소, 체크 생략, 또는 깨진 동작에 맞춰
+    테스트를 바꾸지 않았는지.
+13. Commit 상태 결정: not requested / ready / committed / blocked.
+14. 검증 근거와 잔여 위험을 요약한다.
 
-If independent review required but unavailable, do not silently pass. Record unavailable reason, compensating review, accepted risk, whether user explicitly accepted shipping without it.
-
-Relevant checks already failed before this work → state clearly, do not attribute to your change. Check fails after your change → make one targeted fix when cause is clear; otherwise stop and report with evidence.
+이번 작업 이전부터 이미 실패하던 체크 → 있는 그대로 명시한다. 변경 후 체크가 실패 → 원인이
+명확하면 targeted fix 1건, 아니면 멈추고 근거와 함께 보고한다.
 
 ## Finishing Options
 
-When tests pass and slice is reviewed, present a structured choice rather than open-ended "what next?". Standard options: merge locally / push and create PR / keep as-is / discard. Detached-HEAD environments drop merge option.
-
-Judgment rules (host runs commands):
-
-- **Merge**: delete feature branch and clean up worktree *after* merge succeeds, not before.
-- **PR**: keep worktree alive for review iteration.
-- **Discard**: require user to confirm explicitly (typed token recommended) before deletion.
+테스트 통과 및 슬라이스 리뷰 완료 → 구조화된 선택지를 제시한다: **merge locally / push + PR /
+keep as-is / discard**(detached HEAD는 merge 불가). Merge → merge 성공 *이후에* worktree와 branch를
+정리. PR → 리뷰 반복을 위해 worktree 유지. Discard → 삭제 전 명시적 사용자 확인(타이핑된 토큰 권장).
+Worktree 정리 출처: `using-git-worktrees` Cleanup — 하네스가 생성한 경로만, 먼저 main root로
+`cd`, 순서는 merge → worktree 제거 → branch 삭제.
 
 ## Commit / Stack Gate
 
-Do not commit, push, create PRs, or rewrite history unless user requested, project-local instructions require, or approved bounded goal includes that action.
+사용자가 요청했거나, 프로젝트 지침이 요구하거나, 승인된 goal에 포함된 경우에만:
 
-When commit or stack work approved:
+1. staging 전에 `git status`와 diff를 검사; 완료된 슬라이스가 소유한 파일만 stage.
+2. history가 중요한 경우 vertical slice당 커밋 1개를 선호.
+3. **Vocabulary gate**: 커밋 메시지, staged diff 안의 코드 주석, PR body에 하네스 어휘가 없어야
+   함 — slice/task ID(`M1`, `I1`, `S0`…), 스킬명, "BB Harness", `.ai-harness/` 경로 없음. 변경사항은
+   사용자/도메인 용어로 기술; 발견되면 커밋 전에 다시 작성.
+4. Stacked branches: branch당 리뷰 관심사 1개; PR 설명에 stack 순서 기록.
+5. pre-commit / commit-msg hook 실행; commit hash, PR URL, 또는 블로커를 보고.
 
-1. Inspect `git status` and diff before staging.
-2. Stage only files owned by completed task or slice.
-3. Prefer one commit per completed vertical slice when history matters.
-4. Stacked branches: each branch focused on one review concern, record stack order (parent → child) in PR description.
-5. Run available pre-commit and commit-msg hooks.
-6. Report commit hash, PR URL, or reason action was blocked.
+가능하면 host의 commit/PR 헬퍼를 우선 사용. commit이 승인되지 않은 경우 → "ready to commit"과
+제안 메시지를 보고.
 
-Prefer host agent's commit/PR helper (Claude Code `commit-commands` plugin, Codex commit recipe, project script) when available. Otherwise `git`/`gh`.
+## Retro
 
-## Worktree Cleanup Provenance
-
-Cleanup ownership and procedure live in `using-git-worktrees` Cleanup. Summary: only remove worktrees this harness created (under `.worktrees/` or `worktrees/`). Worktrees owned by host native tools or other agents must be left in place. Always `cd` to main repo root before `git worktree remove`. Order: merge → cleanup worktree → delete branch.
-
-Commit not approved → report change is ready to commit and suggest a commit message.
-
-## Retro (optional)
-
-After substantial work, capture one to three short lines:
-
-- What worked
-- What surprised us
-- One rule worth keeping for future work
-
-Promote a rule into host agent's memory system only when non-obvious from code and would help future sessions; host agent (e.g. Claude global `auto memory`) owns format and classification. Otherwise leave the line in the review record.
-
-`retro-capture` (part of BB Harness) picks up memory candidates and routes them through host agent's persistent memory. Memory candidates or retro insights exist → hand them to `retro-capture`; none → Retro lines stand on their own in the review record.
-
-## Output
-
-Keep final report short:
-
-- What changed
-- What was verified
-- Focused reviews completed
-- Independent review status
-- Docs updated or intentionally unchanged
-- Commit status and suggested message or commit hash
-- What remains risky or unverified
-- Memory candidates: persist non-obvious rules through host agent's memory system per Retro guidance above.
+상당한 작업 이후, 1-3줄을 기록한다(무엇이 효과적이었는지, 무엇이 뜻밖이었는지, 지킬 가치가 있는
+규칙 하나). 메모리 후보나 retro 인사이트 → `retro-capture`에 전달(채널별 리뷰 유용성도 함께
+기록); 아니면 해당 줄은 리뷰 기록에 남긴다.
 
 ## Do Not Ship If
 
-- Required checks fail.
-- Implementation does not match accepted behavior.
-- Critical or Important review finding unresolved.
-- Validation weakened or skipped to make result look green.
-- Final answer would need to hide uncertainty.
+필수 체크 실패 · 구현이 승인된 동작과 다름 · 미해결 Critical/Important 발견사항 · 검증이
+약화되거나 생략됨 · 최종 답변이 불확실성을 숨기게 됨.
 
 ## Rollback And Incident Response
 
-When a shipped change breaks production, downstream tests, or accepted behavior:
+배포된 변경이 production / downstream / 승인된 동작을 깨뜨린 경우:
 
-1. **Stop forward work.** Do not stack a fix on top — revert first, debug after.
-2. **Pick the revert path** by blast radius:
-   - Single commit on main, no dependent work → `git revert <sha>` (creates a revert commit; history-safe).
-   - Multiple commits, intertwined → revert the merge with `git revert -m 1 <merge-sha>`.
-   - Pre-merge (PR not yet merged) → close PR or push a fix; do not force-push shared branches.
-   - Deployed artifact (container/binary/release) → redeploy previous artifact first, then revert source.
-3. **Verify rollback closed the symptom.** Re-run the failing check that triggered the incident. Apply `verification-before-completion` — read the output, not the deployer's word.
-4. **Open a regression test that reproduces the failure** before re-attempting the change. Per `bug-diagnosis` workflow, no second attempt without a failing test.
-5. **Record the incident** in `.ai-harness/reviews/YYYY-MM-DD-<topic>-incident.md`:
-   - What shipped, what broke, blast radius, who was affected
-   - Detection signal and lead time
-   - Revert commands run + verification evidence
-   - Root cause (or hypothesis if unconfirmed)
-   - Follow-up: test added, durable doc updated, decision recorded
-6. **Update `.ai-harness/CURRENT.md`** with the incident and the recovery state.
+1. **전진 작업을 멈춘다** — 먼저 되돌리고, 그 다음 디버깅.
+2. 파급 범위에 따라 되돌리기 경로를 선택: 단일 커밋 → `git revert <sha>`; 얽혀 있음 →
+   `git revert -m 1 <merge-sha>`; merge 전 → PR을 닫거나 fix를 push(공유 브랜치에 force-push
+   금지); 배포된 아티팩트 → 이전 아티팩트를 먼저 재배포한 뒤 소스를 되돌림.
+3. rollback이 증상을 해소했는지 검증 — 트리거된 체크를 재실행하고 출력을 읽는다.
+4. 재시도 전에 실패를 재현하는 회귀 테스트를 작성(`bug-diagnosis` 기준).
+5. `.ai-harness/reviews/YYYY-MM-DD-<topic>-incident.md`에 사고를 기록: 무엇이 배포/파손됐는지 /
+   파급 범위, 탐지 신호, revert 명령 + 검증, 근본 원인 또는 가설, 후속 조치.
+   `.ai-harness/CURRENT.md` 갱신.
 
-Do not delete the broken commit (history-rewrite). Do not silently re-roll the same change without addressing the root cause and adding regression coverage. Project-specific deploy commands and revert procedures belong in `.ai-harness/AGENT_WORKFLOW.md`.
+history rewrite 금지; 근본 원인 + 회귀 커버리지 없이 같은 변경을 재시도 금지. 프로젝트별
+deploy/revert 명령은 `.ai-harness/AGENT_WORKFLOW.md`에 있다.
+
+## Output
+
+무엇이 바뀌었는지 · 무엇이 검증됐는지(근거) · 완료된 리뷰 · 독립 리뷰 상태 · 문서 업데이트 여부
+또는 의도적으로 변경하지 않음 · commit 상태(hash 또는 제안 메시지) · 잔여 위험 · 메모리 후보.
