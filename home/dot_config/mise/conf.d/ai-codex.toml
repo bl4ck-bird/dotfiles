@@ -1,2 +1,2 @@
-[tools.codex]
+[tools."npm:@openai/codex"]
 version = "latest"

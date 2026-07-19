@@ -10,9 +10,16 @@ homebrew_shellenv
 source "$HOME/.zshenv"
 source "$ZDOTDIR/.zprofile"
 
+# mise config hash: {{ output "sh" "-c" (printf "find '%s/dot_config/mise' -type f | LC_ALL=C sort | xargs cat | sha256sum" .chezmoi.sourceDir) }}
 if command -v mise >/dev/null 2>&1; then
     echo_color $COLOR_BLUE "Install Mise Packages: Installing..."
+
+    if mise ls --current 2>/dev/null | awk '{print $1}' | grep -qx cargo-binstall; then
+    mise install cargo-binstall
+    fi
+
     mise install -y
+    mise prune --tools -y
 else
     echo_color $COLOR_RED "Install Mise Packages: mise not found."
     exit 1
