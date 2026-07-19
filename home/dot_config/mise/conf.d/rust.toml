@@ -1,3 +1,7 @@
+[settings]
+# use cargo-binstall for the cargo: backend (fetch prebuilt binaries, not source build)
+cargo.binstall = true
+
 [tools.rust]
 version = "latest"
 postinstall = '''
@@ -6,6 +10,26 @@ rustup completions zsh cargo > "$ZCOMP_HOME/_cargo"
 
 rustup component add rustfmt clippy rust-analyzer rust-src
 '''
+
+# cargo-binstall — bootstraps the cargo: backend's prebuilt fetch
+[tools.cargo-binstall]
+version = "latest"
+
+# cargo-nextest
+[tools."cargo:cargo-nextest"]
+version = "latest"
+
+# cargo-audit
+[tools."cargo:cargo-audit"]
+version = "latest"
+
+# cargo-deny
+[tools."cargo:cargo-deny"]
+version = "latest"
+
+# cargo-sort
+[tools."cargo:cargo-sort"]
+version = "latest"
 
 [env]
 RUSTUP_HOME = "{{env.XDG_DATA_HOME}}/rustup"
