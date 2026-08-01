@@ -3,8 +3,9 @@
   "cleanupPeriodDays": 14,
   "skillListingBudgetFraction": 0.02,
   "attribution": {
-    "commit": "Co-Authored-By: Claude <noreply@anthropic.com>",
-    "pr": ""
+    "commit": "",
+    "pr": "",
+    "sessionUrl": false
   },
   "permissions": {
     "deny": [
