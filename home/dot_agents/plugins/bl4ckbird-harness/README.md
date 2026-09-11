@@ -91,7 +91,7 @@ chezmoi diff "$plugin_dir"
 
 마켓플레이스 조회 결과는 `personal`이어야 한다. 버전 도구는 기본 버전을 유지하고 `+codex.<timestamp>` 부분을 교체한다. 도구가 홈 매니페스트를 수정하므로 `chezmoi add`로 원본에도 반영한다. 스킬 내용 변경은 새 Codex 작업에서 확인한다.
 
-5. chezmoi Git 저장소에서 변경 범위와 diff를 검토한 뒤 커밋·푸시한다. 로컬 적용과 Codex 재설치는 Git 전달을 대신하지 않는다.
+5. chezmoi Git 저장소에서 `git status`, `git diff`, `git log -1`로 전달 상태를 확인한다. `git.autoCommit=true`이면 앞의 `chezmoi add`가 커밋을 만들 수 있으므로 남은 변경만 커밋한다. `git.autoPush=false`이면 별도로 푸시한다. 로컬 적용과 Codex 재설치는 원격 전달을 대신하지 않는다.
 
 ## Validation
 
