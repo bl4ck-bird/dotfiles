@@ -8,7 +8,7 @@
       "name": "bl4ckbird-harness",
       "source": {
         "source": "local",
-        "path": "./plugins/bl4ckbird-harness"
+        "path": "./.agents/plugins/bl4ckbird-harness"
       },
       "policy": {
         "installation": "AVAILABLE",
