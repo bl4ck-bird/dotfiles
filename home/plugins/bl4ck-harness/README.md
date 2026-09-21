@@ -21,7 +21,7 @@ chezmoi의 `home/dot_codex/AGENTS.md`는 하네스 독립 기본 지침이다. �
 개인 마켓플레이스의 로컬 원본은 홈 기준 `./plugins/bl4ck-harness`다. 원본에서 숨김 매니페스트 디렉터리는 chezmoi의 `dot_codex-plugin` 표기를 쓰며 적용 후 `.codex-plugin`이 된다. 개인 환경에만 적용한다. 캐시는 직접 수정하지 않는다.
 
 ```sh
-chezmoi apply --include=files,dirs ~/.agents/plugins/marketplace.json ~/plugins/bl4ck-harness ~/.codex/AGENTS.md
+chezmoi apply --parent-dirs --include=files,dirs ~/.agents/plugins/marketplace.json ~/plugins/bl4ck-harness ~/.codex/AGENTS.md
 codex plugin add bl4ck-harness@personal
 ```
 
