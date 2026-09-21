@@ -13,7 +13,10 @@ def main():
     root = Path(__file__).resolve().parent.parent
     errors = []
     manifest = json.loads((root / '.codex-plugin/plugin.json').read_text(encoding='utf-8'))
-    if manifest.get('name') != root.name or manifest.get('skills') != './skills/':
+    source_layout = manifest.get('name') == root.name
+    installed_layout = (manifest.get('name') == root.parent.name
+                        and manifest.get('version') == root.name)
+    if not (source_layout or installed_layout) or manifest.get('skills') != './skills/':
         errors.append('플러그인 이름·스킬 경로가 실제 패키지와 일치하지 않습니다.')
     if not re.fullmatch(r'\d+\.\d+\.\d+(?:\+codex\.[A-Za-z0-9.-]+)?', manifest.get('version', '')):
         errors.append('버전은 세 부분의 숫자와 선택적인 Codex 캐시 갱신 접미사 형식이어야 합니다.')
