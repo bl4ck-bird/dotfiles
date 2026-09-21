@@ -1,0 +1,30 @@
+{
+  "name": "bl4ck-harness",
+  "version": "0.1.0+codex.20260921154016",
+  "description": "제품 탐색과 도메인·시스템 설계에서 구현·검증·장기 작업 재개까지 연결하는 한글 개발 하네스",
+  "author": {
+    "name": "bl4ckbird"
+  },
+  "license": "MIT",
+  "skills": "./skills/",
+  "keywords": [
+    "설계",
+    "도메인 모델",
+    "명세",
+    "구현",
+    "검증",
+    "하네스"
+  ],
+  "interface": {
+    "displayName": "bl4ck-harness",
+    "shortDescription": "전체 설계와 간결한 명세, 지속적인 작업 상태를 연결하는 개발 하네스",
+    "longDescription": "Superpowers 6.3.0과 6.4.1의 실행·검토 원칙과 Matt Pocock의 설계 기법을 한글로 재구성합니다. 에이전트 기록은 .harness에 분리하고 중요한 설계 결정을 구현 전에 정리합니다.",
+    "developerName": "bl4ckbird",
+    "category": "Developer Tools",
+    "capabilities": [
+      "Read",
+      "Write"
+    ],
+    "defaultPrompt": "using-bl4ck-harness으로 이 프로젝트의 현재 근거와 필요한 시작 단계를 확인해줘."
+  }
+}

@@ -5,10 +5,10 @@
   },
   "plugins": [
     {
-      "name": "bl4ckbird-harness",
+      "name": "bl4ck-harness",
       "source": {
         "source": "local",
-        "path": "./.agents/plugins/bl4ckbird-harness"
+        "path": "./plugins/bl4ck-harness"
       },
       "policy": {
         "installation": "AVAILABLE",
