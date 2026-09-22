@@ -8,7 +8,7 @@
       "name": "bl4ck-harness",
       "source": {
         "source": "local",
-        "path": "./plugins/bl4ck-harness"
+        "path": "./.config/agents/plugins/bl4ck-harness"
       },
       "policy": {
         "installation": "AVAILABLE",

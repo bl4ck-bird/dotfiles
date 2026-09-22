@@ -14,14 +14,14 @@ chezmoi의 `home/dot_codex/AGENTS.md`는 하네스 독립 기본 지침이다. �
 
 | 대상 | chezmoi 원본 | 적용 위치 |
 | --- | --- | --- |
-| 플러그인 | `home/plugins/bl4ck-harness/` | `~/plugins/bl4ck-harness/` |
+| 플러그인 | `home/dot_config/agents/plugins/bl4ck-harness/` | `~/.config/agents/plugins/bl4ck-harness/` |
 | 개인 마켓플레이스 | `home/dot_agents/plugins/marketplace.json` | `~/.agents/plugins/marketplace.json` |
 | 기본 지침 | `home/dot_codex/AGENTS.md` | `~/.codex/AGENTS.md` |
 
-개인 마켓플레이스의 로컬 원본은 홈 기준 `./plugins/bl4ck-harness`다. 원본에서 숨김 매니페스트 디렉터리는 chezmoi의 `dot_codex-plugin` 표기를 쓰며 적용 후 `.codex-plugin`이 된다. 개인 환경에만 적용한다. 캐시는 직접 수정하지 않는다.
+개인 마켓플레이스의 로컬 원본은 홈 기준 `./.config/agents/plugins/bl4ck-harness`다. 원본에서 숨김 매니페스트 디렉터리는 chezmoi의 `dot_codex-plugin` 표기를 쓰며 적용 후 `.codex-plugin`이 된다. 개인 환경에만 적용한다. 캐시는 직접 수정하지 않는다. 이 소스 위치는 에이전트별 설치 캐시와 분리한다. 현재 설치 지원은 Codex이며, Claude 등 다른 에이전트는 해당 런타임의 매니페스트·스킬 로딩·도구 호환성을 검증한 뒤 연결한다.
 
 ```sh
-chezmoi apply --parent-dirs --include=files,dirs ~/.agents/plugins/marketplace.json ~/plugins/bl4ck-harness ~/.codex/AGENTS.md
+chezmoi apply --parent-dirs --include=files,dirs ~/.agents/plugins/marketplace.json ~/.config/agents/plugins/bl4ck-harness ~/.codex/AGENTS.md
 codex plugin add bl4ck-harness@personal
 ```
 
